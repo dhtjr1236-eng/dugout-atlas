@@ -151,7 +151,7 @@ class BaseballReferenceService:
                 message = (
                     "Baseball-Reference rejected automated access (HTTP 403). "
                     "Download the official WAR file in a normal browser and use "
-                    "'B-Ref 파일 가져오기' in MLB Advanced Gameday."
+                    "'B-Ref 파일 가져오기' in Dugout Atlas."
                 )
                 self._trip_network_breaker(message)
             else:

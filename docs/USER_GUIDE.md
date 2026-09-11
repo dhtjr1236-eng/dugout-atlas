@@ -1,4 +1,4 @@
-# MLB Advanced Gameday
+# Dugout Atlas
 
 Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다. MLB Gameday 스타일의 실시간 경기 상태와 FanGraphs / Baseball Reference / Baseball Savant / Statcast 지표를 한 화면에서 조회하도록 구성되어 있습니다.
 
@@ -112,7 +112,7 @@ python --version
 ZIP을 예를 들어 다음 경로에 해제합니다.
 
 ```text
-C:\MLBAdvancedGameday\
+C:\DugoutAtlas\
 ```
 
 OneDrive 동기화 폴더나 권한이 제한된 `Program Files` 아래보다는 일반 사용자 쓰기 가능 폴더를 권장합니다.
@@ -138,7 +138,7 @@ OneDrive 동기화 폴더나 권한이 제한된 `Program Files` 아래보다는
 수동 실행:
 
 ```bat
-cd C:\MLBAdvancedGameday
+cd C:\DugoutAtlas
 .venv\Scripts\activate
 python main.py
 ```

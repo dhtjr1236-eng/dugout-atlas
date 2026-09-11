@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 `MLB Advanced Gameday v1.0.5` 소스를 기반으로 합니다. 앱 내부 표기와 소스 버전은 원본을 유지합니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.5**입니다. 앱 표시 이름, 패키지 이름과 현재 버전 표기를 통일했습니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Source version](https://img.shields.io/badge/Source-v1.0.5-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.0.5-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -22,6 +22,10 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 ---
 
 ## 한눈에 보기
+
+![투수의 기본 기록, WAR, Statcast 지표와 구종 분석 화면](docs/images/player-analysis-before-rename.png)
+
+*사용자가 제공한 실제 실행 화면입니다. 이름 변경 전 촬영되어 상단에 이전 이름이 표시됩니다. 현재 앱 이름은 Dugout Atlas이며, 화면 속 통계는 촬영 당시 표시값입니다.*
 
 | 화면 | 확인할 수 있는 내용 |
 | :--- | :--- |

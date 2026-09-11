@@ -15,7 +15,8 @@ QSS_PATH = BASE_DIR / "config" / "dark.qss"
 
 @dataclass(frozen=True, slots=True)
 class Settings:
-    app_name: str = "MLB Advanced Gameday"
+    app_name: str = "Dugout Atlas"
+    app_version: str = "1.0.5"
     refresh_seconds: int = 30
     cache_ttl_days: int = 30
     current_season_cache_ttl_hours: int = 1
@@ -25,7 +26,7 @@ class Settings:
     user_agent: str = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 Chrome/152 Safari/537.36 "
-        "MLB-Advanced-Gameday/1.0"
+        "Dugout-Atlas/1.0.5"
     )
     mlb_api_base: str = "https://statsapi.mlb.com/api"
     mlb_logo_base: str = "https://www.mlbstatic.com/team-logos"

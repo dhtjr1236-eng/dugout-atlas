@@ -5,7 +5,7 @@ import sys
 from PyQt6.QtWidgets import QApplication
 
 from config.logging_config import configure_logging
-from config.settings import QSS_PATH, ensure_runtime_dirs
+from config.settings import QSS_PATH, SETTINGS, ensure_runtime_dirs
 from controllers.app_controller import AppController
 from database.sqlite_manager import SQLiteManager
 from ui.main_window import MainWindow
@@ -15,7 +15,8 @@ def main() -> int:
     ensure_runtime_dirs()
     configure_logging()
     app = QApplication(sys.argv)
-    app.setApplicationName("MLB Advanced Gameday")
+    app.setApplicationName(SETTINGS.app_name)
+    app.setApplicationVersion(SETTINGS.app_version)
     if QSS_PATH.exists():
         app.setStyleSheet(QSS_PATH.read_text(encoding="utf-8"))
 

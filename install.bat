@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 
-echo [MLB Advanced Gameday] Creating Python virtual environment...
+echo [Dugout Atlas] Creating Python virtual environment...
 py -3.12 -m venv .venv 2>nul
 if errorlevel 1 (
     echo Python 3.12 launcher not found. Trying default python...
@@ -29,7 +29,7 @@ if errorlevel 1 goto :error
 
 echo.
 echo Installation and verification completed successfully.
-echo Run run.bat to start MLB Advanced Gameday.
+echo Run run.bat to start Dugout Atlas.
 pause
 exit /b 0
 

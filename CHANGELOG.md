@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.5 — Dugout Atlas 브랜딩 정리
+
+- 앱 제목, 상단 이름, 오류 안내와 설치 메시지를 Dugout Atlas로 통일했습니다.
+- 패키지 이름을 `dugout-atlas`로 변경하고 버전은 `1.0.5`로 유지했습니다.
+- 앱의 버전 메타데이터와 창 제목에 동일한 버전을 표시합니다.
+- README에 사용자가 제공한 이름 변경 전 실제 실행 스크린샷을 추가했습니다.
+- 기존 Git 커밋 이력은 보존합니다. 최초 업로드의 v0.1.1 표기는 과거 기록이며 현재 앱 버전이 아닙니다.
+
 ## 1.0.5
 
 - Reworked Baseball-Reference handling for real-world HTTP 403/429 environments.

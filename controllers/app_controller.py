@@ -219,4 +219,4 @@ class AppController(QObject):
         LOGGER.error("Worker failed:\n%s", trace)
         last_line = trace.strip().splitlines()[-1] if trace.strip() else "Unknown error"
         self.window.set_busy(last_line)
-        self.window.show_error("MLB Advanced Gameday", last_line)
+        self.window.show_error("Dugout Atlas", last_line)

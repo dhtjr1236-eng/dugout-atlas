@@ -1,4 +1,4 @@
-# MLB Advanced Gameday — Architecture
+# Dugout Atlas — Architecture
 
 ## 1. Architectural goals
 

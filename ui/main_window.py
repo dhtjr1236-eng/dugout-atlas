@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from config.settings import SETTINGS
 from models.game import GameDetail, GameSummary
 from models.player import PlayerBundle
 from ui.game_view import GameView
@@ -40,7 +41,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("MLB Advanced Gameday")
+        self.setWindowTitle(f"{SETTINGS.app_name} v{SETTINGS.app_version}")
         self.resize(1440, 900)
         self._games: list[GameSummary] = []
         self._search_map: dict[str, int] = {}
@@ -50,7 +51,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         top = QHBoxLayout()
-        title = QLabel("MLB Advanced Gameday")
+        title = QLabel(SETTINGS.app_name)
         title.setObjectName("title")
         top.addWidget(title)
         top.addStretch()
