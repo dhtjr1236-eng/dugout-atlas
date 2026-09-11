@@ -8,7 +8,7 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.5**입니다. 앱 표시 이름, 패키지 이름과 현재 버전 표기를 통일했습니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.5**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
@@ -20,6 +20,10 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 </div>
 
 ---
+
+> **개발 중인 데스크톱 프로젝트입니다.** 현재 배포물은 Python 소스이며 별도 설치형 EXE는 제공하지 않습니다. 외부 통계의 최신성은 각 데이터 제공처의 갱신 시점에 따릅니다.
+
+[소스 ZIP 다운로드](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) · [문제 제보](https://github.com/dhtjr1236-eng/dugout-atlas/issues)
 
 ## 한눈에 보기
 
@@ -38,6 +42,8 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 ## 빠른 시작
 
 **준비:** Windows 11, Python 3.12 이상, 인터넷 연결.
+
+Python 설치 시 **Add python.exe to PATH**를 선택하세요. 자동 설치는 Python 3.12를 먼저 찾고, 없으면 PATH의 기본 Python을 사용합니다. 기본 Python도 3.12 이상이어야 합니다.
 
 1. GitHub 저장소 상단의 **Code → Download ZIP**으로 소스를 내려받고 압축을 풉니다.
 2. `install.bat`을 더블클릭해 실행 환경과 의존성을 설치합니다.
@@ -124,5 +130,14 @@ py -3.12 -m venv .venv
 원본 변경 기록에는 v1.0.5 기준 26개 테스트 통과가 기록되어 있습니다. 이는 원본의 기록이며 이번 문서 정리에서 재실행한 결과는 아닙니다.
 
 ## 프로젝트 안내
+
+### 현재 제한사항
+
+- 이번 공개 준비에서 Python 파일 46개의 문법과 앱·패키지 버전 일치를 확인했습니다. 전체 테스트, GUI 동작 및 실시간 외부 데이터 정확성은 이번 환경에서 재검증하지 못했습니다.
+- B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
+- 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
+- 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
+
+문제를 제보할 때는 앱 버전, Windows/Python 버전, 재현 순서와 기대한 결과를 적어 주세요. 로그를 첨부한다면 개인 경로와 인증 정보가 포함되어 있는지 먼저 확인해 주세요.
 
 MLB, FanGraphs, Baseball-Reference 또는 Baseball Savant의 공식 클라이언트가 아닙니다. 외부 데이터 구조가 변경되면 연동 코드의 수정이 필요할 수 있습니다. 저장소에 별도 라이선스 파일은 포함되어 있지 않습니다.
