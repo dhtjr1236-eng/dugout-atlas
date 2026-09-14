@@ -34,10 +34,17 @@ class AppController(QObject):
         self._threads: set[TaskThread] = set()
         self._schedule_busy = False
         self._game_busy = False
+        self._player_busy = False
+        self._trend_busy = False
+        self._pending_trend_period: str | None = None
 
         self.refresh_timer = QTimer(self)
         self.refresh_timer.setInterval(30_000)
         self.refresh_timer.timeout.connect(self.refresh_live)
+
+        self.player_refresh_timer = QTimer(self)
+        self.player_refresh_timer.setInterval(300_000)
+        self.player_refresh_timer.timeout.connect(self.refresh_selected_player)
 
         self.window.game_selected.connect(self.select_game)
         self.window.date_changed.connect(self.load_schedule)
@@ -46,11 +53,13 @@ class AppController(QObject):
         self.window.league_refresh_requested.connect(self.load_league)
         self.window.team_stats_requested.connect(self.load_team_stats)
         self.window.bref_import_requested.connect(self.import_bref_file)
+        self.window.player_view.trend_period_changed.connect(self.load_player_trend)
 
     def start(self) -> None:
         self.load_schedule(date.today().isoformat())
         self.load_league()
         self.refresh_timer.start()
+        self.player_refresh_timer.start()
 
     def _run(
         self,
@@ -125,7 +134,6 @@ class AppController(QObject):
 
         def success(detail: GameDetail) -> None:
             self._game_busy = False
-            # Ignore a late response if the user selected a different game.
             if detail.game_pk and self.selected_game_pk not in (None, detail.game_pk):
                 return
             self.window.set_game_detail(detail)
@@ -138,8 +146,6 @@ class AppController(QObject):
         self._run(task, success, on_error=failure)
 
     def refresh_live(self) -> None:
-        # Re-query the list and selected game every 30 seconds. The API adapter does
-        # not read these from cache.
         qdate = self.window.date_edit.date().toString("yyyy-MM-dd")
         self.load_schedule(qdate)
         if self.selected_game_pk:
@@ -159,7 +165,10 @@ class AppController(QObject):
         self._run(task, success, on_error=lambda _message: None)
 
     def load_player(self, player_id: int) -> None:
+        if self._player_busy and self.selected_player_id == player_id:
+            return
         self.selected_player_id = player_id
+        self._player_busy = True
         self.window.show_player_loading(player_id)
         season = self.season
 
@@ -167,10 +176,74 @@ class AppController(QObject):
             return await self.players.get_bundle(player_id, season)
 
         def success(bundle: Any) -> None:
+            self._player_busy = False
+            if self.selected_player_id != player_id:
+                return
             self.window.show_player(bundle)
             self.window.set_busy(f"Player data loaded: {bundle.profile.full_name}")
+            period = self.window.player_view.current_trend_period
+            if period != "yearly" and not bundle.profile.is_pitcher:
+                self.load_player_trend(period)
 
-        self._run(task, success)
+        def failure(message: str) -> None:
+            self._player_busy = False
+            self._default_error(message)
+
+        self._run(task, success, on_error=failure)
+
+    def refresh_selected_player(self) -> None:
+        """Refresh selected-player data so current-season FanGraphs values advance."""
+        if self.selected_player_id is not None and not self._player_busy:
+            self.load_player(self.selected_player_id)
+
+    def load_player_trend(self, period: str) -> None:
+        bundle = self.window.player_view.current_bundle
+        if (
+            bundle is None
+            or bundle.profile.is_pitcher
+            or self.selected_player_id != bundle.profile.id
+        ):
+            return
+        if self._trend_busy:
+            self._pending_trend_period = period
+            self.window.player_view.set_trend_loading(period)
+            return
+
+        player_id = bundle.profile.id
+        full_name = bundle.profile.full_name
+        season = self.season
+        self._trend_busy = True
+        self._pending_trend_period = None
+        self.window.player_view.set_trend_loading(period)
+
+        def run_pending() -> None:
+            pending = self._pending_trend_period
+            self._pending_trend_period = None
+            if pending and pending != period:
+                self.load_player_trend(pending)
+
+        def task() -> list[dict[str, Any]]:
+            return self.players.get_fangraphs_trend(
+                player_id, full_name, season, False, period
+            )
+
+        def success(rows: list[dict[str, Any]]) -> None:
+            self._trend_busy = False
+            if self.selected_player_id == player_id:
+                self.window.player_view.set_trend(period, rows)
+                self.window.set_busy(
+                    f"FanGraphs {period} trend loaded · {len(rows)} periods"
+                )
+            run_pending()
+
+        def failure(message: str) -> None:
+            self._trend_busy = False
+            if self.selected_player_id == player_id:
+                self.window.player_view.set_trend(period, [])
+                self._default_error(message)
+            run_pending()
+
+        self._run(task, success, on_error=failure)
 
     def import_bref_file(self, file_path: str) -> None:
         self.window.set_busy("Importing Baseball-Reference WAR data…")
