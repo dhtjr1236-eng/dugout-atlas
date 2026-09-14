@@ -18,7 +18,7 @@ def _figure(title: str) -> tuple[Figure, Any]:
     ax.xaxis.label.set_color("#cbd5e1")
     ax.yaxis.label.set_color("#cbd5e1")
     ax.set_title(title)
-    fig.subplots_adjust(left=0.12, right=0.97, bottom=0.20, top=0.84)
+    fig.subplots_adjust(left=0.12, right=0.97, bottom=0.24, top=0.84)
     return fig, ax
 
 
@@ -30,7 +30,14 @@ def exit_velocity_distribution(statcast: dict[str, Any]) -> Figure:
         ax.set_xlabel("Exit velocity (mph)")
         ax.set_ylabel("Batted balls")
     else:
-        ax.text(0.5, 0.5, "No Statcast batted-ball data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(
+            0.5,
+            0.5,
+            "No Statcast batted-ball data",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+        )
     return fig
 
 
@@ -72,32 +79,53 @@ def hard_hit_percentage(statcast: dict[str, Any]) -> Figure:
         ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color="#e5e7eb")
     return fig
 
-def war_history(history: list[dict[str, Any]]) -> Figure:
-    fig, ax = _figure("Year-by-Year fWAR")
-    rows = [row for row in history if row.get("Season") is not None and row.get("WAR") is not None]
-    if rows:
-        years = [int(row["Season"]) for row in rows]
-        values = [float(row["WAR"]) for row in rows]
-        ax.plot(years, values, marker="o")
-        ax.set_xlabel("Season")
-        ax.set_ylabel("fWAR")
-        ax.set_xticks(years)
-    else:
-        ax.text(0.5, 0.5, "No WAR history", ha="center", va="center", transform=ax.transAxes)
-    return fig
+
+def _trend_rows(history: list[dict[str, Any]], metric: str) -> list[tuple[str, float]]:
+    rows: list[tuple[str, float]] = []
+    for row in history:
+        period = row.get("Period", row.get("Season"))
+        value = row.get(metric)
+        if period is None or value is None:
+            continue
+        try:
+            rows.append((str(period), float(value)))
+        except (TypeError, ValueError):
+            continue
+    return rows
 
 
-def wrc_history(history: list[dict[str, Any]]) -> Figure:
-    fig, ax = _figure("wRC+ Trend")
-    rows = [row for row in history if row.get("Season") is not None and row.get("wRC+") is not None]
-    if rows:
-        years = [int(row["Season"]) for row in rows]
-        values = [float(row["wRC+"]) for row in rows]
-        ax.plot(years, values, marker="o")
+def _plot_trend(
+    history: list[dict[str, Any]], metric: str, title: str, period_label: str
+) -> Figure:
+    fig, ax = _figure(f"{title} · {period_label}")
+    rows = _trend_rows(history, metric)
+    if not rows:
+        ax.text(
+            0.5,
+            0.5,
+            f"No {metric} trend data",
+            ha="center",
+            va="center",
+            transform=ax.transAxes,
+        )
+        return fig
+
+    labels = [label for label, _value in rows]
+    values = [value for _label, value in rows]
+    x = list(range(len(labels)))
+    ax.plot(x, values, marker="o")
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=45 if len(labels) > 8 else 0, ha="right" if len(labels) > 8 else "center")
+    ax.set_xlabel("Period")
+    ax.set_ylabel(metric)
+    if metric == "wRC+":
         ax.axhline(100, linestyle="--", linewidth=1)
-        ax.set_xlabel("Season")
-        ax.set_ylabel("wRC+")
-        ax.set_xticks(years)
-    else:
-        ax.text(0.5, 0.5, "No wRC+ history", ha="center", va="center", transform=ax.transAxes)
     return fig
+
+
+def war_history(history: list[dict[str, Any]], period_label: str = "Yearly") -> Figure:
+    return _plot_trend(history, "WAR", "fWAR Trend", period_label)
+
+
+def wrc_history(history: list[dict[str, Any]], period_label: str = "Yearly") -> Figure:
+    return _plot_trend(history, "wRC+", "wRC+ Trend", period_label)
