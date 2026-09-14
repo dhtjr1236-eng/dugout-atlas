@@ -48,7 +48,7 @@ def run_value(pitches: list[dict[str, Any]]) -> Figure:
 
 
 def velocity_history(history: list[dict[str, Any]]) -> Figure:
-    """Plot Statcast monthly primary-fastball velocity trend."""
+    """Plot Statcast primary-fastball velocity trend for the active period."""
     fig, ax = _figure("Average Fastball Velocity Trend")
     rows = [
         row for row in history
@@ -56,14 +56,13 @@ def velocity_history(history: list[dict[str, Any]]) -> Figure:
     ]
     if rows:
         periods = [str(row["Period"]) for row in rows]
-        values = [float(row["Avg Velocity"]) for row in rows]
+        values = [float(row.get("Avg Velocity") or 0) for row in rows]
         ax.plot(periods, values, marker="o")
         ax.tick_params(axis="x", rotation=30)
         ax.set_ylabel("mph")
         pitch = next((str(row.get("Pitch")) for row in rows if row.get("Pitch")), "Fastball")
-        ax.set_xlabel(f"Month · {pitch}")
+        ax.set_xlabel(f"Period · {pitch}")
         if len(values) == 1:
-            # Keep a single point visually obvious instead of appearing blank.
             ax.scatter(periods, values)
     else:
         ax.text(
