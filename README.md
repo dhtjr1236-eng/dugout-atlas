@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.5**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.6**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.0.5-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.0.6-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -36,7 +36,7 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 | **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
 | **Player** | 선수 검색, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표 |
-| **Charts** | 타구 속도, Barrel%, Hard Hit%, WAR·wRC+ 추이, 구종 비율·구속·Run Value·Whiff% |
+| **Charts** | 타구 속도, Barrel%, Hard Hit%, WAR·wRC+ 연/월/일 추이, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
 
 ## 빠른 시작
@@ -69,6 +69,8 @@ py -3.12 -m venv .venv
 
 - **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
 - **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
+- **FanGraphs 최신 시즌 반영:** 현재 시즌 fWAR/wRC+는 5분 캐시를 사용하고 선택 선수도 5분마다 자동 새로고침합니다.
+- **WAR / wRC+ 기간 선택:** 타자 차트에서 Yearly / Monthly / Daily(최근 14경기)로 전환할 수 있습니다.
 - **타자·투수별 차트:** 타구 품질과 시즌 추이, 구종 특성을 시각화합니다.
 - **다크 테마:** 경기·선수·리그 화면에 일관된 어두운 테마를 적용합니다.
 - **백그라운드 데이터 조회:** 외부 데이터를 불러오는 작업을 UI 스레드와 분리합니다.
@@ -79,7 +81,7 @@ py -3.12 -m venv .venv
 | 출처 | 주요 데이터 | 갱신 방식 |
 | :--- | :--- | :--- |
 | MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위 | 라이브 경기 데이터는 캐시 없이 요청 |
-| FanGraphs | fWAR, wRC+, FIP, xFIP 등 | 현 시즌 선수 결과 1시간 캐시 |
+| FanGraphs | fWAR, wRC+, FIP, xFIP 등 | 현 시즌 선수 결과 5분 캐시, WAR/wRC+ 연·월·일 추이 지원 |
 | Baseball-Reference | bWAR, 제공되는 경우 OPS+/ERA+ | 사용자가 가져온 공식 WAR 파일 우선 |
 | Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표 | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시 |
 
@@ -117,7 +119,8 @@ py -3.12 -m venv .venv
 
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
-- [변경 기록](CHANGELOG.md): 원본 v1.0.1–v1.0.5 수정 내역
+- [변경 기록](CHANGELOG.md): v1.0.1–v1.0.6 수정 내역
+- [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·연/월/일 추이 변경 사항
 - [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 추출한 파일 62개
 - [배포 준비 기록](docs/PUBLISHING.md): 원본 버전과 업로드 커밋 메시지 구분
 
@@ -127,13 +130,13 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-원본 변경 기록에는 v1.0.5 기준 26개 테스트 통과가 기록되어 있습니다. 이는 원본의 기록이며 이번 문서 정리에서 재실행한 결과는 아닙니다.
+v1.0.6 패치 소스는 로컬 패치 환경에서 전체 문법 컴파일과 30개 회귀 테스트를 통과했습니다. GitHub 업로드 후에도 저장소의 테스트 파일을 함께 갱신했습니다.
 
 ## 프로젝트 안내
 
 ### 현재 제한사항
 
-- 이번 공개 준비에서 Python 파일 46개의 문법과 앱·패키지 버전 일치를 확인했습니다. 전체 테스트, GUI 동작 및 실시간 외부 데이터 정확성은 이번 환경에서 재검증하지 못했습니다.
+- 실시간 외부 데이터 정확성은 FanGraphs/MLB/Savant 각 제공처의 실제 갱신 시점과 접근 정책에 영향을 받습니다.
 - B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
 - 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
 - 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
