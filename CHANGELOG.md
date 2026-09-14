@@ -2,13 +2,12 @@
 
 ## 1.0.6
 
-- FanGraphs current-season fWAR/wRC+ cache reduced to five minutes.
-- Selected player automatically refreshes every five minutes.
-- Added Yearly / Monthly / Daily period selection for batter WAR and wRC+ trend charts.
-- Added exact FanGraphs date-range trend queries and recent-14-game daily mode.
-- Added request queueing for rapid period changes.
+- FanGraphs current-season fWAR / wRC+ now use a 5-minute cache and selected players refresh every 5 minutes.
+- WAR / wRC+ batter charts now support Yearly / Monthly / Daily period selection.
+- Monthly mode uses calendar-month FanGraphs date ranges; Daily mode uses the most recent 14 games.
+- Period data is loaded lazily and rapid period changes queue the latest selection correctly.
 - FanGraphs cache namespace bumped to `fangraphs_v6`.
-- Added dedicated v1.0.6 FanGraphs regression tests.
+- Added v1.0.6 regression coverage and patch notes.
 
 ## 1.0.5 — Dugout Atlas 브랜딩 정리
 
