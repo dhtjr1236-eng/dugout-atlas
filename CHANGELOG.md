@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10
+
+- Added a new `Compare` tab beside Player for side-by-side player comparisons.
+- Compare supports two independent autocomplete searches and displays role-aware MLB/FanGraphs/B-Ref/Statcast metrics for hitter-vs-hitter or pitcher-vs-pitcher comparisons.
+- Mixed hitter/pitcher comparisons fall back to a common metric set instead of mislabeling role-specific stats.
+- Added pitcher Statcast period selection: Yearly / Monthly / Daily.
+- Pitcher Monthly mode uses the latest calendar month in the selected season that contains an actual Statcast appearance; Daily uses the latest actual appearance date, avoiding empty off-day panels.
+- Monthly/Daily pitcher Statcast values are aggregated from Baseball Savant pitch-level rows and update the Statcast cards, pitch arsenal, pitch usage, Run Value, Whiff%, and velocity charts together.
+- Period data is lazy-loaded off the UI thread and rapid period changes queue the most recent selection.
+- Added v1.10 regression coverage for pitcher period slicing and Compare role contracts.
+
 ## 1.0.6
 
 - FanGraphs current-season fWAR / wRC+ now use a 5-minute cache and selected players refresh every 5 minutes.
