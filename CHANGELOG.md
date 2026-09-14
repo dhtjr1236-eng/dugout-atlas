@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.6
+
+- FanGraphs current-season fWAR/wRC+ cache reduced to five minutes.
+- Selected player automatically refreshes every five minutes.
+- Added Yearly / Monthly / Daily period selection for batter WAR and wRC+ trend charts.
+- Added exact FanGraphs date-range trend queries and recent-14-game daily mode.
+- Added request queueing for rapid period changes.
+- FanGraphs cache namespace bumped to `fangraphs_v6`.
+- Added dedicated v1.0.6 FanGraphs regression tests.
+
 ## 1.0.5 — Dugout Atlas 브랜딩 정리
 
 - 앱 제목, 상단 이름, 오류 안내와 설치 메시지를 Dugout Atlas로 통일했습니다.
