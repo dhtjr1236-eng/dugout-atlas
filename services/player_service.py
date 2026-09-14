@@ -132,3 +132,16 @@ class PlayerService:
                         f"{name}: {message}" for message in source_errors if message
                     )
         return bundle
+
+    def get_fangraphs_trend(
+        self,
+        player_id: int,
+        full_name: str,
+        season: int,
+        pitcher: bool,
+        period: str,
+    ) -> list[dict[str, Any]]:
+        """Load FanGraphs WAR/wRC+ trend data for the requested granularity."""
+        return self.fangraphs.get_period_history(
+            player_id, full_name, season, pitcher, period
+        )
