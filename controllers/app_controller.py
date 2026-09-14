@@ -37,6 +37,9 @@ class AppController(QObject):
         self._player_busy = False
         self._trend_busy = False
         self._pending_trend_period: str | None = None
+        self._pitcher_statcast_busy = False
+        self._pending_pitcher_statcast_period: str | None = None
+        self._compare_request_ids: dict[int, int] = {0: 0, 1: 0}
 
         self.refresh_timer = QTimer(self)
         self.refresh_timer.setInterval(30_000)
@@ -54,6 +57,11 @@ class AppController(QObject):
         self.window.team_stats_requested.connect(self.load_team_stats)
         self.window.bref_import_requested.connect(self.import_bref_file)
         self.window.player_view.trend_period_changed.connect(self.load_player_trend)
+        self.window.player_view.pitcher_statcast_period_changed.connect(
+            self.load_pitcher_statcast_period
+        )
+        self.window.compare_view.search_requested.connect(self.search_compare_players)
+        self.window.compare_view.player_selected.connect(self.load_compare_player)
 
     def start(self) -> None:
         self.load_schedule(date.today().isoformat())
@@ -164,6 +172,39 @@ class AppController(QObject):
 
         self._run(task, success, on_error=lambda _message: None)
 
+    def search_compare_players(self, slot: int, query: str) -> None:
+        expected = query.strip()
+
+        async def task() -> tuple[int, str, list[dict[str, Any]]]:
+            return slot, expected, await self.players.search(expected)
+
+        def success(payload: tuple[int, str, list[dict[str, Any]]]) -> None:
+            result_slot, original, rows = payload
+            if self.window.compare_view.current_query(result_slot) == original:
+                self.window.compare_view.update_search_results(result_slot, rows)
+
+        self._run(task, success, on_error=lambda _message: None)
+
+    def load_compare_player(self, slot: int, player_id: int) -> None:
+        if slot not in self._compare_request_ids:
+            return
+        self._compare_request_ids[slot] += 1
+        request_id = self._compare_request_ids[slot]
+        season = self.season
+        self.window.compare_view.set_loading(slot, player_id)
+        self.window.set_busy(f"Loading comparison player {player_id}…")
+
+        async def task() -> Any:
+            return await self.players.get_bundle(player_id, season)
+
+        def success(bundle: Any) -> None:
+            if self._compare_request_ids.get(slot) != request_id:
+                return
+            self.window.compare_view.set_player(slot, bundle)
+            self.window.set_busy(f"Compare loaded: {bundle.profile.full_name}")
+
+        self._run(task, success)
+
     def load_player(self, player_id: int) -> None:
         if self._player_busy and self.selected_player_id == player_id:
             return
@@ -181,9 +222,14 @@ class AppController(QObject):
                 return
             self.window.show_player(bundle)
             self.window.set_busy(f"Player data loaded: {bundle.profile.full_name}")
-            period = self.window.player_view.current_trend_period
-            if period != "yearly" and not bundle.profile.is_pitcher:
-                self.load_player_trend(period)
+            if bundle.profile.is_pitcher:
+                period = self.window.player_view.current_pitcher_statcast_period
+                if period != "yearly":
+                    self.load_pitcher_statcast_period(period)
+            else:
+                period = self.window.player_view.current_trend_period
+                if period != "yearly":
+                    self.load_player_trend(period)
 
         def failure(message: str) -> None:
             self._player_busy = False
@@ -240,6 +286,63 @@ class AppController(QObject):
             self._trend_busy = False
             if self.selected_player_id == player_id:
                 self.window.player_view.set_trend(period, [])
+                self._default_error(message)
+            run_pending()
+
+        self._run(task, success, on_error=failure)
+
+    def load_pitcher_statcast_period(self, period: str) -> None:
+        bundle = self.window.player_view.current_bundle
+        if (
+            bundle is None
+            or not bundle.profile.is_pitcher
+            or self.selected_player_id != bundle.profile.id
+        ):
+            return
+        if period == "yearly":
+            self.window.player_view.set_pitcher_statcast_period(
+                "yearly",
+                {
+                    "period": "yearly",
+                    "label": str(self.season),
+                    "statcast": bundle.statcast,
+                    "pitch_table": bundle.pitch_table,
+                    "velocity_history": bundle.velocity_history,
+                },
+            )
+            return
+        if self._pitcher_statcast_busy:
+            self._pending_pitcher_statcast_period = period
+            self.window.player_view.set_pitcher_statcast_loading(period)
+            return
+
+        player_id = bundle.profile.id
+        season = self.season
+        self._pitcher_statcast_busy = True
+        self._pending_pitcher_statcast_period = None
+        self.window.player_view.set_pitcher_statcast_loading(period)
+
+        def run_pending() -> None:
+            pending = self._pending_pitcher_statcast_period
+            self._pending_pitcher_statcast_period = None
+            if pending and pending != period:
+                self.load_pitcher_statcast_period(pending)
+
+        def task() -> dict[str, Any]:
+            return self.players.get_pitcher_statcast_period(player_id, season, period)
+
+        def success(payload: dict[str, Any]) -> None:
+            self._pitcher_statcast_busy = False
+            if self.selected_player_id == player_id:
+                self.window.player_view.set_pitcher_statcast_period(period, payload)
+                self.window.set_busy(
+                    f"Pitcher Statcast {period} loaded · {payload.get('label', '')}"
+                )
+            run_pending()
+
+        def failure(message: str) -> None:
+            self._pitcher_statcast_busy = False
+            if self.selected_player_id == player_id:
                 self._default_error(message)
             run_pending()
 

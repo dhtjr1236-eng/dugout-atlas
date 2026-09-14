@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
 from config.settings import SETTINGS
 from models.game import GameDetail, GameSummary
 from models.player import PlayerBundle
+from ui.compare_view import CompareView
 from ui.game_view import GameView
 from ui.league_view import LeagueView
 from ui.lineup_view import LineupView
@@ -97,10 +98,12 @@ class MainWindow(QMainWindow):
         self.game_view = GameView()
         self.lineup_view = LineupView()
         self.player_view = PlayerView()
+        self.compare_view = CompareView()
         self.league_view = LeagueView()
         self.tabs.addTab(self.game_view, "Gameday")
         self.tabs.addTab(self.lineup_view, "Lineups")
         self.tabs.addTab(self.player_view, "Player")
+        self.tabs.addTab(self.compare_view, "Compare")
         self.tabs.addTab(self.league_view, "Standings")
         splitter.addWidget(self.tabs)
         splitter.setSizes([330, 1110])
@@ -187,7 +190,6 @@ class MainWindow(QMainWindow):
 
     def set_busy(self, message: str) -> None:
         self.statusBar().showMessage(message)
-
 
     def _open_bref_downloads(self) -> None:
         QDesktopServices.openUrl(QUrl("https://www.baseball-reference.com/data/"))

@@ -33,17 +33,24 @@ from ui.widgets.metric_grid import MetricGrid
 
 class PlayerView(QWidget):
     trend_period_changed = pyqtSignal(str)
+    pitcher_statcast_period_changed = pyqtSignal(str)
 
     PERIOD_LABELS = {
         "yearly": "Yearly · last 6 seasons",
         "monthly": "Monthly · current season",
         "daily": "Daily · recent 14 games",
     }
+    PITCHER_STATCAST_LABELS = {
+        "yearly": "Yearly · selected season",
+        "monthly": "Monthly · latest active month",
+        "daily": "Daily · latest appearance",
+    }
 
     def __init__(self) -> None:
         super().__init__()
         self._bundle: PlayerBundle | None = None
         self._trend_rows: list[dict[str, Any]] = []
+        self._pitcher_period_payload: dict[str, Any] = {}
 
         root = QVBoxLayout(self)
         scroll = QScrollArea()
@@ -63,6 +70,26 @@ class PlayerView(QWidget):
             "FanGraphs / Baseball Reference"
         )
         self.statcast_box, self.statcast_grid = self._metric_box("Statcast")
+
+        self.pitcher_statcast_controls = QWidget()
+        pitcher_statcast_layout = QHBoxLayout(self.pitcher_statcast_controls)
+        pitcher_statcast_layout.setContentsMargins(0, 0, 0, 0)
+        pitcher_statcast_layout.addWidget(QLabel("Pitcher Statcast period:"))
+        self.pitcher_statcast_period = QComboBox()
+        self.pitcher_statcast_period.addItem("Yearly", "yearly")
+        self.pitcher_statcast_period.addItem("Monthly", "monthly")
+        self.pitcher_statcast_period.addItem("Daily", "daily")
+        self.pitcher_statcast_period.setToolTip(
+            "Yearly: selected season · Monthly: latest month with a Statcast appearance · "
+            "Daily: latest Statcast appearance date"
+        )
+        pitcher_statcast_layout.addWidget(self.pitcher_statcast_period)
+        self.pitcher_statcast_status = QLabel(self.PITCHER_STATCAST_LABELS["yearly"])
+        self.pitcher_statcast_status.setObjectName("subtitle")
+        pitcher_statcast_layout.addWidget(self.pitcher_statcast_status)
+        pitcher_statcast_layout.addStretch()
+        self.layout.addWidget(self.pitcher_statcast_controls)
+
         self.defense_box, self.defense_grid = self._metric_box("Defense")
 
         self.pitch_box = QGroupBox("Pitch Arsenal")
@@ -125,8 +152,12 @@ class PlayerView(QWidget):
         self.pitch_box.hide()
         self.defense_box.hide()
         self.trend_controls.hide()
+        self.pitcher_statcast_controls.hide()
 
         self.trend_period.currentIndexChanged.connect(self._on_trend_period_changed)
+        self.pitcher_statcast_period.currentIndexChanged.connect(
+            self._on_pitcher_statcast_period_changed
+        )
 
     def _metric_box(self, title: str) -> tuple[QGroupBox, MetricGrid]:
         box = QGroupBox(title)
@@ -146,7 +177,11 @@ class PlayerView(QWidget):
         previous_id = self._bundle.profile.id if self._bundle is not None else None
         keep_period = previous_id == bundle.profile.id
         selected_period = self.current_trend_period if keep_period else "yearly"
+        selected_pitcher_period = (
+            self.current_pitcher_statcast_period if keep_period else "yearly"
+        )
         existing_trend = list(self._trend_rows) if keep_period else []
+        existing_pitcher_payload = dict(self._pitcher_period_payload) if keep_period else {}
 
         self._bundle = bundle
         profile = bundle.profile
@@ -159,8 +194,30 @@ class PlayerView(QWidget):
 
         if profile.is_pitcher:
             self.trend_controls.hide()
-            self._show_pitcher(bundle)
+            self.pitcher_statcast_controls.show()
+            self.pitcher_statcast_period.blockSignals(True)
+            index = self.pitcher_statcast_period.findData(selected_pitcher_period)
+            self.pitcher_statcast_period.setCurrentIndex(max(index, 0))
+            self.pitcher_statcast_period.blockSignals(False)
+            if selected_pitcher_period == "yearly" or not existing_pitcher_payload:
+                self._pitcher_period_payload = {}
+                self.pitcher_statcast_status.setText(
+                    self.PITCHER_STATCAST_LABELS["yearly"]
+                )
+                self._show_pitcher(bundle)
+            else:
+                self._pitcher_period_payload = existing_pitcher_payload
+                label = str(
+                    existing_pitcher_payload.get("label")
+                    or self.PITCHER_STATCAST_LABELS[selected_pitcher_period]
+                )
+                self.pitcher_statcast_status.setText(
+                    f"{selected_pitcher_period.title()} · {label}"
+                )
+                self._show_pitcher(bundle, existing_pitcher_payload)
         else:
+            self.pitcher_statcast_controls.hide()
+            self._pitcher_period_payload = {}
             self.trend_controls.show()
             self.trend_period.blockSignals(True)
             index = self.trend_period.findData(selected_period)
@@ -192,6 +249,10 @@ class PlayerView(QWidget):
     def current_trend_period(self) -> str:
         return str(self.trend_period.currentData() or "yearly")
 
+    @property
+    def current_pitcher_statcast_period(self) -> str:
+        return str(self.pitcher_statcast_period.currentData() or "yearly")
+
     def set_trend_loading(self, period: str) -> None:
         if self.current_trend_period != period:
             return
@@ -205,6 +266,26 @@ class PlayerView(QWidget):
         self.trend_status.setText(self.PERIOD_LABELS.get(period, period))
         if not self._bundle.profile.is_pitcher:
             self._render_batter_charts(self._bundle)
+
+    def set_pitcher_statcast_loading(self, period: str) -> None:
+        if self.current_pitcher_statcast_period != period:
+            return
+        label = self.PITCHER_STATCAST_LABELS.get(period, period)
+        self.pitcher_statcast_status.setText(f"Loading Statcast {label.lower()}…")
+
+    def set_pitcher_statcast_period(
+        self, period: str, payload: dict[str, Any]
+    ) -> None:
+        if (
+            self._bundle is None
+            or not self._bundle.profile.is_pitcher
+            or self.current_pitcher_statcast_period != period
+        ):
+            return
+        self._pitcher_period_payload = payload
+        label = str(payload.get("label") or self.PITCHER_STATCAST_LABELS.get(period, period))
+        self.pitcher_statcast_status.setText(f"{period.title()} · {label}")
+        self._show_pitcher(self._bundle, payload)
 
     def _on_trend_period_changed(self) -> None:
         if self._bundle is None or self._bundle.profile.is_pitcher:
@@ -221,6 +302,18 @@ class PlayerView(QWidget):
             return
         self.set_trend_loading(period)
         self.trend_period_changed.emit(period)
+
+    def _on_pitcher_statcast_period_changed(self) -> None:
+        if self._bundle is None or not self._bundle.profile.is_pitcher:
+            return
+        period = self.current_pitcher_statcast_period
+        if period == "yearly":
+            self._pitcher_period_payload = {}
+            self.pitcher_statcast_status.setText(self.PITCHER_STATCAST_LABELS[period])
+            self._show_pitcher(self._bundle)
+            return
+        self.set_pitcher_statcast_loading(period)
+        self.pitcher_statcast_period_changed.emit(period)
 
     def _show_batter(self, bundle: PlayerBundle) -> None:
         basic = bundle.basic
@@ -295,11 +388,27 @@ class PlayerView(QWidget):
             ]
         )
 
-    def _show_pitcher(self, bundle: PlayerBundle) -> None:
+    def _show_pitcher(
+        self, bundle: PlayerBundle, period_payload: dict[str, Any] | None = None
+    ) -> None:
         basic = bundle.basic
         fg = bundle.fangraphs
         bref = bundle.bref
-        sc = bundle.statcast
+        sc = (
+            period_payload.get("statcast", {})
+            if period_payload is not None
+            else bundle.statcast
+        )
+        pitch_rows = (
+            period_payload.get("pitch_table", [])
+            if period_payload is not None
+            else bundle.pitch_table
+        )
+        velocity_rows = (
+            period_payload.get("velocity_history", [])
+            if period_payload is not None
+            else bundle.velocity_history
+        )
         self.defense_box.hide()
         self.pitch_box.show()
         batters_faced = self._number(basic.get("battersFaced"))
@@ -332,15 +441,16 @@ class PlayerView(QWidget):
                 ("xwOBA", sc.get("xwOBA"), False),
                 ("Whiff %", sc.get("Whiff %"), True),
                 ("Chase %", sc.get("Chase %"), True),
+                ("Avg EV Allowed", sc.get("Average Exit Velocity Allowed"), False),
             ]
         )
-        self._fill_pitch_table(bundle.pitch_table)
+        self._fill_pitch_table(pitch_rows)
         self._set_charts(
             [
-                ("Pitch Usage", pitch_usage(bundle.pitch_table)),
-                ("Run Value", run_value(bundle.pitch_table)),
-                ("Velocity", velocity_history(bundle.velocity_history)),
-                ("Whiff %", whiff_by_pitch(bundle.pitch_table)),
+                ("Pitch Usage", pitch_usage(pitch_rows)),
+                ("Run Value", run_value(pitch_rows)),
+                ("Velocity", velocity_history(velocity_rows)),
+                ("Whiff %", whiff_by_pitch(pitch_rows)),
             ]
         )
 
