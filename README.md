@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.0.6**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.10**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.0.6-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.10-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -36,7 +36,8 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 | **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
 | **Player** | 선수 검색, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표 |
-| **Charts** | 타구 속도, Barrel%, Hard Hit%, WAR·wRC+ 연/월/일 추이, 구종 비율·구속·Run Value·Whiff% |
+| **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교 |
+| **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
 
 ## 빠른 시작
@@ -69,10 +70,13 @@ py -3.12 -m venv .venv
 
 - **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
 - **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
+- **선수 비교:** `Compare` 탭에서 Player A / Player B를 각각 자동완성 검색해 타자끼리 또는 투수끼리 핵심 지표를 바로 비교합니다. 타자-투수 혼합 비교는 공통 지표만 보여 잘못된 역할별 지표 비교를 피합니다.
 - **FanGraphs 최신 시즌 반영:** 현재 시즌 fWAR/wRC+는 5분 캐시를 사용하고 선택 선수도 5분마다 자동 새로고침합니다.
-- **WAR / wRC+ 기간 선택:** 타자 차트에서 Yearly / Monthly / Daily(최근 14경기)로 전환할 수 있습니다.
+- **타자 WAR / wRC+ 기간 선택:** 타자 차트에서 Yearly / Monthly / Daily(최근 14경기)로 전환할 수 있습니다.
+- **투수 Statcast 기간 선택:** 투수 화면에서 Yearly / Monthly / Daily로 전환할 수 있습니다. Monthly는 해당 시즌의 가장 최근 실제 등판 월, Daily는 가장 최근 실제 등판일을 기준으로 Savant pitch-level 데이터를 다시 집계합니다.
+- **투수 기간별 연동:** 기간 변경 시 Statcast 카드뿐 아니라 Pitch Arsenal, Pitch Usage, Run Value, Whiff%, Velocity 차트도 같은 구간으로 함께 바뀝니다.
 - **타자·투수별 차트:** 타구 품질과 시즌 추이, 구종 특성을 시각화합니다.
-- **다크 테마:** 경기·선수·리그 화면에 일관된 어두운 테마를 적용합니다.
+- **다크 테마:** 경기·선수·비교·리그 화면에 일관된 어두운 테마를 적용합니다.
 - **백그라운드 데이터 조회:** 외부 데이터를 불러오는 작업을 UI 스레드와 분리합니다.
 - **출처 표시:** 선수 화면에서 데이터 출처, 조회 시각과 소스별 상태를 확인할 수 있습니다.
 
@@ -81,9 +85,9 @@ py -3.12 -m venv .venv
 | 출처 | 주요 데이터 | 갱신 방식 |
 | :--- | :--- | :--- |
 | MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위 | 라이브 경기 데이터는 캐시 없이 요청 |
-| FanGraphs | fWAR, wRC+, FIP, xFIP 등 | 현 시즌 선수 결과 5분 캐시, WAR/wRC+ 연·월·일 추이 지원 |
+| FanGraphs | fWAR, wRC+, FIP, xFIP 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
 | Baseball-Reference | bWAR, 제공되는 경우 OPS+/ERA+ | 사용자가 가져온 공식 WAR 파일 우선 |
-| Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표 | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시 |
+| Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표 | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시, 투수 Yearly/Monthly/Daily 구간 지원 |
 
 과거 시즌 외부 통계는 기본 30일 캐시를 사용합니다. 첫 선수 조회는 시즌 데이터량에 따라 시간이 걸릴 수 있습니다. 사이트의 갱신 시점과 외부 요청 상태에 따라 일부 값은 늦게 반영되거나 `—`로 표시될 수 있습니다.
 
@@ -100,7 +104,7 @@ py -3.12 -m venv .venv
 ```text
 .
 ├── main.py                 # 앱 진입점
-├── ui/                     # 경기·선수·라인업·리그 화면
+├── ui/                     # 경기·선수·비교·라인업·리그 화면
 ├── controllers/            # 화면 이벤트와 데이터 요청 연결
 ├── services/               # 외부 데이터 조회·정규화·집계
 ├── models/                 # 경기·선수·순위 데이터 모델
@@ -119,9 +123,10 @@ py -3.12 -m venv .venv
 
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
-- [변경 기록](CHANGELOG.md): v1.0.1–v1.0.6 수정 내역
-- [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·연/월/일 추이 변경 사항
-- [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 추출한 파일 62개
+- [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
+- [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·타자 연/월/일 추이 변경 사항
+- [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 원본 패키지 파일 목록
 - [배포 준비 기록](docs/PUBLISHING.md): 원본 버전과 업로드 커밋 메시지 구분
 
 설치 후 테스트를 실행하려면:
@@ -130,7 +135,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.0.6 패치 소스는 로컬 패치 환경에서 전체 문법 컴파일과 30개 회귀 테스트를 통과했습니다. GitHub 업로드 후에도 저장소의 테스트 파일을 함께 갱신했습니다.
+v1.10에는 Compare 역할 분기와 투수 Monthly/Daily Statcast 슬라이싱에 대한 회귀 테스트가 추가되어 있습니다.
 
 ## 프로젝트 안내
 
@@ -138,6 +143,7 @@ v1.0.6 패치 소스는 로컬 패치 환경에서 전체 문법 컴파일과 30
 
 - 실시간 외부 데이터 정확성은 FanGraphs/MLB/Savant 각 제공처의 실제 갱신 시점과 접근 정책에 영향을 받습니다.
 - B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
+- 투수 Monthly/Daily의 `xERA`는 Savant가 임의 날짜 구간용 공식 xERA leaderboard 값을 제공하지 않는 경우 `—`로 둘 수 있으며, 다른 기간 지표를 xERA로 가장하지 않습니다.
 - 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
 - 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
 
