@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.10**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.11**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.10-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.11-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -35,7 +35,7 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 | :--- | :--- |
 | **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
-| **Player** | 선수 검색, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표 |
+| **Player** | 선수 검색, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running(Sprint Speed/SB/CS/도루 성공률) |
 | **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교 |
 | **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
@@ -70,6 +70,8 @@ py -3.12 -m venv .venv
 
 - **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
 - **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
+- **Running 분석:** 타자 Player 화면의 Defense 아래에 Running 패널을 추가했습니다. Baseball Savant 공식 Sprint Speed를 `ft/s` 단위로 표시하고, FanGraphs의 SB·CS와 `SB / (SB + CS)` 도루 성공률을 함께 표시합니다.
+- **수비 OAA 소스 유지:** Defense의 OAA는 Baseball Savant 공식 OAA 리더보드 값만 사용합니다. v1.10.2의 별도 FanGraphs OAA 카드는 v1.11에서 제거했습니다.
 - **선수 비교:** `Compare` 탭에서 Player A / Player B를 각각 자동완성 검색해 타자끼리 또는 투수끼리 핵심 지표를 바로 비교합니다. 타자-투수 혼합 비교는 공통 지표만 보여 잘못된 역할별 지표 비교를 피합니다.
 - **FanGraphs 최신 시즌 반영:** 현재 시즌 fWAR/wRC+는 5분 캐시를 사용하고 선택 선수도 5분마다 자동 새로고침합니다.
 - **타자 WAR / wRC+ 기간 선택:** 타자 차트에서 Yearly / Monthly / Daily(최근 14경기)로 전환할 수 있습니다.
@@ -85,9 +87,9 @@ py -3.12 -m venv .venv
 | 출처 | 주요 데이터 | 갱신 방식 |
 | :--- | :--- | :--- |
 | MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위 | 라이브 경기 데이터는 캐시 없이 요청 |
-| FanGraphs | fWAR, wRC+, FIP, xFIP 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
+| FanGraphs | fWAR, wRC+, FIP, xFIP, SB, CS 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
 | Baseball-Reference | bWAR, 제공되는 경우 OPS+/ERA+ | 사용자가 가져온 공식 WAR 파일 우선 |
-| Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표 | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시, 투수 Yearly/Monthly/Daily 구간 지원 |
+| Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표·Sprint Speed | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시, 투수 Yearly/Monthly/Daily 구간 지원 |
 
 과거 시즌 외부 통계는 기본 30일 캐시를 사용합니다. 첫 선수 조회는 시즌 데이터량에 따라 시간이 걸릴 수 있습니다. 사이트의 갱신 시점과 외부 요청 상태에 따라 일부 값은 늦게 반영되거나 `—`로 표시될 수 있습니다.
 
@@ -124,6 +126,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
 - [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
 - [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·타자 연/월/일 추이 변경 사항
 - [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 원본 패키지 파일 목록
@@ -135,7 +138,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.10에는 Compare 역할 분기와 투수 Monthly/Daily Statcast 슬라이싱에 대한 회귀 테스트가 추가되어 있습니다.
+v1.11에는 Baseball Savant Sprint Speed 수집, FanGraphs SB/CS 및 도루 성공률 계산에 대한 회귀 테스트가 추가되어 있습니다.
 
 ## 프로젝트 안내
 
@@ -144,6 +147,7 @@ v1.10에는 Compare 역할 분기와 투수 Monthly/Daily Statcast 슬라이싱�
 - 실시간 외부 데이터 정확성은 FanGraphs/MLB/Savant 각 제공처의 실제 갱신 시점과 접근 정책에 영향을 받습니다.
 - B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
 - 투수 Monthly/Daily의 `xERA`는 Savant가 임의 날짜 구간용 공식 xERA leaderboard 값을 제공하지 않는 경우 `—`로 둘 수 있으며, 다른 기간 지표를 xERA로 가장하지 않습니다.
+- Sprint Speed는 Baseball Savant 리더보드에 해당 시즌 선수 행이 존재할 때 표시됩니다. 제공처가 값을 제공하지 않으면 `—`로 유지합니다.
 - 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
 - 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
 
