@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.10.1
+
+- Hardened OAA sourcing so the app reads OAA only from Baseball Savant's official `Outs Above Average` leaderboard using `View: Fielder` with All Positions.
+- Removed the historical pybaseball OAA fallback; if the official leaderboard is unavailable, OAA is shown as unavailable instead of using a stale or derived value.
+- Preserved the leaderboard's decimal OAA value as a float instead of coercing it to an integer.
+- Catchers now also attempt the same official Fielder leaderboard lookup rather than being skipped before the request.
+- `Runs Prevented` remains a separate field and can never fill OAA.
+- Defense cache namespace bumped to `statcast_defense_v7` so older cached OAA values cannot mask the new source policy.
+- Added dedicated regression coverage for exact leaderboard parameters, decimal OAA, no fallback behavior, and catcher lookup.
+
 ## 1.10
 
 - Added a new `Compare` tab beside Player for side-by-side player comparisons.
