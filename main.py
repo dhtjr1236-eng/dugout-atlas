@@ -8,12 +8,14 @@ from config.logging_config import configure_logging
 from config.settings import QSS_PATH, SETTINGS, ensure_runtime_dirs
 from controllers.app_controller import AppController
 from database.sqlite_manager import SQLiteManager
+from services.fangraphs_fielding import install_fangraphs_oaa_support
 from ui.main_window import MainWindow
 
 
 def main() -> int:
     ensure_runtime_dirs()
     configure_logging()
+    install_fangraphs_oaa_support()
     app = QApplication(sys.argv)
     app.setApplicationName(SETTINGS.app_name)
     app.setApplicationVersion(SETTINGS.app_version)
