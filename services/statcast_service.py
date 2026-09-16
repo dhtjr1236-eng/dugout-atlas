@@ -73,7 +73,6 @@ class StatcastService:
             end = f"{season}-11-30"
         return start, end
 
-
     @staticmethod
     def _percent_points(value: Any) -> Any:
         if value is None:
@@ -204,10 +203,6 @@ class StatcastService:
             result["Average Exit Velocity"] = float(bbe.mean())
             result["Max Exit Velocity"] = float(bbe.max())
             result["Hard Hit %"] = float((bbe >= 95.0).mean() * 100)
-            # pybaseball/Statcast CSVs do not consistently expose a dedicated
-            # ``barrel`` field. Savant documents launch_speed_angle == 6 as a
-            # Barrel, so use that canonical field first and support ``barrel``
-            # only as a compatibility fallback.
             if "launch_speed_angle" in frame.columns:
                 quality = pd.to_numeric(
                     frame.loc[bbe_mask, "launch_speed_angle"], errors="coerce"
@@ -253,7 +248,6 @@ class StatcastService:
         frame = pb.statcast_pitcher(start, end, int(player_id))
         result = self._aggregate_pitcher(frame)
 
-        # Savant season expected-stats leaderboard is the canonical xERA/xBA/xSLG source.
         try:
             expected = self._savant_csv(
                 "https://baseballsavant.mlb.com/leaderboard/expected_statistics",
@@ -360,8 +354,6 @@ class StatcastService:
                     "Avg Velocity": float(velo.mean()) if velo.notna().any() else None,
                     "Max Velocity": float(velo.max()) if velo.notna().any() else None,
                     "Spin Rate": float(spin.mean()) if spin.notna().any() else None,
-                    # delta_run_exp is from the batting team's perspective; invert it
-                    # to display pitcher-positive run prevention.
                     "Run Value": float(-delta.sum()) if delta.notna().any() else None,
                     "Whiff %": self._pitch_whiff_percent(group),
                 }
@@ -370,15 +362,8 @@ class StatcastService:
         self.db.set_pitch_stats(player_id, season, rows)
         return rows
 
-
-
     def get_velocity_history(self, player_id: int, season: int) -> list[dict[str, Any]]:
-        """Return a monthly primary-fastball velocity trend from Statcast.
-
-        This intentionally does not depend on FanGraphs history: a FanGraphs
-        outage must not blank the Velocity tab. The most-used fastball-family
-        pitch (FF/SI/FC) is selected, with all pitches as a last-resort fallback.
-        """
+        """Return a monthly primary-fastball velocity trend from Statcast."""
         cached = self.db.get_player_stats(
             player_id, "statcast_velocity_v3", season, "velocity_history", source_ttl_days(season, savant=True)
         )
@@ -465,24 +450,28 @@ class StatcastService:
             return self._normalize_leaderboard_columns(frame)
 
     def get_defense(self, player_id: int, season: int, position: str) -> dict[str, Any]:
-        """Return current Baseball Savant defensive metrics for a fielder.
+        """Return Baseball Savant defensive metrics for a fielder.
 
-        OAA is read from the *all positions* Fielder leaderboard and only from
-        the actual OAA column. Runs Prevented is a different metric and must
-        never be substituted for OAA. Current-season Savant defense uses a
-        one-hour cache; historical seasons retain the normal long cache.
+        OAA is sourced strictly from Baseball Savant's official
+        Outs Above Average leaderboard in View=Fielder / All Positions mode.
+        Player-page values, pitch-level re-aggregation, Runs Prevented, and
+        pybaseball OAA fallbacks are never used as OAA. The numeric value from
+        the leaderboard is preserved as a float, including decimal precision.
         """
         ttl_days = source_ttl_days(season, savant=True)
+        cache_source = "statcast_defense_v7"
         cached = self.db.get_player_stats(
-            player_id, "statcast_defense_v6", season, "defense", ttl_days
+            player_id, cache_source, season, "defense", ttl_days
         )
         if cached:
             return cached
 
         result: dict[str, Any] = {}
         sources: list[dict[str, str]] = []
-        # Official Baseball Savant OAA leaderboard. Always request ALL positions
-        # so multi-position players match the number shown on the main leaderboard.
+        defense_errors: list[str] = []
+
+        # Canonical OAA source: official Savant OAA leaderboard, View=Fielder,
+        # All Positions. Never substitute player pages or another metric.
         oaa_url = "https://baseballsavant.mlb.com/leaderboard/outs_above_average"
         oaa_params: dict[str, Any] = {
             "type": "Fielder",
@@ -492,74 +481,66 @@ class StatcastService:
             "team": "",
             "range": "year",
             "min": 1,
-            # Savant uses an empty position query value for the UI's “All”.
-            # pybaseball normalizes ALL to the same endpoint representation.
             "pos": "",
             "roles": "",
             "viz": "hide",
             "csv": "true",
         }
-        defense_errors: list[str] = []
-        if position.upper() != "C":
-            try:
-                # For the active season, never fall back to pybaseball's cached
-                # OAA response. A stale number is worse than a visible source
-                # failure. Historical seasons may safely use the wrapper fallback.
-                fallback = None
-                if season != date.today().year:
-                    fallback = lambda: self._pybaseball().statcast_outs_above_average(
-                        season, "ALL", min_att=1, view="Fielder"
-                    )
-                frame = self._savant_csv(oaa_url, oaa_params, fallback=fallback)
-                row = self._find_player(frame, player_id)
-                if row is None:
+        try:
+            # No fallback by design. If the official leaderboard is unavailable,
+            # show OAA as unavailable rather than returning a stale/derived value.
+            frame = self._savant_csv(oaa_url, oaa_params, fallback=None)
+            row = self._find_player(frame, player_id)
+            if row is None:
+                defense_errors.append(
+                    "Baseball Savant OAA leaderboard: no matching MLBAM player row"
+                )
+            else:
+                raw = row_to_dict(row)
+                oaa_value = first_existing(
+                    raw,
+                    (
+                        "outs_above_average",
+                        "n_outs_above_average",
+                        "oaa",
+                    ),
+                )
+                if oaa_value is None:
                     defense_errors.append(
-                        "Baseball Savant OAA: no matching MLBAM player row"
+                        "Baseball Savant OAA leaderboard: response did not contain an OAA column"
                     )
                 else:
-                    raw = row_to_dict(row)
-                    # Strict mapping: OAA must come only from the leaderboard's
-                    # OAA field. Runs Prevented is related, but not interchangeable.
-                    oaa_value = first_existing(
-                        raw,
-                        (
-                            "outs_above_average",
-                            "n_outs_above_average",
-                            "oaa",
-                        ),
-                    )
-                    if oaa_value is None:
+                    try:
+                        # Keep Savant's decimal value; do not round to an integer.
+                        result["OAA"] = float(oaa_value)
+                    except (TypeError, ValueError):
                         defense_errors.append(
-                            "Baseball Savant OAA: response did not contain an OAA column"
+                            f"Baseball Savant OAA leaderboard: invalid OAA value {oaa_value!r}"
                         )
-                    else:
-                        try:
-                            result["OAA"] = float(oaa_value)
-                        except (TypeError, ValueError):
-                            result["OAA"] = oaa_value
-                    runs_prevented = first_existing(
-                        raw, ("fielding_runs_prevented", "runs_prevented")
-                    )
-                    if runs_prevented is not None:
-                        try:
-                            result["Runs Prevented"] = float(runs_prevented)
-                        except (TypeError, ValueError):
-                            result["Runs Prevented"] = runs_prevented
 
-                    exact_url = f"{oaa_url}?{urlencode(oaa_params)}"
-                    sources.append(
-                        {
-                            "name": "Baseball Savant OAA — Fielder / All Positions",
-                            "url": exact_url,
-                            "as_of": datetime.now(UTC).isoformat(timespec="seconds"),
-                        }
-                    )
-            except Exception as exc:
-                LOGGER.warning("OAA unavailable for %s: %s", player_id, exc)
-                defense_errors.append(f"Baseball Savant OAA request failed: {exc}")
+                runs_prevented = first_existing(
+                    raw, ("fielding_runs_prevented", "runs_prevented")
+                )
+                if runs_prevented is not None:
+                    try:
+                        result["Runs Prevented"] = float(runs_prevented)
+                    except (TypeError, ValueError):
+                        result["Runs Prevented"] = runs_prevented
 
-        # Official Fielding Run Value leaderboard, all positions. This table also
-        # exposes the Arm component used by Savant's FRV decomposition.
+                exact_url = f"{oaa_url}?{urlencode(oaa_params)}"
+                sources.append(
+                    {
+                        "name": "Baseball Savant OAA Leaderboard — Fielder / All Positions",
+                        "url": exact_url,
+                        "as_of": datetime.now(UTC).isoformat(timespec="seconds"),
+                    }
+                )
+        except Exception as exc:
+            LOGGER.warning("OAA leaderboard unavailable for %s: %s", player_id, exc)
+            defense_errors.append(f"Baseball Savant OAA leaderboard request failed: {exc}")
+
+        # Fielding Run Value remains a separate Savant metric. It is never used
+        # to fill or modify OAA.
         frv_url = "https://baseballsavant.mlb.com/leaderboard/fielding-run-value"
         frv_params: dict[str, Any] = {
             "gameType": "Regular",
@@ -616,7 +597,7 @@ class StatcastService:
             result["_errors"] = defense_errors
         if any(not key.startswith("_") and value is not None for key, value in result.items()):
             self.db.set_player_stats(
-                player_id, "statcast_defense_v6", season, "defense", result
+                player_id, cache_source, season, "defense", result
             )
         return result
 
