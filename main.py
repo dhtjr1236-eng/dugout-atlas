@@ -8,6 +8,8 @@ from config.logging_config import configure_logging
 from config.settings import QSS_PATH, SETTINGS, ensure_runtime_dirs
 from controllers.app_controller import AppController
 from database.sqlite_manager import SQLiteManager
+from services.gameday_enhancements import install_gameday_enhancements
+from services.player_enhancements import install_player_enhancements
 from services.running_metrics import install_running_support
 from ui.main_window import MainWindow
 
@@ -16,6 +18,8 @@ def main() -> int:
     ensure_runtime_dirs()
     configure_logging()
     install_running_support()
+    install_player_enhancements()
+    install_gameday_enhancements()
     app = QApplication(sys.argv)
     app.setApplicationName(SETTINGS.app_name)
     app.setApplicationVersion(SETTINGS.app_version)
