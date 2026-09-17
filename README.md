@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.11**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.2**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.11-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.2-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -33,9 +33,9 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 
 | 화면 | 확인할 수 있는 내용 |
 | :--- | :--- |
-| **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이 |
+| **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
-| **Player** | 선수 검색, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running(Sprint Speed/SB/CS/도루 성공률) |
+| **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits |
 | **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교 |
 | **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
@@ -69,6 +69,10 @@ py -3.12 -m venv .venv
 ## 주요 기능
 
 - **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
+- **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
+- **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
+- **선수 시즌 선택:** Player 화면의 선수 이름 옆에서 시즌을 선택할 수 있으며, 현재 시즌 기록이 없으면 선수의 가장 최근 MLB 시즌을 기본값으로 사용합니다.
+- **Platoon Splits:** 타자는 Running 아래, 투수는 Statcast 흐름 아래에서 좌/우 상대 AVG·OBP·SLG·OPS·wRC+를 확인할 수 있습니다.
 - **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
 - **Running 분석:** 타자 Player 화면의 Defense 아래에 Running 패널을 추가했습니다. Baseball Savant 공식 Sprint Speed를 `ft/s` 단위로 표시하고, FanGraphs의 SB·CS와 `SB / (SB + CS)` 도루 성공률을 함께 표시합니다.
 - **수비 OAA 소스 유지:** Defense의 OAA는 Baseball Savant 공식 OAA 리더보드 값만 사용합니다. v1.10.2의 별도 FanGraphs OAA 카드는 v1.11에서 제거했습니다.
@@ -86,8 +90,8 @@ py -3.12 -m venv .venv
 
 | 출처 | 주요 데이터 | 갱신 방식 |
 | :--- | :--- | :--- |
-| MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위 | 라이브 경기 데이터는 캐시 없이 요청 |
-| FanGraphs | fWAR, wRC+, FIP, xFIP, SB, CS 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
+| MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위·득점 play-by-play | 라이브 경기 데이터는 캐시 없이 요청 |
+| FanGraphs | fWAR, wRC+, FIP, xFIP, SB, CS, Platoon Splits 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
 | Baseball-Reference | bWAR, 제공되는 경우 OPS+/ERA+ | 사용자가 가져온 공식 WAR 파일 우선 |
 | Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표·Sprint Speed | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시, 투수 Yearly/Monthly/Daily 구간 지원 |
 
@@ -126,6 +130,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.2 패치 노트](docs/PATCH_v1.2.md): 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 상세
 - [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
 - [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
 - [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·타자 연/월/일 추이 변경 사항
@@ -138,7 +143,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.11에는 Baseball Savant Sprint Speed 수집, FanGraphs SB/CS 및 도루 성공률 계산에 대한 회귀 테스트가 추가되어 있습니다.
+v1.2에는 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 플레이 파싱에 대한 회귀 테스트가 포함되어 있습니다.
 
 ## 프로젝트 안내
 
@@ -148,6 +153,7 @@ v1.11에는 Baseball Savant Sprint Speed 수집, FanGraphs SB/CS 및 도루 성�
 - B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
 - 투수 Monthly/Daily의 `xERA`는 Savant가 임의 날짜 구간용 공식 xERA leaderboard 값을 제공하지 않는 경우 `—`로 둘 수 있으며, 다른 기간 지표를 xERA로 가장하지 않습니다.
 - Sprint Speed는 Baseball Savant 리더보드에 해당 시즌 선수 행이 존재할 때 표시됩니다. 제공처가 값을 제공하지 않으면 `—`로 유지합니다.
+- Platoon wRC+는 제공처가 해당 split 값을 주지 않는 경우 `—`로 표시하며 임의 추정하지 않습니다.
 - 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
 - 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
 
