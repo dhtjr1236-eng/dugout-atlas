@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.2**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.21**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.2-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.21-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -33,10 +33,10 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 
 | 화면 | 확인할 수 있는 내용 |
 | :--- | :--- |
-| **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세 |
+| **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세, 즐겨찾기 팀 경기 알림 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
-| **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits |
-| **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교 |
+| **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits, 선수 즐겨찾기 |
+| **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교, 주요 지표 한국어 툴팁 |
 | **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
 
@@ -69,6 +69,9 @@ py -3.12 -m venv .venv
 ## 주요 기능
 
 - **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
+- **선수·팀 즐겨찾기:** 현재 선수와 현재 경기의 홈/원정팀을 로컬 즐겨찾기로 저장하고 다시 접근할 수 있습니다.
+- **즐겨찾기 경기 알림:** 즐겨찾기 팀 경기의 점수 또는 상태가 바뀌면 Windows 시스템 트레이 알림을 표시하고, 트레이를 사용할 수 없으면 상태바로 폴백합니다.
+- **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표에 한국어 설명을 제공합니다.
 - **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
 - **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
 - **선수 시즌 선택:** Player 화면의 선수 이름 옆에서 시즌을 선택할 수 있으며, 현재 시즌 기록이 없으면 선수의 가장 최근 MLB 시즌을 기본값으로 사용합니다.
@@ -130,6 +133,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
 - [v1.2 패치 노트](docs/PATCH_v1.2.md): 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 상세
 - [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
 - [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
@@ -143,7 +147,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.2에는 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 플레이 파싱에 대한 회귀 테스트가 포함되어 있습니다.
+v1.21에는 v1.2 회귀 테스트에 더해 선수/팀 즐겨찾기, 경기 점수·상태 변경 알림, Compare 툴팁 정의 테스트가 포함되어 있습니다. 이번 버전은 외부 데이터 캐시 최적화나 Baseball-Reference 로직 변경을 포함하지 않습니다.
 
 ## 프로젝트 안내
 
