@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.21
+
+- Added local player and team favorites stored in `data/favorites.json`.
+- Added game notifications for score and game-status changes involving favorite teams, using the Windows system tray with a status-bar fallback.
+- Added Korean tooltips for key Compare metrics such as AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA, and Statcast expected metrics.
+- Added regression tests for favorites persistence, score/status notification generation, and Compare tooltip coverage.
+- Intentionally skipped the previously explored cache/service optimization patch after a Baseball-Reference regression was observed locally. v1.21 does not modify PlayerService, Baseball-Reference data retrieval, FanGraphs/Statcast cache policy, or stale-cache fallback behavior.
+- Bumped application/package version to 1.21.
+
+## 1.2
+
+- Improved player autocomplete so surname/middle substring searches such as `Kikuchi` can find `Yusei Kikuchi`.
+- Added player-season selection beside the player name.
+- Added hitter/pitcher Platoon Splits for AVG/OBP/SLG/OPS/wRC+.
+- Added live scoring-play details below the Gameday linescore.
+
 ## 1.10.1
 
 - Hardened OAA sourcing so the app reads OAA only from Baseball Savant's official `Outs Above Average` leaderboard using `View: Fielder` with All Positions.
