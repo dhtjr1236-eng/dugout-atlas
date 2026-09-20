@@ -12,6 +12,9 @@ Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다
 - 이닝별 라인스코어(R/H/E 포함)
 - 홈/원정 라인업 및 투수, 선수 클릭 이동
 - MLB 선수 검색 + 자동완성
+- 선수/팀 즐겨찾기 로컬 저장
+- 즐겨찾기 팀 경기 점수/상태 변경 알림
+- Compare 핵심 지표 한국어 툴팁
 - 타자: AVG/OBP/SLG/OPS/HR/RBI/SB, fWAR, bWAR, wRC+, OPS+, ISO, BABIP, BB%, K%, wOBA
 - 타자 Statcast: Avg/Max EV, Hard Hit%, Barrel%, Sweet Spot%, xBA/xSLG/xwOBA, Chase%, Whiff%
 - 수비: OAA, Fielding Run Value, Arm Value(소스 제공 시)
@@ -177,6 +180,16 @@ Judge
 
 자동완성에서 `Aaron Judge`를 선택하면 선수 데이터를 가져옵니다.
 
+## 즐겨찾기와 경기 알림
+
+왼쪽 경기 목록 아래의 `즐겨찾기 / 알림` 영역에서 현재 선수와 현재 선택 경기의 홈/원정팀을 저장할 수 있습니다. 선수 즐겨찾기는 목록에서 더블클릭하면 다시 Player 화면으로 이동합니다.
+
+즐겨찾기 팀이 포함된 경기의 점수 또는 경기 상태가 30초 자동 갱신 중 바뀌면 Windows 시스템 트레이 알림을 표시합니다. 시스템 트레이 알림을 사용할 수 없는 환경에서는 상태바 메시지로 표시합니다. 즐겨찾기는 `data\\favorites.json`에 저장됩니다.
+
+## Compare 지표 설명
+
+Compare 표에서 주요 지표명 또는 값 위에 마우스를 올리면 AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 핵심 지표의 한국어 설명을 볼 수 있습니다.
+
 첫 조회는 FanGraphs/Statcast 전체 시즌 데이터 처리 때문에 수 초 이상 걸릴 수 있습니다. 과거 시즌은 기본 30일, 현 시즌 FanGraphs/BRef **선수 결과 캐시**는 1시간 TTL을 사용합니다. B-Ref 로컬 원본 파일은 import 시 즉시 캐시를 무효화합니다.
 
 ---
@@ -295,6 +308,9 @@ python -m pytest -q
 - SQLite player cache round trip
 - SQLite pitch cache round trip
 - Statcast 타자 집계 / chase / whiff 계산
+- 선수/팀 즐겨찾기 저장/해제
+- 즐겨찾기 팀 점수·상태 변경 알림 메시지 생성
+- Compare 핵심 지표 툴팁 정의
 
 ---
 
@@ -514,3 +530,9 @@ UserWarning: constrained_layout not applied because axes sizes collapsed to zero
 ```
 
 1.0.5는 `constrained_layout`을 제거하고 명시적인 subplot margin과 차트 최소 높이를 사용합니다. 이 경고는 통계 데이터 오류와는 무관했지만 로그 노이즈와 일부 환경의 빈 차트 가능성을 줄이기 위해 수정했습니다.
+
+---
+
+# 업데이트 1.21 — 편의 기능 전용 패치
+
+1.21은 선수/팀 즐겨찾기, 즐겨찾기 팀 경기 알림, Compare 지표 툴팁을 추가합니다. 앞서 검토한 캐시 최적화/stale fallback은 포함하지 않았으며 PlayerService, Baseball-Reference, FanGraphs/Statcast 캐시 정책은 1.2 동작을 유지합니다. 자세한 내용은 `docs/PATCH_v1.21.md`를 참고하십시오.

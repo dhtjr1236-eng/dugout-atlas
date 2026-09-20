@@ -8,3 +8,4 @@ cache/json/**/*.json
 cache/files/**/*
 logs/*.log
 .DS_Store
+data/favorites.json
