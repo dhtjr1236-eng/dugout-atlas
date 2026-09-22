@@ -5,17 +5,20 @@ from typing import Any
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
+from config.theme_tokens import chart_colors
+
 
 def _figure(title: str) -> tuple[Figure, Any]:
+    colors = chart_colors()
     fig, ax = plt.subplots(figsize=(6.6, 3.6))
-    fig.patch.set_facecolor("#0d1626")
-    ax.set_facecolor("#0d1626")
-    ax.tick_params(colors="#d1d5db")
+    fig.patch.set_facecolor(colors["figure"])
+    ax.set_facecolor(colors["axes"])
+    ax.tick_params(colors=colors["muted"])
     for spine in ax.spines.values():
-        spine.set_color("#334155")
-    ax.title.set_color("#f8fafc")
-    ax.xaxis.label.set_color("#cbd5e1")
-    ax.yaxis.label.set_color("#cbd5e1")
+        spine.set_color(colors["border"])
+    ax.title.set_color(colors["text"])
+    ax.xaxis.label.set_color(colors["muted"])
+    ax.yaxis.label.set_color(colors["muted"])
     ax.set_title(title)
     fig.subplots_adjust(left=0.12, right=0.97, bottom=0.20, top=0.84)
     return fig, ax
@@ -27,7 +30,7 @@ def pitch_usage(pitches: list[dict[str, Any]]) -> Figure:
     if rows:
         labels = [str(row.get("pitch_type")) for row in rows]
         values = [float(row.get("Usage %") or 0) for row in rows]
-        ax.pie(values, labels=labels, autopct="%1.1f%%", textprops={"color": "#e5e7eb"})
+        ax.pie(values, labels=labels, autopct="%1.1f%%", textprops={"color": chart_colors()["text"]})
     else:
         ax.text(0.5, 0.5, "No pitch data", ha="center", va="center", transform=ax.transAxes)
     return fig
