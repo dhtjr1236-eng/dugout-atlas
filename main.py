@@ -36,6 +36,19 @@ def main() -> int:
     db = SQLiteManager()
     window = MainWindow()
     theme_manager.attach_button(window.theme_button)
+
+    def refresh_theme_dependent_content() -> None:
+        player_view = window.player_view
+        bundle = player_view.current_bundle
+        if bundle is None:
+            return
+        if bundle.profile.is_pitcher:
+            payload = getattr(player_view, "_pitcher_period_payload", {}) or None
+            player_view._show_pitcher(bundle, payload)
+        else:
+            player_view._show_batter(bundle)
+
+    theme_manager.add_listener(refresh_theme_dependent_content)
     window.theme_manager = theme_manager  # type: ignore[attr-defined]
     controller = AppController(window, db)
     # Keep a strong reference for the lifetime of the window.
