@@ -1,0 +1,155 @@
+QWidget {
+    background-color: {{--color-bg}};
+    color: {{--color-text}};
+    font-family: "Segoe UI";
+    font-size: 10.5pt;
+}
+QMainWindow, QDialog {
+    background-color: {{--color-bg}};
+}
+QFrame#panel, QGroupBox {
+    background-color: {{--color-surface}};
+    border: 1px solid {{--color-border}};
+    border-radius: 8px;
+}
+QGroupBox {
+    margin-top: 10px;
+    padding-top: 12px;
+    font-weight: 600;
+}
+QPushButton {
+    background-color: {{--color-surface-muted}};
+    color: {{--color-text}};
+    border: 1px solid {{--color-border-strong}};
+    border-radius: 6px;
+    padding: 7px 10px;
+}
+QPushButton:hover {
+    background-color: {{--color-surface-selected}};
+    border-color: {{--color-primary}};
+}
+QPushButton:pressed {
+    background-color: {{--color-primary-soft}};
+}
+QPushButton:focus {
+    border: 2px solid {{--color-primary}};
+}
+QPushButton:disabled {
+    color: {{--color-text-subtle}};
+    background-color: {{--color-surface-muted}};
+    border-color: {{--color-border}};
+}
+QPushButton#themeToggle {
+    min-width: 64px;
+    font-weight: 600;
+}
+QLineEdit, QComboBox, QDateEdit, QSpinBox, QDoubleSpinBox {
+    background-color: {{--color-surface-muted}};
+    color: {{--color-text}};
+    border: 1px solid {{--color-border-strong}};
+    border-radius: 6px;
+    padding: 7px;
+    selection-background-color: {{--color-primary-soft}};
+    selection-color: {{--color-text}};
+}
+QLineEdit:hover, QComboBox:hover, QDateEdit:hover {
+    border-color: {{--color-primary}};
+}
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
+    border: 2px solid {{--color-primary}};
+}
+QComboBox QAbstractItemView {
+    background-color: {{--color-surface}};
+    color: {{--color-text}};
+    border: 1px solid {{--color-border}};
+    selection-background-color: {{--color-surface-selected}};
+    selection-color: {{--color-text}};
+}
+QListWidget, QTableWidget, QTreeWidget, QTableView {
+    background-color: {{--color-surface}};
+    alternate-background-color: {{--color-surface-muted}};
+    color: {{--color-text}};
+    border: 1px solid {{--color-border}};
+    gridline-color: {{--color-border}};
+    selection-background-color: {{--color-surface-selected}};
+    selection-color: {{--color-text}};
+}
+QListWidget::item:hover, QTreeWidget::item:hover {
+    background-color: {{--color-surface-muted}};
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: {{--color-surface-selected}};
+    color: {{--color-text}};
+}
+QHeaderView::section {
+    background-color: {{--color-surface-muted}};
+    color: {{--color-text}};
+    padding: 6px;
+    border: 0;
+    border-right: 1px solid {{--color-border}};
+    border-bottom: 1px solid {{--color-border}};
+}
+QTabWidget::pane {
+    border: 1px solid {{--color-border}};
+    background-color: {{--color-surface}};
+}
+QTabBar::tab {
+    background: {{--color-surface}};
+    color: {{--color-text-muted}};
+    padding: 8px 14px;
+    border: 1px solid {{--color-border}};
+}
+QTabBar::tab:hover {
+    color: {{--color-text}};
+    background: {{--color-surface-muted}};
+}
+QTabBar::tab:selected {
+    color: {{--color-text}};
+    background: {{--color-surface-selected}};
+    border-bottom: 2px solid {{--color-primary}};
+}
+QScrollBar:vertical {
+    background: {{--color-surface-muted}};
+    width: 12px;
+}
+QScrollBar::handle:vertical {
+    background: {{--color-border-strong}};
+    border-radius: 5px;
+    min-height: 24px;
+}
+QScrollBar::handle:vertical:hover {
+    background: {{--color-primary}};
+}
+QScrollBar:horizontal {
+    background: {{--color-surface-muted}};
+    height: 12px;
+}
+QScrollBar::handle:horizontal {
+    background: {{--color-border-strong}};
+    border-radius: 5px;
+    min-width: 24px;
+}
+QLabel#title {
+    color: {{--color-text}};
+    font-size: 18pt;
+    font-weight: 700;
+}
+QLabel#subtitle {
+    color: {{--color-text-subtle}};
+}
+QLabel#metricValue {
+    color: {{--color-text}};
+    font-size: 14pt;
+    font-weight: 700;
+}
+QToolTip {
+    background: {{--color-surface}};
+    color: {{--color-text}};
+    border: 1px solid {{--color-border-strong}};
+    padding: 4px;
+}
+QStatusBar {
+    background-color: {{--color-surface}};
+    color: {{--color-text-muted}};
+    border-top: 1px solid {{--color-border}};
+}
