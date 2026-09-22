@@ -10,7 +10,8 @@ DATA_DIR = BASE_DIR / "data"
 DB_PATH = DATA_DIR / "mlb_advanced_gameday.sqlite3"
 LOG_DIR = BASE_DIR / "logs"
 SCHEMA_PATH = BASE_DIR / "database" / "schema.sql"
-QSS_PATH = BASE_DIR / "config" / "dark.qss"\nTHEME_QSS_PATH = BASE_DIR / "config" / "theme.qss"
+QSS_PATH = BASE_DIR / "config" / "dark.qss"
+THEME_QSS_PATH = BASE_DIR / "config" / "theme.qss"
 
 
 @dataclass(frozen=True, slots=True)
