@@ -65,6 +65,13 @@ class MainWindow(QMainWindow):
         self.completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
         self.search.setCompleter(self.completer)
         top.addWidget(self.search)
+        self.theme_button = QPushButton("Light")
+        self.theme_button.setObjectName("themeToggle")
+        self.theme_button.setMinimumWidth(64)
+        self.theme_button.setToolTip("Light Theme로 전환")
+        self.theme_button.setAccessibleName("Light Theme로 전환")
+        self.theme_button.setAccessibleDescription("Dugout Atlas 화면 테마 전환 버튼")
+        top.addWidget(self.theme_button)
         self.bref_download_button = QPushButton("B-Ref 다운로드")
         self.bref_download_button.setToolTip(
             "Open Baseball-Reference official WAR downloads in your normal browser."

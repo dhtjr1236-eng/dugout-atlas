@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.21**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.22**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.21-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.22-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -85,7 +85,7 @@ py -3.12 -m venv .venv
 - **투수 Statcast 기간 선택:** 투수 화면에서 Yearly / Monthly / Daily로 전환할 수 있습니다. Monthly는 해당 시즌의 가장 최근 실제 등판 월, Daily는 가장 최근 실제 등판일을 기준으로 Savant pitch-level 데이터를 다시 집계합니다.
 - **투수 기간별 연동:** 기간 변경 시 Statcast 카드뿐 아니라 Pitch Arsenal, Pitch Usage, Run Value, Whiff%, Velocity 차트도 같은 구간으로 함께 바뀝니다.
 - **타자·투수별 차트:** 타구 품질과 시즌 추이, 구종 특성을 시각화합니다.
-- **다크 테마:** 경기·선수·비교·리그 화면에 일관된 어두운 테마를 적용합니다.
+- **Light / Dark Theme:** 기존 남색 Dark Theme와 새로운 Light Theme를 헤더에서 즉시 전환할 수 있습니다. 사용자 선택을 저장하고, 저장값이 없을 때 운영체제 테마를 초기값으로 사용합니다.
 - **백그라운드 데이터 조회:** 외부 데이터를 불러오는 작업을 UI 스레드와 분리합니다.
 - **출처 표시:** 선수 화면에서 데이터 출처, 조회 시각과 소스별 상태를 확인할 수 있습니다.
 
@@ -133,7 +133,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
-- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
+- [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글\n- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
 - [v1.2 패치 노트](docs/PATCH_v1.2.md): 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 상세
 - [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
 - [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
@@ -147,7 +147,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.21에는 v1.2 회귀 테스트에 더해 선수/팀 즐겨찾기, 경기 점수·상태 변경 알림, Compare 툴팁 정의 테스트가 포함되어 있습니다. 이번 버전은 외부 데이터 캐시 최적화나 Baseball-Reference 로직 변경을 포함하지 않습니다.
+v1.22에는 기존 회귀 테스트에 더해 Light/Dark 테마 토큰, 잘못된 저장값 복구, 테마 저장, 접근성 토글 테스트가 포함되어 있습니다. 현재 저장소는 PyQt6 데스크톱 앱이므로 브라우저 localStorage 대신 QSettings를 사용합니다.
 
 ## 프로젝트 안내
 

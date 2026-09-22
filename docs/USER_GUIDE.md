@@ -23,7 +23,7 @@ Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다
 - 타자 차트 5종: EV 분포, Barrel%, Hard Hit%, WAR, wRC+
 - 투수 차트 4종: 구종 비율, 구종 Run Value, 구속 추이, 구종 Whiff%
 - 정규시즌 순위 / 와일드카드 / 팀 스탯 / 리그 팀 스탯
-- 다크모드
+- Light / Dark Theme 전환 및 사용자 선택 저장
 - SQLite + JSON/File 캐시: 과거 시즌 30일, 현 시즌 FanGraphs/BRef 결과 1시간, 현 시즌 Savant 수비 15분. 로컬 B-Ref 원본은 새 파일을 가져올 때 즉시 교체됩니다.
 - `QThread` + `aiohttp` 기반 비차단 UI
 - Baseball-Reference 403 대응: 공식 WAR ZIP/TXT/CSV 로컬 가져오기 + 403/429 circuit breaker
@@ -180,7 +180,22 @@ Judge
 
 자동완성에서 `Aaron Judge`를 선택하면 선수 데이터를 가져옵니다.
 
+## Light / Dark Theme
+
+상단 헤더 오른쪽의 `Light` / `Dark` 버튼으로 테마를 전환합니다.
+
+- 현재 Dark Theme이면 `Light`가 표시됩니다.
+- 현재 Light Theme이면 `Dark`가 표시됩니다.
+- 사용자 선택은 Qt `QSettings`의 `dugout-atlas-theme` 키에 저장됩니다.
+- 저장값이 없을 때만 운영체제의 Light/Dark 설정을 초기값으로 사용합니다.
+- 저장값이 잘못되어 있으면 삭제하고 시스템 설정 또는 Dark fallback을 사용합니다.
+- 테마 전환 시 기존 Player/Compare/Gameday 기능과 데이터 상태는 유지됩니다.
+- 차트도 현재 테마에 맞게 다시 그려집니다.
+
+현재 프로젝트는 PyQt6 데스크톱 앱이므로 브라우저의 localStorage와 CSS media query 대신 Qt의 QSettings와 system colorScheme API를 사용합니다.
+
 ## 즐겨찾기와 경기 알림
+
 
 왼쪽 경기 목록 아래의 `즐겨찾기 / 알림` 영역에서 현재 선수와 현재 선택 경기의 홈/원정팀을 저장할 수 있습니다. 선수 즐겨찾기는 목록에서 더블클릭하면 다시 Player 화면으로 이동합니다.
 
@@ -536,3 +551,9 @@ UserWarning: constrained_layout not applied because axes sizes collapsed to zero
 # 업데이트 1.21 — 편의 기능 전용 패치
 
 1.21은 선수/팀 즐겨찾기, 즐겨찾기 팀 경기 알림, Compare 지표 툴팁을 추가합니다. 앞서 검토한 캐시 최적화/stale fallback은 포함하지 않았으며 PlayerService, Baseball-Reference, FanGraphs/Statcast 캐시 정책은 1.2 동작을 유지합니다. 자세한 내용은 `docs/PATCH_v1.21.md`를 참고하십시오.
+
+---
+
+# 업데이트 1.22 — Light / Dark Theme
+
+1.22는 기존 Dark Theme를 유지하면서 Light Theme와 헤더 테마 전환 버튼을 추가합니다. 역할 기반 테마 토큰, 시스템 테마 초기값, 사용자 설정 저장, 접근성 이름/설명, focus 상태, 180ms 전환과 테마별 차트 렌더링을 포함합니다. 자세한 내용은 `docs/PATCH_v1.22.md`를 참고하십시오.
