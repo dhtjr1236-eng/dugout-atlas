@@ -32,7 +32,7 @@ def pitch_usage(pitches: list[dict[str, Any]]) -> Figure:
         values = [float(row.get("Usage %") or 0) for row in rows]
         ax.pie(values, labels=labels, autopct="%1.1f%%", textprops={"color": chart_colors()["text"]})
     else:
-        ax.text(0.5, 0.5, "No pitch data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(0.5, 0.5, "No pitch data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig
 
 
@@ -46,7 +46,7 @@ def run_value(pitches: list[dict[str, Any]]) -> Figure:
         ax.tick_params(axis="x", rotation=25)
         ax.set_ylabel("Runs prevented")
     else:
-        ax.text(0.5, 0.5, "No run-value data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(0.5, 0.5, "No run-value data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig
 
 
@@ -75,6 +75,7 @@ def velocity_history(history: list[dict[str, Any]]) -> Figure:
             ha="center",
             va="center",
             transform=ax.transAxes,
+            color=chart_colors()["text"],
         )
     return fig
 
@@ -89,5 +90,5 @@ def whiff_by_pitch(pitches: list[dict[str, Any]]) -> Figure:
         ax.tick_params(axis="x", rotation=25)
         ax.set_ylabel("Whiff %")
     else:
-        ax.text(0.5, 0.5, "No Whiff% data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(0.5, 0.5, "No Whiff% data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig
