@@ -8,6 +8,7 @@ from config.logging_config import configure_logging
 from config.settings import SETTINGS, THEME_QSS_PATH, ensure_runtime_dirs
 from controllers.app_controller import AppController
 from database.sqlite_manager import SQLiteManager
+from services.compare_league_context import install_compare_league_position
 from services.convenience_features import install_convenience_features
 from services.live_scoring import install_live_scoring_support
 from services.player_enhancements import install_player_enhancements
@@ -23,6 +24,8 @@ def main() -> int:
     install_player_enhancements()
     install_live_scoring_support()
     install_convenience_features()
+    install_compare_league_position()
+
     app = QApplication(sys.argv)
     app.setApplicationName(SETTINGS.app_name)
     app.setApplicationVersion(SETTINGS.app_version)
