@@ -40,6 +40,7 @@ def exit_velocity_distribution(statcast: dict[str, Any]) -> Figure:
             ha="center",
             va="center",
             transform=ax.transAxes,
+            color=chart_colors()["text"],
         )
     return fig
 
@@ -59,13 +60,13 @@ def barrel_percentage(statcast: dict[str, Any]) -> Figure:
     fig, ax = _figure("Barrel %")
     value = statcast.get("Barrel %")
     if value is None:
-        ax.text(0.5, 0.5, "No Barrel% data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(0.5, 0.5, "No Barrel% data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     else:
         number = float(value)
         ax.bar(["Barrel %"], [number])
         ax.set_ylim(0, max(20.0, number * 1.25))
         ax.set_ylabel("Percent")
-        ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color="#e5e7eb")
+        ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
 
 
@@ -73,13 +74,13 @@ def hard_hit_percentage(statcast: dict[str, Any]) -> Figure:
     fig, ax = _figure("Hard Hit %")
     value = statcast.get("Hard Hit %")
     if value is None:
-        ax.text(0.5, 0.5, "No Hard-Hit% data", ha="center", va="center", transform=ax.transAxes)
+        ax.text(0.5, 0.5, "No Hard-Hit% data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     else:
         number = float(value)
         ax.bar(["Hard Hit %"], [number])
         ax.set_ylim(0, max(60.0, number * 1.2))
         ax.set_ylabel("Percent")
-        ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color="#e5e7eb")
+        ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
 
 
