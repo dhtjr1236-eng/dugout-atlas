@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.22
+
+- Added a Light Theme while preserving the existing navy Dark Theme.
+- Added a header-right Light/Dark toggle with accessible name/description, tooltip, keyboard focus styling, hover and pressed states.
+- Added role-based theme tokens and a tokenized QSS template for backgrounds, surfaces, text, borders, primary/status colors, controls, tables, tabs, scrollbars, tooltips and status bar.
+- Theme selection persists under the `dugout-atlas-theme` key using Qt `QSettings`; invalid values are removed safely.
+- When no saved preference exists, the app follows the operating-system Light/Dark color scheme and falls back to Dark when the system value is unavailable.
+- Added a 180ms theme color transition and respects a Qt reduced-motion hint when available.
+- Batter and pitcher Matplotlib charts now use the active theme tokens and refresh after a theme switch.
+- Added theme-manager regression tests.
+- No external-data, Baseball-Reference, FanGraphs, Statcast, routing/controller or cache behavior was changed.
+- Bumped app/package version to 1.22.
+
 ## 1.21
 
 - Added local player and team favorites stored in `data/favorites.json`.
