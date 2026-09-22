@@ -24,6 +24,7 @@ class ThemeManager:
         self.current_theme: ThemeName = self._initial_theme()
         self._animation: QVariantAnimation | None = None
         self._button: QPushButton | None = None
+        self._listeners: list[object] = []
 
         self.apply(self.current_theme, animate=False)
         try:
@@ -49,8 +50,7 @@ class ThemeManager:
         except Exception:
             pass
 
-        window_color = self.app.palette().window().color()
-        return "dark" if window_color.lightness() < 128 else "light"
+        return "dark"
 
     def _initial_theme(self) -> ThemeName:
         return self._stored_theme() or self._system_theme()
@@ -59,6 +59,17 @@ class ThemeManager:
         self._button = button
         button.clicked.connect(self.toggle)
         self._update_button()
+
+    def add_listener(self, callback: object) -> None:
+        if callable(callback) and callback not in self._listeners:
+            self._listeners.append(callback)
+
+    def _notify_listeners(self) -> None:
+        for callback in list(self._listeners):
+            try:
+                callback()
+            except Exception:
+                continue
 
     def toggle(self) -> None:
         target: ThemeName = "light" if self.current_theme == "dark" else "dark"
@@ -75,6 +86,7 @@ class ThemeManager:
             self._animate_theme(old_theme, theme)
         else:
             self.app.setStyleSheet(self._render(self._tokens(theme)))
+            self._notify_listeners()
 
         self._update_button()
 
@@ -146,9 +158,11 @@ class ThemeManager:
             self.app.setStyleSheet(self._render(mixed))
 
         animation.valueChanged.connect(update)
-        animation.finished.connect(
-            lambda: self.app.setStyleSheet(self._render(self._tokens(target)))
-        )
+        def finish() -> None:
+            self.app.setStyleSheet(self._render(self._tokens(target)))
+            self._notify_listeners()
+
+        animation.finished.connect(finish)
         self._animation = animation
         animation.start()
 
