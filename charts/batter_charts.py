@@ -6,17 +6,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.figure import Figure
 
+from config.theme_tokens import chart_colors
+
 
 def _figure(title: str) -> tuple[Figure, Any]:
+    colors = chart_colors()
     fig, ax = plt.subplots(figsize=(6.6, 3.6))
-    fig.patch.set_facecolor("#0d1626")
-    ax.set_facecolor("#0d1626")
-    ax.tick_params(colors="#d1d5db")
+    fig.patch.set_facecolor(colors["figure"])
+    ax.set_facecolor(colors["axes"])
+    ax.tick_params(colors=colors["muted"])
     for spine in ax.spines.values():
-        spine.set_color("#334155")
-    ax.title.set_color("#f8fafc")
-    ax.xaxis.label.set_color("#cbd5e1")
-    ax.yaxis.label.set_color("#cbd5e1")
+        spine.set_color(colors["border"])
+    ax.title.set_color(colors["text"])
+    ax.xaxis.label.set_color(colors["muted"])
+    ax.yaxis.label.set_color(colors["muted"])
     ax.set_title(title)
     fig.subplots_adjust(left=0.12, right=0.97, bottom=0.24, top=0.84)
     return fig, ax
@@ -48,7 +51,7 @@ def quality_contact(statcast: dict[str, Any]) -> Figure:
     ax.bar(labels, values)
     ax.set_ylabel("Percent")
     for idx, value in enumerate(values):
-        ax.text(idx, value, f"{value:.1f}%", ha="center", va="bottom", color="#e5e7eb")
+        ax.text(idx, value, f"{value:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
 
 
