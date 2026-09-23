@@ -39,6 +39,7 @@ class MainWindow(QMainWindow):
     league_refresh_requested = pyqtSignal()
     team_stats_requested = pyqtSignal(int)
     bref_import_requested = pyqtSignal(str)
+    refresh_requested = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -82,6 +83,9 @@ class MainWindow(QMainWindow):
         )
         top.addWidget(self.bref_download_button)
         top.addWidget(self.bref_import_button)
+        self.refresh_button = QPushButton("새로고침")
+        self.refresh_button.setToolTip("현재 경기와 선택한 선수 데이터를 다시 조회")
+        top.addWidget(self.refresh_button)
         root.addLayout(top)
 
         splitter = QSplitter()
@@ -130,6 +134,7 @@ class MainWindow(QMainWindow):
         self.league_view.team_selected.connect(self.team_stats_requested)
         self.bref_download_button.clicked.connect(self._open_bref_downloads)
         self.bref_import_button.clicked.connect(self._choose_bref_import)
+        self.refresh_button.clicked.connect(self.refresh_requested)
 
         self._search_timer = QTimer(self)
         self._search_timer.setSingleShot(True)

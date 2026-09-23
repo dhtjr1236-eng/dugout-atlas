@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.22**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.30**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.22-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.30-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -47,7 +47,7 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 Python 설치 시 **Add python.exe to PATH**를 선택하세요. 자동 설치는 Python 3.12를 먼저 찾고, 없으면 PATH의 기본 Python을 사용합니다. 기본 Python도 3.12 이상이어야 합니다.
 
 1. GitHub 저장소 상단의 **Code → Download ZIP**으로 소스를 내려받고 압축을 풉니다.
-2. `install.bat`을 더블클릭해 실행 환경과 의존성을 설치합니다.
+2. `install.bat`을 더블클릭해 실행 환경과 검증된 배포 의존성을 설치합니다.
 3. 설치 완료 후 `run.bat`을 더블클릭합니다.
 4. 날짜와 경기를 선택하거나 상단 검색창에서 선수를 검색합니다.
 
@@ -60,7 +60,7 @@ Python 설치 시 **Add python.exe to PATH**를 선택하세요. 자동 설치�
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt -c constraints-release.txt
 .\.venv\Scripts\python.exe main.py
 ```
 
@@ -147,7 +147,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.22에는 기존 회귀 테스트에 더해 Light/Dark 테마 토큰, 잘못된 저장값 복구, 테마 저장, 접근성 토글 테스트가 포함되어 있습니다. 현재 저장소는 PyQt6 데스크톱 앱이므로 브라우저 localStorage 대신 QSettings를 사용합니다.
+v1.30에는 HTTP 재시도·응답 제한, B-Ref ZIP 검증 및 메타데이터 개인정보 방어 회귀 테스트가 추가되었습니다. 테마 설정은 QSettings를 사용합니다. 새로고침 버튼으로 경기와 선택 선수를 다시 조회할 수 있으며, Player의 Data Sources에서 소스 상태와 제공된 조회 시각을 확인할 수 있습니다.
 
 ## 프로젝트 안내
 

@@ -56,6 +56,7 @@ class AppController(QObject):
         self.window.league_refresh_requested.connect(self.load_league)
         self.window.team_stats_requested.connect(self.load_team_stats)
         self.window.bref_import_requested.connect(self.import_bref_file)
+        self.window.refresh_requested.connect(self._refresh_requested)
         self.window.player_view.trend_period_changed.connect(self.load_player_trend)
         self.window.player_view.pitcher_statcast_period_changed.connect(
             self.load_pitcher_statcast_period
@@ -158,6 +159,10 @@ class AppController(QObject):
         self.load_schedule(qdate)
         if self.selected_game_pk:
             self.load_game_detail(self.selected_game_pk)
+
+    def _refresh_requested(self) -> None:
+        self.refresh_live()
+        self.refresh_selected_player()
 
     def search_players(self, query: str) -> None:
         expected = query.strip()

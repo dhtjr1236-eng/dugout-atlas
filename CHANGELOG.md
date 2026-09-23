@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.30
+
+- Hardened HTTP retries (408/425/429/5xx only), Retry-After, jitter, timeout and bounded streaming responses; reuse sessions across attempts.
+- Limited B-Ref archives by total expanded size, entry count and compression ratio; local import metadata now stores basename only.
+- Redacted URL query strings, credentials and user home paths from application logs.
+- Added source availability states and an explicit refresh control.
+- Added CI lint, dependency audit, static security scan and pinned direct release dependencies.
+- Updated README and user guide; retained existing FanGraphs/B-Ref/Statcast calculation and player matching logic.
+
+## 1.23
+
+- Compare supports 2–4 players, Sprint Speed and integer OAA display.
+- League Position uses FanGraphs/Savant season distributions; Comparison Insights use vertical scrolling cards.
+- See `docs/PATCH_v1.23.md` for details.
+
 ## 1.22
 
 - Added a Light Theme while preserving the existing navy Dark Theme.

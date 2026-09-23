@@ -18,7 +18,7 @@ call .venv\Scripts\activate.bat
 python -m pip install --upgrade pip setuptools wheel
 if errorlevel 1 goto :error
 
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt -c constraints-release.txt
 if errorlevel 1 goto :error
 
 python -m compileall -q .
