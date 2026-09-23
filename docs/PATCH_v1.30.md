@@ -1,10 +1,44 @@
-# Dugout Atlas v1.30 — Security, Reliability & UX
+# Dugout Atlas v1.30 — 보안·안정성·사용성
 
-- HTTP: retry only transient statuses 408/425/429/5xx, honor Retry-After (capped at 60 seconds), exponential backoff with jitter; reuse session across attempts.
-- HTTP: bounded streaming reads (JSON 20 MiB, MLB logo 5 MiB, CSV/text 100 MiB), connect/read timeouts, no response-body logging.
-- B-Ref imports: cap ZIP members (50), aggregate expanded size (250 MiB), per-member size (100 MiB), compression ratio (200:1); validate year and WAR numeric values. Do not unpack onto disk. Imported source metadata records filename only.
-- Logs: redact URL queries, common credentials and user home directory paths.
-- Player source panel shows availability even when a source returned no data. Explicit refresh control reloads game and selected player.
-- CI gates: critical Ruff rules, pytest, Bandit medium/high findings, pip-audit, metadata smoke test. Release direct dependencies are pinned by `constraints-release.txt`.
+v1.30은 외부 데이터를 불러오거나 로컬 WAR 파일을 가져올 때의 안전 장치를 강화하고, 사용자가 데이터 출처의 상태를 더 쉽게 확인할 수 있도록 한 버전입니다. 앱과 패키지 버전은 모두 **1.30**입니다.
 
-Existing FanGraphs/B-Ref/Statcast statistic calculation and player matching implementations were not changed. App/package version is 1.30. This is source distribution; no signed Windows installer is provided.
+## HTTP 요청
+
+- 408, 425, 429 및 500/502/503/504 응답과 연결 오류·시간 초과를 재시도합니다. 403·404와 응답 크기 초과 등은 재시도하지 않습니다.
+- `Retry-After`가 있으면 최대 60초까지 따릅니다. 그 밖의 재시도에는 지수형 대기와 작은 무작위 지연을 적용합니다.
+- 재시도하는 동안 같은 HTTP 세션을 사용하고, 작업이 끝나면 닫습니다.
+- 응답을 나누어 읽으면서 크기를 제한합니다. JSON 20 MiB, 팀 로고 5 MiB, 텍스트/CSV 100 MiB이며, `Content-Length`가 없거나 부정확해도 읽는 중 제한을 확인합니다.
+- 연결 및 읽기 시간 제한을 설정하고, 실패 로그에 응답 본문이나 요청 URL 전체를 남기지 않습니다.
+
+## Baseball-Reference 파일 가져오기
+
+- ZIP 파일은 항목 **50개**, 압축 해제 후 합계 **250 MiB**, 항목당 **100 MiB**, 압축비 **200:1**을 넘으면 읽기 전에 거부합니다. 단일 TXT/CSV에도 100 MiB 제한을 적용합니다.
+- WAR 테이블에 필요한 선수 식별자·시즌·WAR 열이 있고, 유효한 시즌과 수치형 WAR 값이 있는지 확인합니다.
+- ZIP을 파일시스템에 풀지 않고 필요한 데이터를 읽습니다.
+- 새로 가져온 파일의 메타데이터에는 원본·결과 파일 경로 대신 파일명만 기록합니다. 이전 버전에서 작성한 메타데이터의 기존 경로를 일괄 변환하지는 않습니다.
+
+## 로그와 화면
+
+- 앱 로그에서 URL 쿼리 문자열, 일반적인 인증 정보 표기, 사용자 홈 디렉터리 경로를 제거합니다.
+- Player → **Data Sources**에서 FanGraphs, Baseball-Reference, Savant/Statcast, Savant Defense의 데이터 이용 가능 여부를 표시합니다. 데이터 제공처가 조회 시각을 제공한 항목은 그 시각도 보여줍니다.
+- 화면 상단 **새로고침** 버튼은 현재 경기와 선택한 선수 데이터를 다시 조회합니다.
+
+## 설치와 검증
+
+- `constraints-release.txt`에 Python 3.12에서 검증한 **직접 의존성** 버전을 고정했습니다. `install.bat`과 CI가 이 파일을 사용합니다.
+- CI에서 Python 컴파일, pytest, 실행 오류 중심 Ruff 검사, Bandit의 중간·높은 심각도 검사, `pip-audit`, 앱 버전 확인을 수행합니다. 테스트는 오프스크린 Qt 환경에서 실행합니다.
+- `tests/test_security_v130.py`는 HTTP 재시도 대상, `Retry-After` 처리, 로그 민감정보 제거, 과도한 ZIP 거부, B-Ref 메타데이터 파일명 처리를 확인합니다. 기존 데이터 소스·차트·UI 회귀 테스트도 함께 실행합니다.
+- **확인된 결과:** [PR #11의 CI 실행 #96](https://github.com/dhtjr1236-eng/dugout-atlas/actions/runs/35866577742)의 모든 단계가 성공했고, PR은 `main`에 병합되었습니다. 병합 커밋은 `92a8c5bc4dc6c2e599b4d5277ad0d74129353a48`입니다.
+
+로컬에서 같은 기본 검증을 수행하려면 프로젝트 폴더에서 다음을 실행합니다.
+
+```powershell
+.\.venv\Scripts\python.exe -m compileall -q .
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+보안 검사 명령과 CI 설정은 [워크플로](../.github/workflows/ci.yml)에 있습니다.
+
+## 적용 범위와 제한
+
+기존 FanGraphs·Baseball-Reference·Statcast의 통계 계산, 선수 매칭 로직은 변경하지 않았습니다. Data Sources는 소스별 마지막 성공 시각을 영구 기록하는 완전한 Health 패널이 아니며, 시각이 없는 값의 최신성을 보장하지 않습니다. 의존성 고정은 직접 패키지에 한정되고, 이 버전은 소스 배포판으로 서명된 Windows 설치 파일은 제공하지 않습니다.

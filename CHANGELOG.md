@@ -2,6 +2,8 @@
 
 ## 1.30
 
+상세 변경·검증 결과: [v1.30 패치 노트](docs/PATCH_v1.30.md)
+
 - Hardened HTTP retries (408/425/429/5xx only), Retry-After, jitter, timeout and bounded streaming responses; reuse sessions across attempts.
 - Limited B-Ref archives by total expanded size, entry count and compression ratio; local import metadata now stores basename only.
 - Redacted URL query strings, credentials and user home paths from application logs.
