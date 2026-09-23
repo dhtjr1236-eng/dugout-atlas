@@ -17,6 +17,10 @@ from config.settings import DATA_DIR
 LOGGER = logging.getLogger(__name__)
 
 BREF_DATA_PAGE = "https://www.baseball-reference.com/data/"
+MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
+MAX_MEMBER_BYTES = 100 * 1024 * 1024
+MAX_ARCHIVE_FILES = 50
+MAX_COMPRESSION_RATIO = 200
 
 
 @dataclass(slots=True)
@@ -101,7 +105,7 @@ class BRefLocalStore:
         if not isinstance(role_meta, dict):
             role_meta = {}
         source_file = str(role_meta.get("source_file") or "")
-        source_name = Path(source_file).name if source_file else "local file"
+        source_name = Path(source_file.replace("\\", "/")).name if source_file else "local file"
         data_date = str(role_meta.get("data_date") or "")
         name = f"Baseball-Reference official WAR snapshot (local import · {source_name})"
         if data_date:
@@ -111,7 +115,7 @@ class BRefLocalStore:
             "url": BREF_DATA_PAGE,
             "as_of": str(role_meta.get("imported_at") or meta.get("last_imported_at") or ""),
             "local_file": str(path),
-            "source_file": source_file,
+            "source_file": source_name,
             "role": role,
             "data_date": data_date,
         }
@@ -119,12 +123,19 @@ class BRefLocalStore:
     def import_path(self, source: Path | str) -> BRefImportResult:
         path = Path(source).expanduser().resolve()
         if not path.exists() or not path.is_file():
-            raise FileNotFoundError(f"B-Ref import file not found: {path}")
+            raise FileNotFoundError(f"B-Ref import file not found: {path.name}")
 
         candidates: list[tuple[str, bytes]] = []
         if zipfile.is_zipfile(path):
             with zipfile.ZipFile(path) as archive:
-                for info in archive.infolist():
+                members = [info for info in archive.infolist() if not info.is_dir()]
+                if (len(members) > MAX_ARCHIVE_FILES
+                        or sum(info.file_size for info in members) > MAX_ARCHIVE_BYTES
+                        or any(info.file_size > MAX_MEMBER_BYTES
+                               or info.file_size / max(info.compress_size, 1) > MAX_COMPRESSION_RATIO
+                               for info in members)):
+                    raise ValueError("B-Ref archive exceeds safe file count, size or compression ratio.")
+                for info in members:
                     if info.is_dir() or info.file_size <= 0:
                         continue
                     lower = info.filename.casefold()
@@ -135,10 +146,10 @@ class BRefLocalStore:
                         continue
                     # WAR daily files are small enough that this protects against
                     # accidental giant ZIP members while remaining generous.
-                    if info.file_size > 100 * 1024 * 1024:
-                        continue
                     candidates.append((info.filename, archive.read(info)))
         else:
+            if path.stat().st_size > MAX_MEMBER_BYTES:
+                raise ValueError("B-Ref file exceeds size limit.")
             candidates.append((path.name, path.read_bytes()))
 
         if not candidates:
@@ -150,7 +161,7 @@ class BRefLocalStore:
             try:
                 frame = self._read_frame(raw)
             except Exception as exc:
-                parse_errors.append(f"{member_name}: {exc}")
+                parse_errors.append(f"{Path(member_name).name}: {type(exc).__name__}")
                 continue
             if frame.empty or not self._valid_war_frame(frame):
                 continue
@@ -180,13 +191,13 @@ class BRefLocalStore:
                 ImportedDataset(
                     role=role,
                     rows=len(frame),
-                    destination=str(destination),
-                    member_name=member_name,
+                    destination=destination.name,
+                    member_name=Path(member_name).name,
                 )
             )
 
         result = BRefImportResult(
-            source_file=str(path),
+            source_file=path.name,
             imported_at=imported_at,
             datasets=sorted(datasets, key=lambda item: item.role),
         )
@@ -196,7 +207,7 @@ class BRefLocalStore:
         data_date = self._date_from_name(path.name)
         for item in result.datasets:
             roles[item.role] = {
-                "source_file": str(path),
+                "source_file": path.name,
                 "member_name": item.member_name,
                 "imported_at": imported_at,
                 "rows": item.rows,
@@ -205,7 +216,7 @@ class BRefLocalStore:
             }
         meta_payload: dict[str, object] = {
             "last_imported_at": imported_at,
-            "last_source_file": str(path),
+            "last_source_file": path.name,
             "roles": roles,
         }
         self._atomic_write_json(meta_payload, self.meta_path)
@@ -227,7 +238,12 @@ class BRefLocalStore:
             return False
         if not ({"year_ID", "year_id"} & columns):
             return False
-        return bool({"mlb_ID", "mlb_id", "mlbID", "player_ID", "name_common"} & columns)
+        if not ({"mlb_ID", "mlb_id", "mlbID", "player_ID", "name_common"} & columns):
+            return False
+        year_key = "year_ID" if "year_ID" in columns else "year_id"
+        years = pd.to_numeric(frame[year_key], errors="coerce")
+        wars = pd.to_numeric(frame["WAR"], errors="coerce")
+        return bool(years.between(1871, 2200).any() and wars.notna().any())
 
     @staticmethod
     def _classify(member_name: str, frame: pd.DataFrame) -> str | None:

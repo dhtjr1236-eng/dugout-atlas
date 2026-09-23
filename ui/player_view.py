@@ -508,13 +508,12 @@ class PlayerView(QWidget):
             if not isinstance(container, dict):
                 continue
             status = str(container.get("_status") or "").strip().lower()
-            if status:
-                label = {
-                    "ok": "OK",
-                    "partial": "PARTIAL",
-                    "unavailable": "UNAVAILABLE",
-                }.get(status, status.upper())
-                rows.append(f"<b>{html.escape(provider_name)}</b>: {html.escape(label)}")
+            label = {
+                "ok": "● Available",
+                "partial": "◐ Partial",
+                "unavailable": "⚠ Unavailable",
+            }.get(status, "● Available" if container else "⚠ No data")
+            rows.append(f"<b>{html.escape(provider_name)}</b>: {html.escape(label)}")
             one = container.get("_source")
             if isinstance(one, dict):
                 entries.append(one)
