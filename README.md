@@ -133,7 +133,10 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
-- [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글\n- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
+- [v1.30 패치 노트](docs/PATCH_v1.30.md): 보안·안정성·사용성 변경과 검증 결과
+- [v1.23 패치 노트](docs/PATCH_v1.23.md): Compare 확장, Sprint Speed, League Position
+- [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글
+- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
 - [v1.2 패치 노트](docs/PATCH_v1.2.md): 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 상세
 - [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
 - [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
@@ -141,13 +144,14 @@ py -3.12 -m venv .venv
 - [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 원본 패키지 파일 목록
 - [배포 준비 기록](docs/PUBLISHING.md): 원본 버전과 업로드 커밋 메시지 구분
 
-설치 후 테스트를 실행하려면:
+설치 후 기본 검증을 실행하려면:
 
 ```powershell
+.\.venv\Scripts\python.exe -m compileall -q .
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.30에는 HTTP 재시도·응답 제한, B-Ref ZIP 검증 및 메타데이터 개인정보 방어 회귀 테스트가 추가되었습니다. 테마 설정은 QSettings를 사용합니다. 새로고침 버튼으로 경기와 선택 선수를 다시 조회할 수 있으며, Player의 Data Sources에서 소스 상태와 제공된 조회 시각을 확인할 수 있습니다.
+v1.30의 검사 항목, 확인된 CI 결과와 제한 사항은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에 정리했습니다. Data Sources의 조회 시각은 제공된 항목에 한해 표시됩니다.
 
 ## 프로젝트 안내
 

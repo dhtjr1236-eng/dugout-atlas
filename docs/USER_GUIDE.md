@@ -1,16 +1,20 @@
 # Dugout Atlas
 
-## 업데이트 1.30 — 보안·신뢰성
-
-Player → Data Sources에서 각 외부 통계 소스의 이용 가능 여부와 소스가 제공한 조회 시각을 확인하십시오. 화면 상단의 **새로고침**은 경기와 현재 선택한 선수를 다시 조회합니다. 외부 소스가 실패한 경우 표시되는 값이 실시간이라고 가정하지 마십시오. B-Ref 파일은 공식 데이터 페이지에서 직접 받은 ZIP/TXT/CSV를 가져오며, 과도한 압축 크기·파일 수·압축률의 ZIP은 거부됩니다. Windows 수동 설치는 `python -m pip install -r requirements.txt -c constraints-release.txt`로 검증된 직접 의존성 버전을 사용하십시오. 소스별 정확한 최신 시각은 공급자가 제공한 경우에만 표시됩니다.
-
-## 업데이트 1.23 — Compare
-
-Compare는 2–4명의 선수 비교, Sprint Speed, 정수 OAA, 실제 시즌 분포를 기준으로 한 League Position, 세로 스크롤 카드형 Insights를 지원합니다. 상세 내용은 `docs/PATCH_v1.23.md`를 참고하십시오.
-
 Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다. MLB Gameday 스타일의 실시간 경기 상태와 FanGraphs / Baseball Reference / Baseball Savant / Statcast 지표를 한 화면에서 조회하도록 구성되어 있습니다.
 
 > 이 프로젝트는 MLB/FanGraphs/Baseball Reference/Baseball Savant의 공식 데스크톱 클라이언트가 아닙니다. 공개 웹/API 데이터의 구조가 바뀌면 외부 소스 어댑터를 업데이트해야 할 수 있습니다.
+
+## 업데이트 1.30 — 보안·신뢰성
+
+- Player → **Data Sources**에서 소스의 이용 가능 여부와 제공된 경우의 조회 시각을 확인할 수 있습니다. 시각이 표시되지 않는 데이터의 최신성을 보장하지 않습니다.
+- 화면 상단의 **새로고침**은 현재 경기와 선택한 선수를 다시 조회합니다.
+- B-Ref는 공식 데이터 페이지에서 직접 받은 ZIP/TXT/CSV를 가져옵니다. 과도한 크기·파일 수·압축비를 가진 파일은 거부합니다.
+- 수동 설치에서는 `python -m pip install -r requirements.txt -c constraints-release.txt`를 사용합니다. 이 제약 파일은 직접 의존성 버전을 고정합니다.
+- 구현 내역, 검사 방법, CI 결과와 남은 제한은 [v1.30 패치 노트](PATCH_v1.30.md)에 있습니다.
+
+## 업데이트 1.23 — Compare
+
+Compare는 2–4명의 선수 비교, Sprint Speed, 정수 OAA, 시즌 분포 기준 League Position, 세로 카드형 Insights를 지원합니다. 자세한 내용은 [v1.23 패치 노트](PATCH_v1.23.md)를 참고하십시오.
 
 ## 주요 기능
 
