@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr, tr_list
+
 from typing import Any
 
 from PyQt6.QtCore import pyqtSignal
@@ -25,7 +27,7 @@ class LeagueView(QWidget):
         super().__init__()
         root = QVBoxLayout(self)
         controls = QHBoxLayout()
-        self.refresh_button = QPushButton("Refresh Standings")
+        self.refresh_button = QPushButton(tr("Refresh Standings"))
         self.refresh_button.clicked.connect(self.refresh_requested)
         controls.addWidget(self.refresh_button)
         controls.addStretch()
@@ -39,17 +41,17 @@ class LeagueView(QWidget):
             ["Team", "W", "L", "Pct", "GB", "League", "WC Rank"]
         )
         self.standings_table.cellDoubleClicked.connect(self._standing_double_click)
-        self.tabs.addTab(self.standings_table, "Standings")
+        self.tabs.addTab(self.standings_table, tr("Standings"))
         self.league_stats_table = self._table(
             ["Team", "R", "HR", "AVG", "OBP", "SLG", "OPS", "ERA", "WHIP", "SO"]
         )
-        self.tabs.addTab(self.wildcard_table, "Wild Card")
-        self.tabs.addTab(self.league_stats_table, "League Stats")
+        self.tabs.addTab(self.wildcard_table, tr("Wild Card"))
+        self.tabs.addTab(self.league_stats_table, tr("League Stats"))
         root.addWidget(self.tabs, 1)
 
-        team_box = QGroupBox("Team Stats")
+        team_box = QGroupBox(tr("Team Stats"))
         team_layout = QVBoxLayout(team_box)
-        self.team_stats_label = QLabel("Double-click a team in the standings.")
+        self.team_stats_label = QLabel(tr("Double-click a team in the standings."))
         self.team_stats_label.setWordWrap(True)
         team_layout.addWidget(self.team_stats_label)
         root.addWidget(team_box)
@@ -58,7 +60,7 @@ class LeagueView(QWidget):
     @staticmethod
     def _table(headers: list[str]) -> QTableWidget:
         table = QTableWidget(0, len(headers))
-        table.setHorizontalHeaderLabels(headers)
+        table.setHorizontalHeaderLabels(tr_list(headers))
         table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         table.setAlternatingRowColors(True)
         return table
@@ -72,7 +74,7 @@ class LeagueView(QWidget):
                 row.get("games_back"), row.get("division"), row.get("division_rank"), row.get("wild_card_rank")
             ]
             for c, value in enumerate(values):
-                self.standings_table.setItem(r, c, QTableWidgetItem(str(value or "—")))
+                self.standings_table.setItem(r, c, QTableWidgetItem(tr(str(value or "—"))))
         self.standings_table.resizeColumnsToContents()
 
         wc = [row for row in rows if row.get("wild_card_rank")]
@@ -84,7 +86,7 @@ class LeagueView(QWidget):
                 row.get("games_back"), row.get("league"), row.get("wild_card_rank")
             ]
             for c, value in enumerate(values):
-                self.wildcard_table.setItem(r, c, QTableWidgetItem(str(value or "—")))
+                self.wildcard_table.setItem(r, c, QTableWidgetItem(tr(str(value or "—"))))
         self.wildcard_table.resizeColumnsToContents()
 
     def set_league_stats(self, rows: list[dict[str, Any]]) -> None:
@@ -93,7 +95,7 @@ class LeagueView(QWidget):
         for r, row in enumerate(rows):
             for c, key in enumerate(keys):
                 value = row.get(key)
-                self.league_stats_table.setItem(r, c, QTableWidgetItem(str(value if value is not None else "—")))
+                self.league_stats_table.setItem(r, c, QTableWidgetItem(tr(str(value if value is not None else "—"))))
         self.league_stats_table.resizeColumnsToContents()
 
     def set_team_stats(self, stats: dict[str, Any]) -> None:
@@ -106,7 +108,7 @@ class LeagueView(QWidget):
                 if key in data:
                     selected.append(f"{key}: {data[key]}")
             lines.append(f"{group.title()}: " + "  |  ".join(selected))
-        self.team_stats_label.setText("\n".join(lines) if lines else "No team stats returned.")
+        self.team_stats_label.setText(tr("\n".join(lines) if lines else "No team stats returned."))
 
     def _standing_double_click(self, row: int, _column: int) -> None:
         if 0 <= row < len(self._standings):

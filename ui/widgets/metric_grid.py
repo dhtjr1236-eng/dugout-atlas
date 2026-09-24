@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 from typing import Any
 
 from PyQt6.QtWidgets import QGridLayout, QLabel, QWidget
@@ -36,9 +38,9 @@ class MetricGrid(QWidget):
         for index, (name, value, percent) in enumerate(metrics):
             row = (index // self.columns) * 2
             col = index % self.columns
-            name_label = QLabel(name)
+            name_label = QLabel(tr(name))
             name_label.setObjectName("subtitle")
-            value_label = QLabel(format_value(value, percent=percent))
+            value_label = QLabel(tr(format_value(value, percent=percent)))
             value_label.setObjectName("metricValue")
             self.layout.addWidget(name_label, row, col)
             self.layout.addWidget(value_label, row + 1, col)

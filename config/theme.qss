@@ -1,7 +1,7 @@
 QWidget {
     background-color: {{--color-bg}};
     color: {{--color-text}};
-    font-family: "Segoe UI";
+    font-family: "Segoe UI", "Malgun Gothic", "Yu Gothic", "Meiryo", "Noto Sans CJK KR", "Noto Sans CJK JP";
     font-size: 10.5pt;
 }
 QMainWindow, QDialog {

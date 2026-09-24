@@ -1,4 +1,4 @@
-# Validated Python 3.12 direct dependency set for Dugout Atlas v1.30.
+# Validated Python 3.12 direct dependency set for Dugout Atlas v1.40 (unchanged from v1.30).
 # Use with: python -m pip install -r requirements.txt -c constraints-release.txt
 PyQt6==6.11.0
 requests==2.34.2

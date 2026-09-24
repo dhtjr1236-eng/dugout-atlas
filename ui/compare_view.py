@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr, tr_list
+
 from typing import Any
 
 from PyQt6.QtCore import QStringListModel, QTimer, Qt, pyqtSignal
@@ -23,10 +25,10 @@ class CompareView(QWidget):
         self._search_models, self._completers, self._timers = {}, {}, {}
         self._searches, self._name_labels, self._profile_labels, self._panes = {}, {}, {}, {}
         root = QVBoxLayout(self)
-        title = QLabel("Compare Players"); title.setObjectName("title"); root.addWidget(title)
-        sub = QLabel("2~4명의 선수를 비교합니다. 원시 지표, 리그 내 위치, 선택 선수 간 강점을 함께 표시합니다.")
+        title = QLabel(tr("Compare Players")); title.setObjectName("title"); root.addWidget(title)
+        sub = QLabel(tr("2~4명의 선수를 비교합니다. 원시 지표, 리그 내 위치, 선택 선수 간 강점을 함께 표시합니다."))
         sub.setObjectName("subtitle"); sub.setWordWrap(True); root.addWidget(sub)
-        tools = QHBoxLayout(); tools.addStretch(); self.add_button = QPushButton("+ 선수 추가")
+        tools = QHBoxLayout(); tools.addStretch(); self.add_button = QPushButton(tr("+ 선수 추가"))
         self.add_button.clicked.connect(self._add_slot); tools.addWidget(self.add_button); root.addLayout(tools)
         grid = QGridLayout(); root.addLayout(grid)
         for slot in range(4):
@@ -35,7 +37,7 @@ class CompareView(QWidget):
         split = QSplitter(Qt.Orientation.Horizontal)
         self.table = QTableWidget(0, 3); self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setAlternatingRowColors(True); self.table.verticalHeader().setVisible(False); split.addWidget(self.table)
-        box = QGroupBox("Comparison Insights"); box.setMinimumWidth(430); outer = QVBoxLayout(box)
+        box = QGroupBox(tr("Comparison Insights")); box.setMinimumWidth(430); outer = QVBoxLayout(box)
         scroll = QScrollArea(); scroll.setWidgetResizable(True); scroll.setFrameShape(QScrollArea.Shape.NoFrame); outer.addWidget(scroll)
         content = QWidget(); self.insights = QVBoxLayout(content); self.insights.setSpacing(10); scroll.setWidget(content)
         split.addWidget(box); split.setSizes([650, 650]); root.addWidget(split, 1)
@@ -43,14 +45,14 @@ class CompareView(QWidget):
 
     def _build_pane(self, slot: int) -> QWidget:
         pane = QWidget(); lay = QVBoxLayout(pane); lay.setContentsMargins(0, 0, 0, 0)
-        row = QHBoxLayout(); row.addWidget(QLabel(f"Player {chr(65+slot)}")); row.addStretch()
+        row = QHBoxLayout(); row.addWidget(QLabel(tr(f"Player {chr(65+slot)}"))); row.addStretch()
         if slot >= 2:
-            b = QPushButton("제거"); b.clicked.connect(lambda _=False, s=slot: self._remove_slot(s)); row.addWidget(b)
+            b = QPushButton(tr("제거")); b.clicked.connect(lambda _=False, s=slot: self._remove_slot(s)); row.addWidget(b)
         lay.addLayout(row)
-        search = QLineEdit(); search.setPlaceholderText("Search player (e.g. Judge)"); lay.addWidget(search)
+        search = QLineEdit(); search.setPlaceholderText(tr("Search player (e.g. Judge)")); lay.addWidget(search)
         model = QStringListModel(self); comp = QCompleter(model, self); comp.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         comp.setCompletionMode(QCompleter.CompletionMode.PopupCompletion); search.setCompleter(comp)
-        name = QLabel("No player selected"); name.setObjectName("title"); profile = QLabel("—"); profile.setObjectName("subtitle")
+        name = QLabel(tr("No player selected")); name.setObjectName("title"); profile = QLabel(tr("—")); profile.setObjectName("subtitle")
         lay.addWidget(name); lay.addWidget(profile)
         timer = QTimer(self); timer.setSingleShot(True); timer.setInterval(350); timer.timeout.connect(lambda s=slot: self._emit_search(s))
         search.textChanged.connect(lambda _t, s=slot: self._timers[s].start()); search.returnPressed.connect(lambda s=slot: self._enter(s))
@@ -67,7 +69,7 @@ class CompareView(QWidget):
         self.add_button.setEnabled(any(not self._panes[i].isVisible() for i in (2, 3))); self._render()
     def _remove_slot(self, slot):
         self._bundles[slot] = None; self._league_positions.pop(slot, None); self._search_maps[slot] = {}; self._search_models[slot].setStringList([])
-        self._searches[slot].clear(); self._name_labels[slot].setText("No player selected"); self._profile_labels[slot].setText("—")
+        self._searches[slot].clear(); self._name_labels[slot].setText(tr("No player selected")); self._profile_labels[slot].setText(tr("—"))
         self._panes[slot].hide(); self.add_button.setEnabled(True); self._render()
     def current_query(self, slot): return self._searches.get(slot).text().strip() if slot in self._searches else ""
     def update_search_results(self, slot, rows):
@@ -79,11 +81,11 @@ class CompareView(QWidget):
         self._search_maps[slot] = mapping; self._search_models[slot].setStringList(list(mapping))
         if mapping and self._searches[slot].hasFocus(): self._completers[slot].complete()
     def set_loading(self, slot, player_id):
-        if slot in self._name_labels: self._league_positions.pop(slot, None); self._name_labels[slot].setText(f"Loading player {player_id}…")
+        if slot in self._name_labels: self._league_positions.pop(slot, None); self._name_labels[slot].setText(tr(f"Loading player {player_id}…"))
     def set_player(self, slot, bundle):
         if slot not in self._bundles: return
-        self._bundles[slot] = bundle; p = bundle.profile; self._name_labels[slot].setText(p.full_name)
-        self._profile_labels[slot].setText(f"{p.team or '—'} | {p.position or '—'} | {'Pitcher' if p.is_pitcher else 'Hitter'} | Age {p.age or '—'}"); self._render()
+        self._bundles[slot] = bundle; p = bundle.profile; self._name_labels[slot].setText(tr(p.full_name))
+        self._profile_labels[slot].setText(tr(f"{p.team or '—'} | {p.position or '—'} | {'Pitcher' if p.is_pitcher else 'Hitter'} | Age {p.age or '—'}")); self._render()
     def set_league_context(self, slot, payload): self._league_positions.__setitem__(slot, payload or {}); self._render_insights()
     def _emit_search(self, slot):
         if slot in self._visible() and len(self.current_query(slot)) >= 2: self.search_requested.emit(slot, self.current_query(slot))
@@ -129,10 +131,10 @@ class CompareView(QWidget):
 
     def _render(self):
         slots=self._visible(); bundles=[self._bundles[i] for i in slots]; labels=self._labels_for(*bundles)
-        self.table.setColumnCount(1+len(slots)); self.table.setHorizontalHeaderLabels(["Metric"]+[self._bundles[i].profile.full_name if self._bundles[i] else f"Player {chr(65+i)}" for i in slots]); self.table.setRowCount(len(labels))
+        self.table.setColumnCount(1+len(slots)); self.table.setHorizontalHeaderLabels(tr_list(["Metric"]+[self._bundles[i].profile.full_name if self._bundles[i] else f"Player {chr(65+i)}" for i in slots])); self.table.setRowCount(len(labels))
         for r,label in enumerate(labels):
-            self.table.setItem(r,0,QTableWidgetItem(label))
-            for c,b in enumerate(bundles,1): self.table.setItem(r,c,QTableWidgetItem(self._format_metric(label,self._metric_value(b,label))))
+            self.table.setItem(r,0,QTableWidgetItem(tr(label))); self.table.item(r,0).setData(Qt.ItemDataRole.UserRole, label)
+            for c,b in enumerate(bundles,1): self.table.setItem(r,c,QTableWidgetItem(tr(self._format_metric(label,self._metric_value(b,label)))))
         self.table.resizeColumnsToContents(); self._render_insights()
 
     @staticmethod
@@ -142,21 +144,21 @@ class CompareView(QWidget):
             if w: w.deleteLater()
     def _render_insights(self):
         self._clear(self.insights)
-        h=QLabel("League Position"); h.setObjectName("sectionTitle"); self.insights.addWidget(h)
-        note=QLabel("선택 시즌 실제 리그 분포 기준 · AVG/wRC+: FanGraphs qualified hitters · Sprint Speed/OAA: Baseball Savant"); note.setObjectName("subtitle"); note.setWordWrap(True); self.insights.addWidget(note)
+        h=QLabel(tr("League Position")); h.setObjectName("sectionTitle"); self.insights.addWidget(h)
+        note=QLabel(tr("선택 시즌 실제 리그 분포 기준 · AVG/wRC+: FanGraphs qualified hitters · Sprint Speed/OAA: Baseball Savant")); note.setObjectName("subtitle"); note.setWordWrap(True); self.insights.addWidget(note)
         hitters=[i for i in self._selected() if not self._bundles[i].profile.is_pitcher]
         for metric in ("AVG","wRC+","Sprint Speed","OAA"):
-            card=QGroupBox(metric); lay=QVBoxLayout(card)
+            card=QGroupBox(tr(metric)); lay=QVBoxLayout(card)
             for i in hitters:
                 b=self._bundles[i]; data=self._league_positions.get(i,{}).get(metric,{}) or {}; pct=data.get("percentile"); value=data.get("value",self._metric_value(b,metric))
-                row=QHBoxLayout(); name=QLabel(b.profile.full_name); name.setMinimumWidth(120); row.addWidget(name)
+                row=QHBoxLayout(); name=QLabel(tr(b.profile.full_name)); name.setMinimumWidth(120); row.addWidget(name)
                 bar=QProgressBar(); bar.setRange(0,100); bar.setValue(int(round(pct)) if pct is not None else 0); bar.setFormat(f"{int(round(pct))}th" if pct is not None else "불러오는 중…"); row.addWidget(bar,1)
-                val=QLabel(self._format_metric(metric,value)); val.setMinimumWidth(72); val.setAlignment(Qt.AlignmentFlag.AlignRight); row.addWidget(val); lay.addLayout(row)
+                val=QLabel(tr(self._format_metric(metric,value))); val.setMinimumWidth(72); val.setAlignment(Qt.AlignmentFlag.AlignRight); row.addWidget(val); lay.addLayout(row)
             self.insights.addWidget(card)
-        h=QLabel("Head-to-Head"); h.setObjectName("sectionTitle"); self.insights.addWidget(h)
+        h=QLabel(tr("Head-to-Head")); h.setObjectName("sectionTitle"); self.insights.addWidget(h)
         actual=[self._bundles[i] for i in self._selected()]
-        if len(actual)<2: self.insights.addWidget(QLabel("두 명 이상의 선수를 불러오면 비교 요약이 표시됩니다.")); return
-        if len({b.profile.is_pitcher for b in actual})>1: self.insights.addWidget(QLabel("타자와 투수의 역할별 카테고리 우열은 계산하지 않습니다.")); return
+        if len(actual)<2: self.insights.addWidget(QLabel(tr("두 명 이상의 선수를 불러오면 비교 요약이 표시됩니다."))); return
+        if len({b.profile.is_pitcher for b in actual})>1: self.insights.addWidget(QLabel(tr("타자와 투수의 역할별 카테고리 우열은 계산하지 않습니다."))); return
         cats=(('Contact',(('AVG',True),('xBA',True),('K%',False))),('Power',(('SLG',True),('ISO',True),('Barrel %',True),('Hard Hit %',True))),('Discipline',(('BB%',True),('K%',False))),('Speed',(('Sprint Speed',True),('SB',True))),('Defense',(('OAA',True),('Runs Prevented',True))),('Overall',(('wRC+',True),('OPS',True),('fWAR',True),('bWAR',True)))) if not actual[0].profile.is_pitcher else (('Run Prevention',(('ERA',False),('FIP',False),('xERA',False),('ERA+',True))),('Dominance',(('K%',True),('Whiff %',True))),('Command',(('BB%',False),('WHIP',False),('Chase %',True))),('Overall',(('fWAR',True),('bWAR',True))))
         for cat,metrics in cats:
             scores={i:0.0 for i in range(len(actual))}; counts={i:0 for i in scores}
@@ -164,10 +166,10 @@ class CompareView(QWidget):
                 vals={i:self._num(self._metric_value(b,metric)) for i,b in enumerate(actual) if self._metric_value(b,metric) is not None}
                 for rank,(i,_v) in enumerate(sorted(vals.items(),key=lambda x:x[1],reverse=higher)):
                     scores[i]+=len(vals)-rank; counts[i]+=1
-            valid={i:scores[i]/counts[i] for i in scores if counts[i]}; card=QGroupBox(cat); lay=QVBoxLayout(card)
+            valid={i:scores[i]/counts[i] for i in scores if counts[i]}; card=QGroupBox(tr(cat)); lay=QVBoxLayout(card)
             if valid:
-                best=max(valid,key=valid.get); win=QLabel(f"우세: {actual[best].profile.full_name}"); win.setObjectName("insightWinner"); lay.addWidget(win)
+                best=max(valid,key=valid.get); win=QLabel(tr(f"우세: {actual[best].profile.full_name}")); win.setObjectName("insightWinner"); lay.addWidget(win)
                 order=sorted(valid,key=valid.get,reverse=True)
-                for rank,i in enumerate(order,1): lay.addWidget(QLabel(f"{actual[i].profile.full_name}   #{rank} · {valid[i]:.1f}점"))
+                for rank,i in enumerate(order,1): lay.addWidget(QLabel(tr(f"{actual[i].profile.full_name}   #{rank} · {valid[i]:.1f} points")))
             self.insights.addWidget(card)
         self.insights.addStretch()

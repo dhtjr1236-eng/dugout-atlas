@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -19,7 +21,7 @@ def _figure(title: str) -> tuple[Figure, Any]:
     ax.title.set_color(colors["text"])
     ax.xaxis.label.set_color(colors["muted"])
     ax.yaxis.label.set_color(colors["muted"])
-    ax.set_title(title)
+    ax.set_title(tr(title))
     fig.subplots_adjust(left=0.12, right=0.97, bottom=0.20, top=0.84)
     return fig, ax
 
@@ -44,7 +46,7 @@ def run_value(pitches: list[dict[str, Any]]) -> Figure:
         values = [float(row.get("Run Value") or 0) for row in rows]
         ax.bar(labels, values)
         ax.tick_params(axis="x", rotation=25)
-        ax.set_ylabel("Runs prevented")
+        ax.set_ylabel(tr("Runs prevented"))
     else:
         ax.text(0.5, 0.5, "No run-value data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig
@@ -62,9 +64,9 @@ def velocity_history(history: list[dict[str, Any]]) -> Figure:
         values = [float(row.get("Avg Velocity") or 0) for row in rows]
         ax.plot(periods, values, marker="o")
         ax.tick_params(axis="x", rotation=30)
-        ax.set_ylabel("mph")
+        ax.set_ylabel(tr("mph"))
         pitch = next((str(row.get("Pitch")) for row in rows if row.get("Pitch")), "Fastball")
-        ax.set_xlabel(f"Period · {pitch}")
+        ax.set_xlabel(tr(f"Period · {pitch}"))
         if len(values) == 1:
             ax.scatter(periods, values)
     else:
@@ -88,7 +90,7 @@ def whiff_by_pitch(pitches: list[dict[str, Any]]) -> Figure:
         values = [float(row.get("Whiff %") or 0) for row in rows]
         ax.bar(labels, values)
         ax.tick_params(axis="x", rotation=25)
-        ax.set_ylabel("Whiff %")
+        ax.set_ylabel(tr("Whiff %"))
     else:
         ax.text(0.5, 0.5, "No Whiff% data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig

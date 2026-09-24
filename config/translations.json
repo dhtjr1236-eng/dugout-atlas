@@ -1,0 +1,1207 @@
+[
+  {
+    "en": "Settings",
+    "ko": "설정",
+    "ja": "設定"
+  },
+  {
+    "en": "Save",
+    "ko": "저장",
+    "ja": "保存"
+  },
+  {
+    "en": "Cancel",
+    "ko": "취소",
+    "ja": "キャンセル"
+  },
+  {
+    "en": "Close",
+    "ko": "닫기",
+    "ja": "閉じる"
+  },
+  {
+    "en": "General",
+    "ko": "일반",
+    "ja": "一般"
+  },
+  {
+    "en": "Appearance",
+    "ko": "화면",
+    "ja": "表示"
+  },
+  {
+    "en": "Data and diagnostics",
+    "ko": "데이터 및 진단",
+    "ja": "データと診断"
+  },
+  {
+    "en": "Game refresh interval (seconds)",
+    "ko": "경기 자동갱신 간격(초)",
+    "ja": "試合の自動更新間隔（秒）"
+  },
+  {
+    "en": "Player refresh interval (seconds)",
+    "ko": "선수 자동갱신 간격(초)",
+    "ja": "選手の自動更新間隔（秒）"
+  },
+  {
+    "en": "Theme",
+    "ko": "테마",
+    "ja": "テーマ"
+  },
+  {
+    "en": "Light",
+    "ko": "밝게",
+    "ja": "ライト"
+  },
+  {
+    "en": "Dark",
+    "ko": "어둡게",
+    "ja": "ダーク"
+  },
+  {
+    "en": "Font size (%)",
+    "ko": "글자 크기(%)",
+    "ja": "文字サイズ（%）"
+  },
+  {
+    "en": "Game notifications",
+    "ko": "경기 알림",
+    "ja": "試合通知"
+  },
+  {
+    "en": "App language",
+    "ko": "앱 언어",
+    "ja": "アプリの言語"
+  },
+  {
+    "en": "Data location",
+    "ko": "데이터 위치",
+    "ja": "データの保存先"
+  },
+  {
+    "en": "Choose folder",
+    "ko": "폴더 선택",
+    "ja": "フォルダーを選択"
+  },
+  {
+    "en": "Open folder",
+    "ko": "폴더 열기",
+    "ja": "フォルダーを開く"
+  },
+  {
+    "en": "Clear cache",
+    "ko": "캐시 삭제",
+    "ja": "キャッシュを削除"
+  },
+  {
+    "en": "Export diagnostics",
+    "ko": "진단정보 내보내기",
+    "ja": "診断情報をエクスポート"
+  },
+  {
+    "en": "Refresh source",
+    "ko": "소스별 새로고침",
+    "ja": "データソースを更新"
+  },
+  {
+    "en": "Refresh now",
+    "ko": "지금 새로고침",
+    "ja": "今すぐ更新"
+  },
+  {
+    "en": "Waiting for active requests to finish.",
+    "ko": "진행 중인 조회가 끝나면 사용할 수 있습니다.",
+    "ja": "実行中の取得が完了すると利用できます。"
+  },
+  {
+    "en": "Settings saved.",
+    "ko": "설정을 저장했습니다.",
+    "ja": "設定を保存しました。"
+  },
+  {
+    "en": "Data location changes apply after restarting the app. Existing data will be copied; the old folder is retained.",
+    "ko": "데이터 위치 변경은 앱 재시작 후 적용됩니다. 기존 데이터를 복사하며 원래 폴더는 보존합니다.",
+    "ja": "保存先の変更はアプリの再起動後に適用されます。既存データをコピーし、元のフォルダーは保持します。"
+  },
+  {
+    "en": "Clear downloaded caches? Imported B-Ref files and favorites will be kept.",
+    "ko": "다운로드한 캐시를 삭제할까요? 가져온 B-Ref 파일과 즐겨찾기는 보존합니다.",
+    "ja": "ダウンロード済みキャッシュを削除しますか？取り込んだB-Refファイルとお気に入りは保持します。"
+  },
+  {
+    "en": "Cache cleared.",
+    "ko": "캐시를 삭제했습니다.",
+    "ja": "キャッシュを削除しました。"
+  },
+  {
+    "en": "Diagnostics saved.",
+    "ko": "진단정보를 저장했습니다.",
+    "ja": "診断情報を保存しました。"
+  },
+  {
+    "en": "Source cache cleared. Selected player and game data will refresh after closing Settings.",
+    "ko": "소스 캐시를 삭제했습니다. 설정을 닫으면 선택한 선수와 경기 데이터를 새로 조회합니다.",
+    "ja": "ソースのキャッシュを削除しました。設定を閉じると選択中の選手と試合を再取得します。"
+  },
+  {
+    "en": "No active player: this source will refresh on the next player lookup.",
+    "ko": "선수가 선택되지 않았습니다. 다음 선수 조회 시 이 소스를 새로 불러옵니다.",
+    "ja": "選手が選択されていません。次回の選手取得時にこのソースを更新します。"
+  },
+  {
+    "en": "Choose an empty folder outside the current data folder.",
+    "ko": "현재 데이터 폴더 밖의 빈 폴더를 선택하세요.",
+    "ja": "現在のデータフォルダー以外の空のフォルダーを選択してください。"
+  },
+  {
+    "en": "Could not save settings",
+    "ko": "설정을 저장하지 못했습니다",
+    "ja": "設定を保存できませんでした"
+  },
+  {
+    "en": "Operation failed. Check folder permissions and try again.",
+    "ko": "작업에 실패했습니다. 폴더 권한을 확인한 뒤 다시 시도하세요.",
+    "ja": "操作に失敗しました。フォルダーの権限を確認して再試行してください。"
+  },
+  {
+    "en": "Interface labels and built-in explanations switch immediately. Player names, metric abbreviations and provider text are preserved.",
+    "ko": "화면 문구와 내장 설명은 즉시 번역됩니다. 선수 이름·통계 약어·제공처 원문은 유지합니다.",
+    "ja": "画面の文言と組み込み説明はすぐに切り替わります。選手名・指標の略語・提供元の原文は保持します。"
+  },
+  {
+    "en": "Gameday",
+    "ko": "경기",
+    "ja": "試合"
+  },
+  {
+    "en": "Lineups",
+    "ko": "라인업",
+    "ja": "ラインナップ"
+  },
+  {
+    "en": "Player",
+    "ko": "선수",
+    "ja": "選手"
+  },
+  {
+    "en": "Compare",
+    "ko": "비교",
+    "ja": "比較"
+  },
+  {
+    "en": "Standings",
+    "ko": "순위",
+    "ja": "順位"
+  },
+  {
+    "en": "Today",
+    "ko": "오늘",
+    "ja": "今日"
+  },
+  {
+    "en": "Games",
+    "ko": "경기 목록",
+    "ja": "試合一覧"
+  },
+  {
+    "en": "Ready",
+    "ko": "준비됨",
+    "ja": "準備完了"
+  },
+  {
+    "en": "Search player (e.g. Judge)",
+    "ko": "선수 검색(예: Judge)",
+    "ja": "選手を検索（例: Judge）"
+  },
+  {
+    "en": "B-Ref downloads",
+    "ko": "B-Ref 다운로드",
+    "ja": "B-Refダウンロード"
+  },
+  {
+    "en": "Import B-Ref file",
+    "ko": "B-Ref 파일 가져오기",
+    "ja": "B-Refファイルを取り込む"
+  },
+  {
+    "en": "Refresh",
+    "ko": "새로고침",
+    "ja": "更新"
+  },
+  {
+    "en": "Reload the current game and selected player data",
+    "ko": "현재 경기와 선택한 선수 데이터를 다시 조회",
+    "ja": "現在の試合と選択中の選手データを再取得"
+  },
+  {
+    "en": "Open Baseball-Reference official WAR downloads in your normal browser.",
+    "ko": "일반 브라우저에서 Baseball-Reference 공식 WAR 다운로드를 엽니다.",
+    "ja": "ブラウザーでBaseball-Reference公式WARダウンロードを開きます。"
+  },
+  {
+    "en": "Import an official war_archive ZIP or war_daily_bat/pitch TXT/CSV file.",
+    "ko": "공식 war_archive ZIP 또는 war_daily_bat/pitch TXT/CSV 파일을 가져옵니다.",
+    "ja": "公式war_archive ZIPまたはwar_daily_bat/pitch TXT/CSVを取り込みます。"
+  },
+  {
+    "en": "Import Baseball-Reference WAR data",
+    "ko": "Baseball-Reference WAR 데이터 가져오기",
+    "ja": "Baseball-Reference WARデータの取り込み"
+  },
+  {
+    "en": "No MLB games found for this date",
+    "ko": "해당 날짜에 MLB 경기가 없습니다",
+    "ja": "この日付のMLB試合はありません"
+  },
+  {
+    "en": "Select a game",
+    "ko": "경기를 선택하세요",
+    "ja": "試合を選択してください"
+  },
+  {
+    "en": "Live Game State",
+    "ko": "실시간 경기 상황",
+    "ja": "試合の現在の状況"
+  },
+  {
+    "en": "Current Matchup",
+    "ko": "현재 맞대결",
+    "ja": "現在の対戦"
+  },
+  {
+    "en": "Recent Play",
+    "ko": "최근 플레이",
+    "ja": "直近のプレー"
+  },
+  {
+    "en": "Batting Order",
+    "ko": "타순",
+    "ja": "打順"
+  },
+  {
+    "en": "Pitchers Used",
+    "ko": "등판 투수",
+    "ja": "登板投手"
+  },
+  {
+    "en": "Away Lineup",
+    "ko": "원정 라인업",
+    "ja": "ビジターのラインナップ"
+  },
+  {
+    "en": "Home Lineup",
+    "ko": "홈 라인업",
+    "ja": "ホームのラインナップ"
+  },
+  {
+    "en": "Lineup has not been posted yet.",
+    "ko": "라인업이 아직 발표되지 않았습니다.",
+    "ja": "ラインナップはまだ発表されていません。"
+  },
+  {
+    "en": "No pitcher has appeared in the box score yet.",
+    "ko": "박스스코어에 등판 투수가 아직 없습니다.",
+    "ja": "ボックススコアに登板投手がまだありません。"
+  },
+  {
+    "en": "Select a player",
+    "ko": "선수를 선택하세요",
+    "ja": "選手を選択してください"
+  },
+  {
+    "en": "Search by name or click a lineup player.",
+    "ko": "이름으로 검색하거나 라인업의 선수를 클릭하세요.",
+    "ja": "名前で検索するか、ラインナップの選手をクリックしてください。"
+  },
+  {
+    "en": "Collecting MLB, FanGraphs, Baseball Reference and Statcast data.",
+    "ko": "MLB·FanGraphs·Baseball Reference·Statcast 데이터를 수집하고 있습니다.",
+    "ja": "MLB・FanGraphs・Baseball Reference・Statcastのデータを取得しています。"
+  },
+  {
+    "en": "Basic Stats",
+    "ko": "기본 기록",
+    "ja": "基本成績"
+  },
+  {
+    "en": "Defense",
+    "ko": "수비",
+    "ja": "守備"
+  },
+  {
+    "en": "Running",
+    "ko": "주루",
+    "ja": "走塁"
+  },
+  {
+    "en": "Pitch Arsenal",
+    "ko": "구종 분석",
+    "ja": "球種分析"
+  },
+  {
+    "en": "Pitch Usage",
+    "ko": "구종 비율",
+    "ja": "球種割合"
+  },
+  {
+    "en": "Data Sources",
+    "ko": "데이터 출처",
+    "ja": "データソース"
+  },
+  {
+    "en": "No external sabermetric source returned data for this player.",
+    "ko": "이 선수에 대한 외부 세이버메트릭스 데이터가 없습니다.",
+    "ja": "この選手の外部セイバーメトリクスデータはありません。"
+  },
+  {
+    "en": "Some sources were unavailable: ",
+    "ko": "일부 출처를 이용할 수 없습니다: ",
+    "ja": "一部のソースを取得できませんでした: "
+  },
+  {
+    "en": "● Available",
+    "ko": "● 이용 가능",
+    "ja": "● 利用可能"
+  },
+  {
+    "en": "◐ Partial",
+    "ko": "◐ 일부 제공",
+    "ja": "◐ 一部取得"
+  },
+  {
+    "en": "⚠ No data",
+    "ko": "⚠ 데이터 없음",
+    "ja": "⚠ データなし"
+  },
+  {
+    "en": "⚠ Unavailable",
+    "ko": "⚠ 이용 불가",
+    "ja": "⚠ 利用不可"
+  },
+  {
+    "en": "Yearly",
+    "ko": "연도별",
+    "ja": "年別"
+  },
+  {
+    "en": "Monthly",
+    "ko": "월별",
+    "ja": "月別"
+  },
+  {
+    "en": "Daily",
+    "ko": "일별",
+    "ja": "日別"
+  },
+  {
+    "en": "Yearly · last 6 seasons",
+    "ko": "연도별 · 최근 6시즌",
+    "ja": "年別・直近6シーズン"
+  },
+  {
+    "en": "Monthly · current season",
+    "ko": "월별 · 현재 시즌",
+    "ja": "月別・今シーズン"
+  },
+  {
+    "en": "Daily · recent 14 games",
+    "ko": "일별 · 최근 14경기",
+    "ja": "日別・直近14試合"
+  },
+  {
+    "en": "Yearly · selected season",
+    "ko": "연도별 · 선택 시즌",
+    "ja": "年別・選択シーズン"
+  },
+  {
+    "en": "Monthly · latest active month",
+    "ko": "월별 · 최근 등판 월",
+    "ja": "月別・直近の登板月"
+  },
+  {
+    "en": "Daily · latest appearance",
+    "ko": "일별 · 최근 등판",
+    "ja": "日別・直近の登板"
+  },
+  {
+    "en": "Pitcher Statcast period:",
+    "ko": "투수 Statcast 기간:",
+    "ja": "投手Statcastの期間:"
+  },
+  {
+    "en": "WAR / wRC+ trend:",
+    "ko": "WAR / wRC+ 추이:",
+    "ja": "WAR / wRC+の推移:"
+  },
+  {
+    "en": "Yearly: selected season · Monthly: latest month with a Statcast appearance · Daily: latest Statcast appearance date",
+    "ko": "연도별: 선택 시즌 · 월별: 최근 Statcast 등판 월 · 일별: 최근 Statcast 등판일",
+    "ja": "年別: 選択シーズン・月別: 直近のStatcast登板月・日別: 直近のStatcast登板日"
+  },
+  {
+    "en": "Yearly: six seasons · Monthly: current season · Daily: exact FanGraphs date-range values for the recent 14 games",
+    "ko": "연도별: 6시즌 · 월별: 현재 시즌 · 일별: 최근 14경기의 FanGraphs 날짜 구간 기록",
+    "ja": "年別: 6シーズン・月別: 今シーズン・日別: 直近14試合のFanGraphs日付範囲の成績"
+  },
+  {
+    "en": "Compare Players",
+    "ko": "선수 비교",
+    "ja": "選手比較"
+  },
+  {
+    "en": "Compare 2–4 players by raw metrics, league position and relative strengths.",
+    "ko": "2~4명의 선수를 비교합니다. 원시 지표, 리그 내 위치, 선택 선수 간 강점을 함께 표시합니다.",
+    "ja": "2〜4人の選手を比較します。指標、リーグ内の位置、選択した選手間の強みを表示します。"
+  },
+  {
+    "en": "+ Add player",
+    "ko": "+ 선수 추가",
+    "ja": "+ 選手を追加"
+  },
+  {
+    "en": "Remove",
+    "ko": "제거",
+    "ja": "削除"
+  },
+  {
+    "en": "No player selected",
+    "ko": "선수 미선택",
+    "ja": "選手未選択"
+  },
+  {
+    "en": "Select two players to compare",
+    "ko": "비교할 선수 두 명을 선택하세요",
+    "ja": "比較する選手を2人選択してください"
+  },
+  {
+    "en": "Comparison Insights",
+    "ko": "비교 분석",
+    "ja": "比較分析"
+  },
+  {
+    "en": "League Position",
+    "ko": "리그 내 위치",
+    "ja": "リーグ内の位置"
+  },
+  {
+    "en": "Head-to-Head",
+    "ko": "선수 간 비교",
+    "ja": "選手間の比較"
+  },
+  {
+    "en": "Loading…",
+    "ko": "불러오는 중…",
+    "ja": "読み込み中…"
+  },
+  {
+    "en": "A comparison summary appears after loading at least two players.",
+    "ko": "두 명 이상의 선수를 불러오면 비교 요약이 표시됩니다.",
+    "ja": "2人以上の選手を読み込むと比較の要約を表示します。"
+  },
+  {
+    "en": "Role-specific categories are not ranked between hitters and pitchers.",
+    "ko": "타자와 투수의 역할별 카테고리 우열은 계산하지 않습니다.",
+    "ja": "打者と投手の役割別カテゴリーの優劣は計算しません。"
+  },
+  {
+    "en": "Selected-season league distribution · AVG/wRC+: FanGraphs qualified hitters · Sprint Speed/OAA: Baseball Savant",
+    "ko": "선택 시즌 실제 리그 분포 기준 · AVG/wRC+: FanGraphs qualified hitters · Sprint Speed/OAA: Baseball Savant",
+    "ja": "選択シーズンのリーグ分布・AVG/wRC+: FanGraphs規定打席到達者・Sprint Speed/OAA: Baseball Savant"
+  },
+  {
+    "en": "Contact",
+    "ko": "컨택",
+    "ja": "コンタクト"
+  },
+  {
+    "en": "Power",
+    "ko": "장타력",
+    "ja": "長打力"
+  },
+  {
+    "en": "Discipline",
+    "ko": "선구안",
+    "ja": "選球眼"
+  },
+  {
+    "en": "Speed",
+    "ko": "주력",
+    "ja": "走力"
+  },
+  {
+    "en": "Overall",
+    "ko": "종합",
+    "ja": "総合"
+  },
+  {
+    "en": "Run Prevention",
+    "ko": "실점 억제",
+    "ja": "失点抑止"
+  },
+  {
+    "en": "Dominance",
+    "ko": "구위",
+    "ja": "支配力"
+  },
+  {
+    "en": "Command",
+    "ko": "제구",
+    "ja": "制球"
+  },
+  {
+    "en": "Advantage: ",
+    "ko": "우세: ",
+    "ja": "優勢: "
+  },
+  {
+    "en": "Refresh Standings",
+    "ko": "순위 새로고침",
+    "ja": "順位を更新"
+  },
+  {
+    "en": "League Stats",
+    "ko": "리그 기록",
+    "ja": "リーグ成績"
+  },
+  {
+    "en": "Team Stats",
+    "ko": "팀 기록",
+    "ja": "チーム成績"
+  },
+  {
+    "en": "Wild Card",
+    "ko": "와일드카드",
+    "ja": "ワイルドカード"
+  },
+  {
+    "en": "Double-click a team in the standings.",
+    "ko": "순위표에서 팀을 더블클릭하세요.",
+    "ja": "順位表のチームをダブルクリックしてください。"
+  },
+  {
+    "en": "No team stats returned.",
+    "ko": "팀 기록이 없습니다.",
+    "ja": "チーム成績がありません。"
+  },
+  {
+    "en": "Favorites / Notifications",
+    "ko": "즐겨찾기 / 알림",
+    "ja": "お気に入り / 通知"
+  },
+  {
+    "en": "Favorite team game update",
+    "ko": "즐겨찾기 팀 경기 업데이트",
+    "ja": "お気に入りチームの試合更新"
+  },
+  {
+    "en": "Notify when a favorite team's score or game status changes.",
+    "ko": "즐겨찾기 팀의 점수 또는 경기 상태가 바뀌면 알림을 표시합니다.",
+    "ja": "お気に入りチームの得点や試合状況が変わると通知します。"
+  },
+  {
+    "en": "★ Unfavorite player",
+    "ko": "★ 선수 즐겨찾기 해제",
+    "ja": "★ 選手のお気に入りを解除"
+  },
+  {
+    "en": "☆ Save current player",
+    "ko": "☆ 현재 선수 저장",
+    "ja": "☆ 現在の選手を保存"
+  },
+  {
+    "en": "☆ Away team",
+    "ko": "☆ 원정팀",
+    "ja": "☆ ビジターチーム"
+  },
+  {
+    "en": "☆ Home team",
+    "ko": "☆ 홈팀",
+    "ja": "☆ ホームチーム"
+  },
+  {
+    "en": "★ Player · ",
+    "ko": "★ 선수 · ",
+    "ja": "★ 選手 · "
+  },
+  {
+    "en": "★ Team · ",
+    "ko": "★ 팀 · ",
+    "ja": "★ チーム · "
+  },
+  {
+    "en": "Dugout Atlas game notifications",
+    "ko": "Dugout Atlas 경기 알림",
+    "ja": "Dugout Atlas試合通知"
+  },
+  {
+    "en": "Switch to Light Theme",
+    "ko": "Light Theme로 전환",
+    "ja": "ライトテーマに切り替え"
+  },
+  {
+    "en": "Switch to Dark Theme",
+    "ko": "Dark Theme로 전환",
+    "ja": "ダークテーマに切り替え"
+  },
+  {
+    "en": "Dugout Atlas theme toggle",
+    "ko": "Dugout Atlas 화면 테마 전환 버튼",
+    "ja": "Dugout Atlasテーマ切り替えボタン"
+  },
+  {
+    "en": "Season",
+    "ko": "시즌",
+    "ja": "シーズン"
+  },
+  {
+    "en": "Reload all player data for the selected season.",
+    "ko": "선택한 시즌 기준으로 선수 페이지 전체 데이터를 다시 불러옵니다.",
+    "ja": "選択したシーズンの選手データをすべて再取得します。"
+  },
+  {
+    "en": "Platoon Splits",
+    "ko": "좌우 상대 기록",
+    "ja": "左右別成績"
+  },
+  {
+    "en": "Opponent",
+    "ko": "상대",
+    "ja": "対戦相手"
+  },
+  {
+    "en": "vs LHP",
+    "ko": "좌투수 상대",
+    "ja": "対左投手"
+  },
+  {
+    "en": "vs RHP",
+    "ko": "우투수 상대",
+    "ja": "対右投手"
+  },
+  {
+    "en": "vs LHB",
+    "ko": "좌타자 상대",
+    "ja": "対左打者"
+  },
+  {
+    "en": "vs RHB",
+    "ko": "우타자 상대",
+    "ja": "対右打者"
+  },
+  {
+    "en": "Left/right splits prioritize FanGraphs; missing slash-line stats use the MLB Stats API.",
+    "ko": "좌/우 상대 성적은 FanGraphs split을 우선 사용하고, 누락된 slash line은 MLB Stats API로 보완합니다.",
+    "ja": "左右別成績はFanGraphsを優先し、不足する打率・出塁率・長打率はMLB Stats APIで補います。"
+  },
+  {
+    "en": "Pitcher opponent wRC+ is shown only when supplied by FanGraphs splits.",
+    "ko": "투수 상대 wRC+는 FanGraphs split 응답에 값이 제공되는 경우에만 표시됩니다.",
+    "ja": "投手の対戦相手wRC+はFanGraphsの分割成績に値がある場合のみ表示します。"
+  },
+  {
+    "en": "Scoring Plays",
+    "ko": "득점 플레이",
+    "ja": "得点プレー"
+  },
+  {
+    "en": "Inning",
+    "ko": "이닝",
+    "ja": "イニング"
+  },
+  {
+    "en": "Scorer",
+    "ko": "득점자",
+    "ja": "得点者"
+  },
+  {
+    "en": "Scoring type",
+    "ko": "득점 유형",
+    "ja": "得点の種類"
+  },
+  {
+    "en": "Description",
+    "ko": "설명",
+    "ja": "説明"
+  },
+  {
+    "en": "Batting average: hits / at-bats",
+    "ko": "타율: 안타 ÷ 타수",
+    "ja": "打率: 安打 ÷ 打数"
+  },
+  {
+    "en": "On-base percentage: how often a batter reaches base",
+    "ko": "출루율: 타자가 출루한 비율",
+    "ja": "出塁率: 打者が出塁した割合"
+  },
+  {
+    "en": "Slugging percentage: total bases per at-bat",
+    "ko": "장타율: 타수당 총 루타",
+    "ja": "長打率: 打数当たりの塁打数"
+  },
+  {
+    "en": "On-base percentage + slugging percentage",
+    "ko": "출루율 + 장타율",
+    "ja": "出塁率 + 長打率"
+  },
+  {
+    "en": "Home runs",
+    "ko": "홈런",
+    "ja": "本塁打"
+  },
+  {
+    "en": "Runs batted in",
+    "ko": "타점",
+    "ja": "打点"
+  },
+  {
+    "en": "Stolen bases",
+    "ko": "도루 성공",
+    "ja": "盗塁成功"
+  },
+  {
+    "en": "Plate appearances",
+    "ko": "타석 수",
+    "ja": "打席数"
+  },
+  {
+    "en": "FanGraphs WAR: wins above replacement",
+    "ko": "FanGraphs WAR: 대체선수 대비 기여 승수",
+    "ja": "FanGraphs WAR: 代替選手と比べた勝利貢献度"
+  },
+  {
+    "en": "Adjusted run creation; 100 is league average",
+    "ko": "조정 득점 생산력. 100이 리그 평균",
+    "ja": "補正得点創出力。100がリーグ平均"
+  },
+  {
+    "en": "League- and park-adjusted OPS; 100 is average",
+    "ko": "리그·구장을 보정한 OPS. 100이 평균",
+    "ja": "リーグと球場で補正したOPS。100が平均"
+  },
+  {
+    "en": "Isolated power: SLG - AVG",
+    "ko": "순수 장타력: SLG - AVG",
+    "ja": "純粋な長打力: SLG - AVG"
+  },
+  {
+    "en": "Batting average on balls in play",
+    "ko": "인플레이 타구 타율",
+    "ja": "インプレー打球の打率"
+  },
+  {
+    "en": "Walk rate",
+    "ko": "볼넷 비율",
+    "ja": "四球率"
+  },
+  {
+    "en": "Strikeout rate",
+    "ko": "삼진 비율",
+    "ja": "三振率"
+  },
+  {
+    "en": "On-base production weighted by batting outcome",
+    "ko": "타격 결과별 가중치를 적용한 출루 생산성 지표",
+    "ja": "打撃結果ごとに重み付けした出塁貢献指標"
+  },
+  {
+    "en": "Average exit velocity",
+    "ko": "평균 타구 속도",
+    "ja": "平均打球速度"
+  },
+  {
+    "en": "Maximum exit velocity",
+    "ko": "최고 타구 속도",
+    "ja": "最高打球速度"
+  },
+  {
+    "en": "Share of batted balls at least 95 mph",
+    "ko": "95mph 이상 강한 타구 비율",
+    "ja": "95mph以上の強い打球の割合"
+  },
+  {
+    "en": "Barrel rate",
+    "ko": "배럴 타구 비율",
+    "ja": "バレル率"
+  },
+  {
+    "en": "Statcast expected batting average",
+    "ko": "Statcast 기대 타율",
+    "ja": "Statcast期待打率"
+  },
+  {
+    "en": "Statcast expected slugging percentage",
+    "ko": "Statcast 기대 장타율",
+    "ja": "Statcast期待長打率"
+  },
+  {
+    "en": "Statcast expected wOBA",
+    "ko": "Statcast 기대 wOBA",
+    "ja": "Statcast期待wOBA"
+  },
+  {
+    "en": "Outs Above Average: extra outs relative to an average fielder",
+    "ko": "Outs Above Average: 평균 수비수 대비 추가 아웃 기여",
+    "ja": "Outs Above Average: 平均的な守備者より増やしたアウト数"
+  },
+  {
+    "en": "Statcast defensive runs prevented",
+    "ko": "Statcast 수비 기여의 실점 억제 값",
+    "ja": "Statcastによる守備の失点抑止値"
+  },
+  {
+    "en": "Earned runs per nine innings",
+    "ko": "9이닝당 자책점",
+    "ja": "9イニング当たりの自責点"
+  },
+  {
+    "en": "Walks plus hits allowed per inning",
+    "ko": "이닝당 허용 출루(볼넷+피안타)",
+    "ja": "1イニング当たりの被安打と与四球"
+  },
+  {
+    "en": "Pitching metric focused on defense-independent outcomes",
+    "ko": "수비 영향이 적은 결과 중심 투수 평가 지표",
+    "ja": "守備の影響が少ない結果に基づく投手指標"
+  },
+  {
+    "en": "FIP with home runs normalized to average HR/FB",
+    "ko": "홈런을 평균 HR/FB로 보정한 FIP",
+    "ja": "本塁打を平均HR/FBで補正したFIP"
+  },
+  {
+    "en": "League- and park-adjusted ERA; 100 is average, higher is better",
+    "ko": "리그·구장 보정 ERA. 100이 평균이며 높을수록 좋음",
+    "ja": "リーグと球場で補正したERA。100が平均で高いほど良い"
+  },
+  {
+    "en": "Statcast expected ERA",
+    "ko": "Statcast 기대 ERA",
+    "ja": "Statcast期待ERA"
+  },
+  {
+    "en": "Misses as a share of swings",
+    "ko": "스윙 중 헛스윙 비율",
+    "ja": "スイングに占める空振りの割合"
+  },
+  {
+    "en": "Swing rate at pitches outside the strike zone",
+    "ko": "스트라이크존 밖 공에 스윙한 비율",
+    "ja": "ストライクゾーン外の球へのスイング率"
+  },
+  {
+    "en": "Average exit velocity allowed",
+    "ko": "허용 타구 평균 타구 속도",
+    "ja": "被打球の平均速度"
+  },
+  {
+    "en": "Loading player ",
+    "ko": "선수 조회 중 ",
+    "ja": "選手を取得中 "
+  },
+  {
+    "en": "Loading games for ",
+    "ko": "경기 일정 조회 중 ",
+    "ja": "試合日程を取得中 "
+  },
+  {
+    "en": "Loading game ",
+    "ko": "경기 조회 중 ",
+    "ja": "試合を取得中 "
+  },
+  {
+    "en": "Updated game ",
+    "ko": "경기 갱신 완료 ",
+    "ja": "試合更新完了 "
+  },
+  {
+    "en": "Player data loaded: ",
+    "ko": "선수 데이터 조회 완료: ",
+    "ja": "選手データ取得完了: "
+  },
+  {
+    "en": "Compare loaded: ",
+    "ko": "비교 조회 완료: ",
+    "ja": "比較取得完了: "
+  },
+  {
+    "en": "Loading comparison player ",
+    "ko": "비교 선수 조회 중 ",
+    "ja": "比較選手を取得中 "
+  },
+  {
+    "en": "Loading FanGraphs ",
+    "ko": "FanGraphs 조회 중 ",
+    "ja": "FanGraphsを取得中 "
+  },
+  {
+    "en": "Loading Statcast ",
+    "ko": "Statcast 조회 중 ",
+    "ja": "Statcastを取得中 "
+  },
+  {
+    "en": "Metric",
+    "ko": "지표",
+    "ja": "指標"
+  },
+  {
+    "en": "Name",
+    "ko": "이름",
+    "ja": "名前"
+  },
+  {
+    "en": "Team",
+    "ko": "팀",
+    "ja": "チーム"
+  },
+  {
+    "en": "Position",
+    "ko": "포지션",
+    "ja": "ポジション"
+  },
+  {
+    "en": "Velocity",
+    "ko": "구속",
+    "ja": "球速"
+  },
+  {
+    "en": "Exit Velocity",
+    "ko": "타구 속도",
+    "ja": "打球速度"
+  },
+  {
+    "en": "Away",
+    "ko": "원정",
+    "ja": "ビジター"
+  },
+  {
+    "en": "Home",
+    "ko": "홈",
+    "ja": "ホーム"
+  },
+  {
+    "en": "Status",
+    "ko": "상태",
+    "ja": "状況"
+  },
+  {
+    "en": "Count",
+    "ko": "볼카운트",
+    "ja": "カウント"
+  },
+  {
+    "en": "Outs",
+    "ko": "아웃",
+    "ja": "アウト"
+  },
+  {
+    "en": "Runners",
+    "ko": "주자",
+    "ja": "走者"
+  },
+  {
+    "en": "Batter",
+    "ko": "타자",
+    "ja": "打者"
+  },
+  {
+    "en": "Pitcher",
+    "ko": "투수",
+    "ja": "投手"
+  },
+  {
+    "en": "Hitter",
+    "ko": "타자",
+    "ja": "打者"
+  },
+  {
+    "en": "Linescore",
+    "ko": "이닝별 점수",
+    "ja": "イニング別スコア"
+  },
+  {
+    "en": "Pitch",
+    "ko": "구종",
+    "ja": "球種"
+  },
+  {
+    "en": "Spin",
+    "ko": "회전수",
+    "ja": "回転数"
+  },
+  {
+    "en": "Avg Velo",
+    "ko": "평균 구속",
+    "ja": "平均球速"
+  },
+  {
+    "en": "Max Velo",
+    "ko": "최고 구속",
+    "ja": "最高球速"
+  },
+  {
+    "en": "Usage %",
+    "ko": "구사율 %",
+    "ja": "投球割合 %"
+  },
+  {
+    "en": "Batted balls",
+    "ko": "타구 수",
+    "ja": "打球数"
+  },
+  {
+    "en": "Exit velocity (mph)",
+    "ko": "타구 속도(mph)",
+    "ja": "打球速度（mph）"
+  },
+  {
+    "en": "Percent",
+    "ko": "비율",
+    "ja": "割合"
+  },
+  {
+    "en": "Period",
+    "ko": "기간",
+    "ja": "期間"
+  },
+  {
+    "en": "Exit Velocity Distribution",
+    "ko": "타구 속도 분포",
+    "ja": "打球速度の分布"
+  },
+  {
+    "en": "Run Value",
+    "ko": "득점 가치",
+    "ja": "得点価値"
+  },
+  {
+    "en": "Runs prevented",
+    "ko": "실점 억제",
+    "ja": "失点抑止"
+  },
+  {
+    "en": "Arm Value",
+    "ko": "송구 가치",
+    "ja": "送球価値"
+  },
+  {
+    "en": "Fielding Run Value",
+    "ko": "수비 득점 가치",
+    "ja": "守備の得点価値"
+  },
+  {
+    "en": "SB Success %",
+    "ko": "도루 성공률 %",
+    "ja": "盗塁成功率 %"
+  },
+  {
+    "en": "Div Rank",
+    "ko": "지구 순위",
+    "ja": "地区順位"
+  },
+  {
+    "en": "WC Rank",
+    "ko": "와일드카드 순위",
+    "ja": "ワイルドカード順位"
+  },
+  {
+    "en": "Division",
+    "ko": "지구",
+    "ja": "地区"
+  },
+  {
+    "en": "League",
+    "ko": "리그",
+    "ja": "リーグ"
+  },
+  {
+    "en": "Player ",
+    "ko": "선수 ",
+    "ja": "選手 "
+  },
+  {
+    "en": "Loading ",
+    "ko": "조회 중 ",
+    "ja": "取得中 "
+  },
+  {
+    "en": " games loaded",
+    "ko": "개 경기 조회 완료",
+    "ja": "試合取得完了"
+  },
+  {
+    "en": " standings updated",
+    "ko": " 순위 갱신 완료",
+    "ja": " 順位更新完了"
+  },
+  {
+    "en": " standings…",
+    "ko": " 순위…",
+    "ja": " 順位…"
+  },
+  {
+    "en": "B-Ref import complete · batting ",
+    "ko": "B-Ref 가져오기 완료 · 타격 ",
+    "ja": "B-Ref取り込み完了・打撃 "
+  },
+  {
+    "en": "Importing Baseball-Reference WAR data…",
+    "ko": "Baseball-Reference WAR 데이터 가져오는 중…",
+    "ja": "Baseball-Reference WARデータを取り込み中…"
+  },
+  {
+    "en": " rows · pitching ",
+    "ko": "행 · 투구 ",
+    "ja": "行・投球 "
+  },
+  {
+    "en": " rows",
+    "ko": "행",
+    "ja": "行"
+  },
+  {
+    "en": " trend loaded · ",
+    "ko": " 추이 조회 완료 · ",
+    "ja": " 推移取得完了・"
+  },
+  {
+    "en": "Data",
+    "ko": "데이터",
+    "ja": "データ"
+  },
+  {
+    "en": "Diagnostics",
+    "ko": "진단정보",
+    "ja": "診断情報"
+  },
+  {
+    "en": "Age ",
+    "ko": "나이 ",
+    "ja": "年齢 "
+  },
+  {
+    "en": "Bats: ",
+    "ko": "타격: ",
+    "ja": "打席: "
+  },
+  {
+    "en": "Throws: ",
+    "ko": "투구: ",
+    "ja": "投球: "
+  },
+  {
+    "en": " Lineup",
+    "ko": " 라인업",
+    "ja": " ラインナップ"
+  },
+  {
+    "en": " — fetched ",
+    "ko": " — 조회 ",
+    "ja": " — 取得 "
+  },
+  {
+    "en": " points",
+    "ko": " 점",
+    "ja": " 点"
+  }
+]

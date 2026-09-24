@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
+import re
+from config.preferences import read_preferences
+
 from PyQt6.QtCore import QEasingCurve, QSettings, Qt, QVariantAnimation
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QApplication, QPushButton
@@ -20,6 +25,7 @@ class ThemeManager:
     def __init__(self, app: QApplication, template: str) -> None:
         self.app = app
         self.template = template
+        self.font_scale = read_preferences()["font_scale"]
         self.settings = QSettings("Dugout Atlas", "Dugout Atlas")
         self.current_theme: ThemeName = self._initial_theme()
         self._animation: QVariantAnimation | None = None
@@ -78,6 +84,12 @@ class ThemeManager:
         self.apply(target, animate=True)
 
     def apply(self, theme: ThemeName, *, animate: bool = True) -> None:
+        from matplotlib import font_manager, rcParams
+        available = {font.name for font in font_manager.fontManager.ttflist}
+        candidates = ("Malgun Gothic", "Yu Gothic", "Meiryo", "Noto Sans CJK KR", "Noto Sans CJK JP", "DejaVu Sans")
+        rcParams["font.family"] = [name for name in candidates if name in available]
+        rcParams["font.size"] = 10 * self.font_scale / 100
+        rcParams["axes.unicode_minus"] = False
         old_theme = self.current_theme
         self.current_theme = theme
         set_active_theme(theme)
@@ -98,14 +110,14 @@ class ThemeManager:
         if self._button is None:
             return
         if self.current_theme == "dark":
-            self._button.setText("Light")
+            self._button.setText(tr("Light"))
             description = "Light Theme로 전환"
         else:
-            self._button.setText("Dark")
+            self._button.setText(tr("Dark"))
             description = "Dark Theme로 전환"
-        self._button.setToolTip(description)
-        self._button.setAccessibleName(description)
-        self._button.setAccessibleDescription("Dugout Atlas 화면 테마 전환 버튼")
+        self._button.setToolTip(tr(description))
+        self._button.setAccessibleName(tr(description))
+        self._button.setAccessibleDescription(tr("Dugout Atlas 화면 테마 전환 버튼"))
 
     @staticmethod
     def _tokens(theme: ThemeName) -> dict[str, str]:
@@ -115,6 +127,8 @@ class ThemeManager:
         rendered = self.template
         for key, value in tokens.items():
             rendered = rendered.replace(f"{{{{{key}}}}}", value)
+        rendered = re.sub(r"font-size:\s*([\d.]+)pt", lambda match:
+                          f"font-size: {float(match[1]) * self.font_scale / 100:.2f}pt", rendered)
         return rendered
 
     def _reduced_motion(self) -> bool:

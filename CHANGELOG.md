@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.40
+
+- Added persistent Settings for game/player refresh intervals, theme, font size and notifications.
+- Added English/Korean/Japanese interface and built-in metric explanation translations with immediate switching.
+- Added guarded cache cleanup, source-specific invalidation, data-location copying with SQLite backup, and private diagnostics.
+- Added settings, localization, source isolation and data-copy regression tests.
+- Details: [v1.40 patch notes](docs/PATCH_v1.40.md).
+
 ## 1.30
 
 상세 변경·검증 결과: [v1.30 패치 노트](docs/PATCH_v1.30.md)

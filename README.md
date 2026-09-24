@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.30**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.40**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.30-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.40-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -36,9 +36,10 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 | **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세, 즐겨찾기 팀 경기 알림 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
 | **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits, 선수 즐겨찾기 |
-| **Compare** | 두 선수를 각각 검색해 역할에 맞는 주요 MLB/FanGraphs/B-Ref/Statcast 지표를 좌우 비교, 주요 지표 한국어 툴팁 |
+| **Compare** | 2–4명을 검색해 MLB/FanGraphs/B-Ref/Statcast 지표와 League Position 비교, 선택 언어로 지표 설명 제공 |
 | **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
 | **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
+| **Settings** | 자동갱신, 테마, 글자 크기, 알림, 앱 언어, 캐시·데이터 위치, 진단정보, 소스별 새로고침 |
 
 ## 빠른 시작
 
@@ -66,12 +67,29 @@ py -3.12 -m venv .venv
 
 </details>
 
+## Settings — 앱 설정
+
+화면 상단 **설정 / Settings / 設定**에서 아래 항목을 관리합니다. 선택한 설정은 재실행 후에도 유지됩니다.
+
+| 항목 | 제공 기능 |
+| :--- | :--- |
+| 자동갱신 | 경기 15–3,600초, 선수 60–3,600초. 기본값은 각각 30초, 300초 |
+| 테마·글자 | Light/Dark, 글자 크기 80–160% |
+| 알림 | 즐겨찾기 팀의 경기 알림 켜기/끄기 |
+| 앱 언어 | English / 한국어 / 日本語. 저장하면 화면 문구와 내장 지표 설명을 즉시 전환 |
+| 캐시 삭제 | 다운로드 캐시와 DB 캐시 삭제. 가져온 B-Ref 원본과 즐겨찾기는 보존 |
+| 데이터 위치 | 현재 위치 열기, 새 빈 폴더로 데이터 복사. 새 위치는 앱 재시작 후 적용 |
+| 진단정보 | 앱·OS·Python·의존성 버전과 소스별 캐시 상태 확인 및 JSON 내보내기 |
+| 소스별 새로고침 | MLB / FanGraphs / Baseball-Reference / Savant의 캐시를 선택 삭제하고 설정을 닫으면 재조회 |
+
+번역은 앱에 포함된 번역문을 사용하므로 번역 서비스 연결 없이 동작합니다. 선수·팀 이름, 통계 약어와 제공처의 원문 설명은 유지됩니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
+
 ## 주요 기능
 
-- **30초 자동 갱신:** 경기 상황과 라인업을 주기적으로 불러옵니다.
+- **자동 갱신:** 기본 30초로 경기와 라인업을 갱신합니다. Settings에서 경기·선수 갱신 간격을 각각 조절합니다.
 - **선수·팀 즐겨찾기:** 현재 선수와 현재 경기의 홈/원정팀을 로컬 즐겨찾기로 저장하고 다시 접근할 수 있습니다.
 - **즐겨찾기 경기 알림:** 즐겨찾기 팀 경기의 점수 또는 상태가 바뀌면 Windows 시스템 트레이 알림을 표시하고, 트레이를 사용할 수 없으면 상태바로 폴백합니다.
-- **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표에 한국어 설명을 제공합니다.
+- **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표 설명을 영어·한국어·일본어로 제공합니다.
 - **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
 - **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
 - **선수 시즌 선택:** Player 화면의 선수 이름 옆에서 시즌을 선택할 수 있으며, 현재 시즌 기록이 없으면 선수의 가장 최근 MLB 시즌을 기본값으로 사용합니다.
@@ -133,6 +151,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.40 패치 노트](docs/PATCH_v1.40.md): Settings, 3개 언어, 데이터 관리와 검증
 - [v1.30 패치 노트](docs/PATCH_v1.30.md): 보안·안정성·사용성 변경과 검증 결과
 - [v1.23 패치 노트](docs/PATCH_v1.23.md): Compare 확장, Sprint Speed, League Position
 - [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글
@@ -151,7 +170,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.30의 검사 항목, 확인된 CI 결과와 제한 사항은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에 정리했습니다. Data Sources의 조회 시각은 제공된 항목에 한해 표시됩니다.
+v1.40의 Settings·언어·데이터 관리 검증은 [v1.40 패치 노트](docs/PATCH_v1.40.md#검증)에 정리했습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
 
 ## 프로젝트 안내
 

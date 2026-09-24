@@ -18,6 +18,9 @@ from ui.theme_manager import ThemeManager
 
 
 def main() -> int:
+    from config.preferences import read_preferences
+    from config.i18n import set_language
+    set_language(read_preferences()["language"])
     ensure_runtime_dirs()
     configure_logging()
     install_running_support()

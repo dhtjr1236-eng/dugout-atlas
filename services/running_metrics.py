@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 import asyncio
 import re
 from datetime import UTC, datetime
@@ -238,7 +240,7 @@ def install_running_support() -> None:
 
     def init_with_running(self: PlayerView) -> None:
         original_init(self)
-        self.running_box = QGroupBox("Running")
+        self.running_box = QGroupBox(tr("Running"))
         running_layout = QVBoxLayout(self.running_box)
         self.running_grid = MetricGrid(columns=4)
         running_layout.addWidget(self.running_grid)
