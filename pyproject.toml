@@ -1,6 +1,6 @@
 [project]
 name = "dugout-atlas"
-version = "1.40"
+version = "1.41"
 description = "PyQt6 MLB live gameday and sabermetrics desktop application"
 requires-python = ">=3.12"
 

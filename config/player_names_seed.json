@@ -1,0 +1,290 @@
+{
+  "_meta": {
+    "description": "Curated 2026 KR/JP/TW MLB/major-contract player display-name seed",
+    "count": 24
+  },
+  "players": [
+    {
+      "en": "Ha-Seong Kim",
+      "ko": "김하성",
+      "ja": "キム・ハソン",
+      "country": "KR",
+      "aliases": [
+        "Ha Seong Kim",
+        "Kim Ha-Seong",
+        "김 하성",
+        "キム ハソン"
+      ]
+    },
+    {
+      "en": "Jung Hoo Lee",
+      "ko": "이정후",
+      "ja": "イ・ジョンフ",
+      "country": "KR",
+      "locked_locales": [
+        "ja"
+      ],
+      "aliases": [
+        "Jung-Hoo Lee",
+        "Lee Jung Hoo",
+        "Lee Jung-hoo",
+        "이 정후",
+        "イ ジョンフ",
+        "李政厚"
+      ]
+    },
+    {
+      "en": "Hye-Seong Kim",
+      "ko": "김혜성",
+      "ja": "キム・ヘソン",
+      "country": "KR",
+      "team_2026": "LAD",
+      "aliases": [
+        "Hye Seong Kim",
+        "Kim Hye-Seong",
+        "Kim Hye Seong",
+        "김 혜성",
+        "キム ヘソン"
+      ]
+    },
+    {
+      "en": "Ji Hwan Bae",
+      "ko": "배지환",
+      "ja": "ペ・ジファン",
+      "country": "KR",
+      "aliases": [
+        "Ji-Hwan Bae",
+        "Bae Ji Hwan",
+        "배 지환",
+        "ペ ジファン"
+      ]
+    },
+    {
+      "en": "Sung-Mun Song",
+      "ko": "송성문",
+      "ja": "ソン・ソンムン",
+      "country": "KR",
+      "aliases": [
+        "Sung Mun Song",
+        "Song Sung-Mun",
+        "송 성문",
+        "ソン ソンムン"
+      ]
+    },
+    {
+      "en": "Hoy Park",
+      "ko": "박효준",
+      "ja": "パク・ヒョジュン",
+      "country": "KR",
+      "aliases": [
+        "Hoy Jun Park",
+        "Hoy-Jun Park",
+        "Park Hoy Jun",
+        "박 효준",
+        "パク ヒョジュン"
+      ]
+    },
+    {
+      "en": "Shohei Ohtani",
+      "ko": "오타니 쇼헤이",
+      "ja": "大谷 翔平",
+      "country": "JP",
+      "aliases": [
+        "Ohtani Shohei",
+        "Shohei Otani",
+        "오타니",
+        "大谷翔平",
+        "おおたに しょうへい"
+      ]
+    },
+    {
+      "en": "Yoshinobu Yamamoto",
+      "ko": "야마모토 요시노부",
+      "ja": "山本 由伸",
+      "country": "JP",
+      "aliases": [
+        "Yamamoto Yoshinobu",
+        "야마모토",
+        "山本由伸",
+        "やまもと よしのぶ"
+      ]
+    },
+    {
+      "en": "Yu Darvish",
+      "ko": "다르빗슈 유",
+      "ja": "ダルビッシュ 有",
+      "country": "JP",
+      "aliases": [
+        "Darvish Yu",
+        "다르빗슈",
+        "ダルビッシュ有"
+      ]
+    },
+    {
+      "en": "Shota Imanaga",
+      "ko": "이마나가 쇼타",
+      "ja": "今永 昇太",
+      "country": "JP",
+      "aliases": [
+        "Imanaga Shota",
+        "이마나가",
+        "今永昇太"
+      ]
+    },
+    {
+      "en": "Seiya Suzuki",
+      "ko": "스즈키 세이야",
+      "ja": "鈴木 誠也",
+      "country": "JP",
+      "aliases": [
+        "Suzuki Seiya",
+        "스즈키",
+        "鈴木誠也"
+      ]
+    },
+    {
+      "en": "Masataka Yoshida",
+      "ko": "요시다 마사타카",
+      "ja": "吉田 正尚",
+      "country": "JP",
+      "aliases": [
+        "Yoshida Masataka",
+        "요시다",
+        "吉田正尚"
+      ]
+    },
+    {
+      "en": "Roki Sasaki",
+      "ko": "사사키 로키",
+      "ja": "佐々木 朗希",
+      "country": "JP",
+      "aliases": [
+        "Sasaki Roki",
+        "사사키",
+        "佐々木朗希"
+      ]
+    },
+    {
+      "en": "Yusei Kikuchi",
+      "ko": "기쿠치 유세이",
+      "ja": "菊池 雄星",
+      "country": "JP",
+      "aliases": [
+        "Kikuchi Yusei",
+        "기쿠치",
+        "菊池雄星"
+      ]
+    },
+    {
+      "en": "Kodai Senga",
+      "ko": "센가 코다이",
+      "ja": "千賀 滉大",
+      "country": "JP",
+      "aliases": [
+        "Senga Kodai",
+        "센가",
+        "千賀滉大"
+      ]
+    },
+    {
+      "en": "Yuki Matsui",
+      "ko": "마쓰이 유키",
+      "ja": "松井 裕樹",
+      "country": "JP",
+      "aliases": [
+        "Matsui Yuki",
+        "마쓰이",
+        "松井裕樹"
+      ]
+    },
+    {
+      "en": "Munetaka Murakami",
+      "ko": "무라카미 무네타카",
+      "ja": "村上 宗隆",
+      "country": "JP",
+      "aliases": [
+        "Murakami Munetaka",
+        "무라카미",
+        "村上宗隆"
+      ]
+    },
+    {
+      "en": "Kazuma Okamoto",
+      "ko": "오카모토 카즈마",
+      "ja": "岡本 和真",
+      "country": "JP",
+      "aliases": [
+        "Okamoto Kazuma",
+        "오카모토",
+        "岡本和真"
+      ]
+    },
+    {
+      "en": "Tomoyuki Sugano",
+      "ko": "스가노 토모유키",
+      "ja": "菅野 智之",
+      "country": "JP",
+      "aliases": [
+        "Sugano Tomoyuki",
+        "스가노",
+        "菅野智之"
+      ]
+    },
+    {
+      "en": "Tatsuya Imai",
+      "ko": "이마이 타츠야",
+      "ja": "今井 達也",
+      "country": "JP",
+      "aliases": [
+        "Imai Tatsuya",
+        "이마이",
+        "今井達也"
+      ]
+    },
+    {
+      "en": "Rikuu Nishida",
+      "ko": "니시다 리쿠우",
+      "ja": "西田 陸浮",
+      "country": "JP",
+      "aliases": [
+        "Nishida Rikuu",
+        "니시다",
+        "西田陸浮"
+      ]
+    },
+    {
+      "en": "Tsung-Che Cheng",
+      "ko": "정쭝저",
+      "ja": "鄭宗哲",
+      "country": "TW",
+      "aliases": [
+        "Tsung Che Cheng",
+        "Cheng Tsung-Che",
+        "정종저",
+        "鄭 宗哲"
+      ]
+    },
+    {
+      "en": "Kai-Wei Teng",
+      "ko": "덩카이웨이",
+      "ja": "鄧愷威",
+      "country": "TW",
+      "aliases": [
+        "Kai Wei Teng",
+        "Teng Kai-Wei",
+        "鄧 愷威"
+      ]
+    },
+    {
+      "en": "Hao-Yu Lee",
+      "ko": "리하오위",
+      "ja": "李灝宇",
+      "country": "TW",
+      "aliases": [
+        "Hao Yu Lee",
+        "Lee Hao-Yu",
+        "李 灝宇"
+      ]
+    }
+  ]
+}

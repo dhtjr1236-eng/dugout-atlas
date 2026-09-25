@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.41
+
+- Added locale-aware display names and search aliases for 24 curated 2026 KR/JP/TW players.
+- Locked Jung Hoo Lee Japanese display to `イ・ジョンフ` and added an idempotence regression test for the duplicated-prefix bug.
+- Added Hye-Seong Kim 2026 display-team override `LAD`.
+- Corrected Tsung-Che Cheng Korean display to `정쭝저`; the previous spelling remains a search alias.
+- Preserved MLBAM/English identity for FanGraphs, Baseball-Reference and Savant matching.
+- Details: [v1.41 patch notes](docs/PATCH_v1.41.md).
+
 ## 1.40
 
 - Added persistent Settings for game/player refresh intervals, theme, font size and notifications.

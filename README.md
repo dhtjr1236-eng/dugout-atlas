@@ -8,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.40**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.41**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.40-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.41-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -82,7 +82,7 @@ py -3.12 -m venv .venv
 | 진단정보 | 앱·OS·Python·의존성 버전과 소스별 캐시 상태 확인 및 JSON 내보내기 |
 | 소스별 새로고침 | MLB / FanGraphs / Baseball-Reference / Savant의 캐시를 선택 삭제하고 설정을 닫으면 재조회 |
 
-번역은 앱에 포함된 번역문을 사용하므로 번역 서비스 연결 없이 동작합니다. 선수·팀 이름, 통계 약어와 제공처의 원문 설명은 유지됩니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
+번역은 앱에 포함된 번역문을 사용하므로 번역 서비스 연결 없이 동작합니다. v1.41부터 2026 KR/JP/TW 주요 선수 24명은 English/한국어/日本語 표시명과 검색 별칭을 지원하며, 내부 통계 소스 식별은 MLBAM ID와 영문 원본명을 유지합니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
 
 ## 주요 기능
 
@@ -91,7 +91,7 @@ py -3.12 -m venv .venv
 - **즐겨찾기 경기 알림:** 즐겨찾기 팀 경기의 점수 또는 상태가 바뀌면 Windows 시스템 트레이 알림을 표시하고, 트레이를 사용할 수 없으면 상태바로 폴백합니다.
 - **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표 설명을 영어·한국어·일본어로 제공합니다.
 - **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
-- **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
+- **선수명 현지화:** 2026 KR/JP/TW 주요 선수 24명의 English/한국어/日本語 표시명과 검색 별칭을 지원합니다. 이정후 일본어는 `イ・ジョンフ`, 김혜성의 2026 팀 표기는 `LAD`, Tsung-Che Cheng 한국어는 `정쭝저`로 표시합니다.\n- **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열과 현지화 별칭으로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
 - **선수 시즌 선택:** Player 화면의 선수 이름 옆에서 시즌을 선택할 수 있으며, 현재 시즌 기록이 없으면 선수의 가장 최근 MLB 시즌을 기본값으로 사용합니다.
 - **Platoon Splits:** 타자는 Running 아래, 투수는 Statcast 흐름 아래에서 좌/우 상대 AVG·OBP·SLG·OPS·wRC+를 확인할 수 있습니다.
 - **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
@@ -151,7 +151,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
-- [v1.40 패치 노트](docs/PATCH_v1.40.md): Settings, 3개 언어, 데이터 관리와 검증
+- [v1.41 패치 노트](docs/PATCH_v1.41.md): Settings, 3개 언어, 데이터 관리와 검증
 - [v1.30 패치 노트](docs/PATCH_v1.30.md): 보안·안정성·사용성 변경과 검증 결과
 - [v1.23 패치 노트](docs/PATCH_v1.23.md): Compare 확장, Sprint Speed, League Position
 - [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글
@@ -170,7 +170,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.40의 Settings·언어·데이터 관리 검증은 [v1.40 패치 노트](docs/PATCH_v1.40.md#검증)에 정리했습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
+v1.41의 Settings·언어·데이터 관리 검증은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에 정리했습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
 
 ## 프로젝트 안내
 
