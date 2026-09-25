@@ -36,4 +36,4 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: python -m pytest -q
       - name: Package metadata smoke test
-        run: python -c "from config.settings import SETTINGS; assert SETTINGS.app_version == '1.40'"
+        run: python -c "from config.settings import SETTINGS; assert SETTINGS.app_version == '1.41'"
