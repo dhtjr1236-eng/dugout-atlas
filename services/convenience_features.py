@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 from typing import Any
 
 from services.favorites_service import FavoritesService
@@ -118,27 +120,27 @@ def install_convenience_features() -> None:
             text = f"★ 선수 · {row.get('name', 'Unknown')}"
             if row.get("team"):
                 text += f" · {row.get('team')}"
-            item = QListWidgetItem(text)
+            item = QListWidgetItem(tr(text))
             item.setData(
                 Qt.ItemDataRole.UserRole,
                 ("player", int(row.get("id", 0) or 0)),
             )
-            self.favorite_list.addItem(item)
+            self.favorite_list.addItem(tr(item))
 
         for row in payload["teams"]:
             label = row.get("abbreviation") or row.get("name") or "Unknown"
-            item = QListWidgetItem(f"★ 팀 · {label}")
+            item = QListWidgetItem(tr(f"★ 팀 · {label}"))
             item.setData(
                 Qt.ItemDataRole.UserRole,
                 ("team", int(row.get("id", 0) or 0)),
             )
-            self.favorite_list.addItem(item)
+            self.favorite_list.addItem(tr(item))
 
         player = getattr(self, "_favorite_player_payload", None)
         if player:
             active = self._favorites.is_player(int(player["id"]))
             self.favorite_player_button.setText(
-                "★ 선수 즐겨찾기 해제" if active else "☆ 현재 선수 저장"
+                tr("★ 선수 즐겨찾기 해제" if active else "☆ 현재 선수 저장")
             )
 
         for side in ("away", "home"):
@@ -148,19 +150,22 @@ def install_convenience_features() -> None:
                 active = self._favorites.is_team(int(team["id"]))
                 prefix = "★" if active else "☆"
                 label = team.get("abbreviation") or team.get("name") or side
-                button.setText(f"{prefix} {label}")
+                button.setText(tr(f"{prefix} {label}"))
 
     def notify(self: MainWindow, title: str, message: str) -> None:
+        from config.preferences import read_preferences
+        if not read_preferences()["notifications"]:
+            return
         tray = getattr(self, "_notification_tray", None)
         if tray is not None and QSystemTrayIcon.isSystemTrayAvailable():
             tray.showMessage(
-                title,
+                tr(title),
                 message,
                 QSystemTrayIcon.MessageIcon.Information,
                 5000,
             )
         else:
-            self.statusBar().showMessage(f"{title}: {message}", 5000)
+            self.statusBar().showMessage(tr(f"{title}: {message}"), 5000)
 
     def init_main(self: MainWindow) -> None:
         original_main_init(self)
@@ -177,7 +182,7 @@ def install_convenience_features() -> None:
             icon = app.style().standardIcon(QStyle.StandardPixmap.SP_ComputerIcon)
 
         self._notification_tray = QSystemTrayIcon(icon, self)
-        self._notification_tray.setToolTip("Dugout Atlas 경기 알림")
+        self._notification_tray.setToolTip(tr("Dugout Atlas 경기 알림"))
         if QSystemTrayIcon.isSystemTrayAvailable():
             self._notification_tray.show()
 
@@ -186,20 +191,20 @@ def install_convenience_features() -> None:
         if left_layout is None:
             return
 
-        box = QGroupBox("즐겨찾기 / 알림")
+        box = QGroupBox(tr("즐겨찾기 / 알림"))
         layout = QVBoxLayout(box)
 
         self.favorite_list = QListWidget()
         self.favorite_list.setMaximumHeight(160)
         layout.addWidget(self.favorite_list)
 
-        self.favorite_player_button = QPushButton("☆ 현재 선수 저장")
+        self.favorite_player_button = QPushButton(tr("☆ 현재 선수 저장"))
         self.favorite_player_button.setEnabled(False)
         layout.addWidget(self.favorite_player_button)
 
         team_row = QHBoxLayout()
-        self.favorite_away_button = QPushButton("☆ 원정팀")
-        self.favorite_home_button = QPushButton("☆ 홈팀")
+        self.favorite_away_button = QPushButton(tr("☆ 원정팀"))
+        self.favorite_home_button = QPushButton(tr("☆ 홈팀"))
         self.favorite_away_button.setEnabled(False)
         self.favorite_home_button.setEnabled(False)
         team_row.addWidget(self.favorite_away_button)
@@ -207,7 +212,7 @@ def install_convenience_features() -> None:
         layout.addLayout(team_row)
 
         hint = QLabel(
-            "즐겨찾기 팀의 점수 또는 경기 상태가 바뀌면 알림을 표시합니다."
+            tr("즐겨찾기 팀의 점수 또는 경기 상태가 바뀌면 알림을 표시합니다.")
         )
         hint.setWordWrap(True)
         hint.setObjectName("subtitle")
@@ -341,14 +346,14 @@ def install_convenience_features() -> None:
             if metric_item is None:
                 continue
 
-            tooltip = METRIC_TOOLTIPS.get(metric_item.text(), "")
+            tooltip = METRIC_TOOLTIPS.get(metric_item.data(Qt.ItemDataRole.UserRole) or metric_item.text(), "")
             if not tooltip:
                 continue
 
             for column in range(self.table.columnCount()):
                 cell = self.table.item(row, column)
                 if cell is not None:
-                    cell.setToolTip(tooltip)
+                    cell.setToolTip(tr(tooltip))
 
     MainWindow.__init__ = init_main  # type: ignore[method-assign]
     MainWindow.set_games = set_games_with_notifications  # type: ignore[method-assign]

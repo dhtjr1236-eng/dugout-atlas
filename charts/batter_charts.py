@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -20,7 +22,7 @@ def _figure(title: str) -> tuple[Figure, Any]:
     ax.title.set_color(colors["text"])
     ax.xaxis.label.set_color(colors["muted"])
     ax.yaxis.label.set_color(colors["muted"])
-    ax.set_title(title)
+    ax.set_title(tr(title))
     fig.subplots_adjust(left=0.12, right=0.97, bottom=0.24, top=0.84)
     return fig, ax
 
@@ -30,8 +32,8 @@ def exit_velocity_distribution(statcast: dict[str, Any]) -> Figure:
     values = statcast.get("Exit Velocities") or []
     if values:
         sns.histplot(values, bins=18, kde=True, ax=ax)
-        ax.set_xlabel("Exit velocity (mph)")
-        ax.set_ylabel("Batted balls")
+        ax.set_xlabel(tr("Exit velocity (mph)"))
+        ax.set_ylabel(tr("Batted balls"))
     else:
         ax.text(
             0.5,
@@ -50,7 +52,7 @@ def quality_contact(statcast: dict[str, Any]) -> Figure:
     labels = ["Barrel %", "Hard Hit %", "Sweet Spot %"]
     values = [float(statcast.get(label) or 0) for label in labels]
     ax.bar(labels, values)
-    ax.set_ylabel("Percent")
+    ax.set_ylabel(tr("Percent"))
     for idx, value in enumerate(values):
         ax.text(idx, value, f"{value:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
@@ -65,7 +67,7 @@ def barrel_percentage(statcast: dict[str, Any]) -> Figure:
         number = float(value)
         ax.bar(["Barrel %"], [number])
         ax.set_ylim(0, max(20.0, number * 1.25))
-        ax.set_ylabel("Percent")
+        ax.set_ylabel(tr("Percent"))
         ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
 
@@ -79,7 +81,7 @@ def hard_hit_percentage(statcast: dict[str, Any]) -> Figure:
         number = float(value)
         ax.bar(["Hard Hit %"], [number])
         ax.set_ylim(0, max(60.0, number * 1.2))
-        ax.set_ylabel("Percent")
+        ax.set_ylabel(tr("Percent"))
         ax.text(0, number, f"{number:.1f}%", ha="center", va="bottom", color=chart_colors()["text"])
     return fig
 
@@ -120,8 +122,8 @@ def _plot_trend(
     ax.plot(x, values, marker="o")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=45 if len(labels) > 8 else 0, ha="right" if len(labels) > 8 else "center")
-    ax.set_xlabel("Period")
-    ax.set_ylabel(metric)
+    ax.set_xlabel(tr("Period"))
+    ax.set_ylabel(tr(metric))
     if metric == "wRC+":
         ax.axhline(100, linestyle="--", linewidth=1)
     return fig

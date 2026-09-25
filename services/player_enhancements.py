@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr, tr_list
+
 import asyncio
 import logging
 import math
@@ -491,7 +493,7 @@ def install_player_enhancements() -> None:
         self.player_season_combo.blockSignals(True)
         self.player_season_combo.clear()
         for year in values:
-            self.player_season_combo.addItem(str(year), year)
+            self.player_season_combo.addItem(tr(str(year)), year)
         index = self.player_season_combo.findData(int(selected))
         self.player_season_combo.setCurrentIndex(max(index, 0))
         self.player_season_combo.setEnabled(bool(values))
@@ -513,16 +515,16 @@ def install_player_enhancements() -> None:
                 _format_rate(split.get("wRC+"), wrc=True),
             ]
             for col, value in enumerate(values):
-                self.platoon_table.setItem(row_index, col, QTableWidgetItem(value))
+                self.platoon_table.setItem(row_index, col, QTableWidgetItem(tr(value)))
         if pitcher and all(
             not isinstance(split, dict) or split.get("wRC+") is None for split in rows
         ):
             self.platoon_note.setText(
-                "투수 상대 wRC+는 FanGraphs split 응답에 값이 제공되는 경우에만 표시됩니다."
+                tr("투수 상대 wRC+는 FanGraphs split 응답에 값이 제공되는 경우에만 표시됩니다.")
             )
         else:
             self.platoon_note.setText(
-                "좌/우 상대 성적은 FanGraphs split을 우선 사용하고, 누락된 slash line은 MLB Stats API로 보완합니다."
+                tr("좌/우 상대 성적은 FanGraphs split을 우선 사용하고, 누락된 slash line은 MLB Stats API로 보완합니다.")
             )
 
     def init_player_with_season_and_platoon(self: PlayerView) -> None:
@@ -535,26 +537,26 @@ def install_player_enhancements() -> None:
         name_layout.setContentsMargins(0, 0, 0, 0)
         name_layout.addWidget(self.name_label)
         name_layout.addStretch()
-        name_layout.addWidget(QLabel("시즌"))
+        name_layout.addWidget(QLabel(tr("시즌")))
         self.player_season_combo = QComboBox()
         self.player_season_combo.setMinimumWidth(92)
         self.player_season_combo.setEnabled(False)
-        self.player_season_combo.setToolTip("선택한 시즌 기준으로 선수 페이지 전체 데이터를 다시 불러옵니다.")
+        self.player_season_combo.setToolTip(tr("선택한 시즌 기준으로 선수 페이지 전체 데이터를 다시 불러옵니다."))
         name_layout.addWidget(self.player_season_combo)
         self.layout.insertWidget(max(name_index, 0), self.player_name_row)
         self._season_change_callback = None
         self.player_season_combo.currentIndexChanged.connect(self._handle_player_season_change)
 
-        self.platoon_box = QGroupBox("Platoon Splits")
+        self.platoon_box = QGroupBox(tr("Platoon Splits"))
         platoon_layout = QVBoxLayout(self.platoon_box)
         self.platoon_table = QTableWidget(2, 6)
-        self.platoon_table.setHorizontalHeaderLabels(["상대", "AVG", "OBP", "SLG", "OPS", "wRC+"])
+        self.platoon_table.setHorizontalHeaderLabels(tr_list(["상대", "AVG", "OBP", "SLG", "OPS", "wRC+"]))
         self.platoon_table.verticalHeader().setVisible(False)
         self.platoon_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.platoon_table.setAlternatingRowColors(True)
         self.platoon_table.setMaximumHeight(145)
         platoon_layout.addWidget(self.platoon_table)
-        self.platoon_note = QLabel("")
+        self.platoon_note = QLabel(tr(""))
         self.platoon_note.setObjectName("subtitle")
         self.platoon_note.setWordWrap(True)
         platoon_layout.addWidget(self.platoon_note)
@@ -626,7 +628,7 @@ def install_player_enhancements() -> None:
             self.selected_player_season = target
             self.window.player_view.set_available_seasons(seasons, target)
             self.window.show_player(bundle)
-            self.window.set_busy(f"Player data loaded: {bundle.profile.full_name} · {target}")
+            self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name} · {target}"))
             if bundle.profile.is_pitcher:
                 period = self.window.player_view.current_pitcher_statcast_period
                 if period != "yearly":

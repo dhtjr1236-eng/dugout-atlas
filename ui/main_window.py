@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 from PyQt6.QtCore import QDate, QUrl, QStringListModel, QTimer, Qt, pyqtSignal
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import (
@@ -40,6 +42,7 @@ class MainWindow(QMainWindow):
     team_stats_requested = pyqtSignal(int)
     bref_import_requested = pyqtSignal(str)
     refresh_requested = pyqtSignal()
+    settings_requested = pyqtSignal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -53,12 +56,12 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         top = QHBoxLayout()
-        title = QLabel(SETTINGS.app_name)
+        title = QLabel(tr(SETTINGS.app_name))
         title.setObjectName("title")
         top.addWidget(title)
         top.addStretch()
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Search player (e.g. Judge)")
+        self.search.setPlaceholderText(tr("Search player (e.g. Judge)"))
         self.search.setMinimumWidth(320)
         self.search_model = QStringListModel(self)
         self.completer = QCompleter(self.search_model, self)
@@ -66,26 +69,30 @@ class MainWindow(QMainWindow):
         self.completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
         self.search.setCompleter(self.completer)
         top.addWidget(self.search)
-        self.theme_button = QPushButton("Light")
+        self.theme_button = QPushButton(tr("Light"))
         self.theme_button.setObjectName("themeToggle")
         self.theme_button.setMinimumWidth(64)
-        self.theme_button.setToolTip("Light Theme로 전환")
-        self.theme_button.setAccessibleName("Light Theme로 전환")
-        self.theme_button.setAccessibleDescription("Dugout Atlas 화면 테마 전환 버튼")
+        self.theme_button.setToolTip(tr("Light Theme로 전환"))
+        self.theme_button.setAccessibleName(tr("Light Theme로 전환"))
+        self.theme_button.setAccessibleDescription(tr("Dugout Atlas 화면 테마 전환 버튼"))
         top.addWidget(self.theme_button)
-        self.bref_download_button = QPushButton("B-Ref 다운로드")
+        self.bref_download_button = QPushButton(tr("B-Ref 다운로드"))
         self.bref_download_button.setToolTip(
-            "Open Baseball-Reference official WAR downloads in your normal browser."
+            tr("Open Baseball-Reference official WAR downloads in your normal browser.")
         )
-        self.bref_import_button = QPushButton("B-Ref 파일 가져오기")
+        self.bref_import_button = QPushButton(tr("B-Ref 파일 가져오기"))
         self.bref_import_button.setToolTip(
-            "Import an official war_archive ZIP or war_daily_bat/pitch TXT/CSV file."
+            tr("Import an official war_archive ZIP or war_daily_bat/pitch TXT/CSV file.")
         )
         top.addWidget(self.bref_download_button)
         top.addWidget(self.bref_import_button)
-        self.refresh_button = QPushButton("새로고침")
-        self.refresh_button.setToolTip("현재 경기와 선택한 선수 데이터를 다시 조회")
+        self.refresh_button = QPushButton(tr("새로고침"))
+        self.refresh_button.setToolTip(tr("현재 경기와 선택한 선수 데이터를 다시 조회"))
         top.addWidget(self.refresh_button)
+        self.settings_button = QPushButton(tr("Settings"))
+        self.settings_button.setAccessibleName(tr("Settings"))
+        self.settings_button.clicked.connect(self.settings_requested)
+        top.addWidget(self.settings_button)
         root.addLayout(top)
 
         splitter = QSplitter()
@@ -96,11 +103,11 @@ class MainWindow(QMainWindow):
         date_row = QHBoxLayout()
         self.date_edit = QDateEdit(QDate.currentDate())
         self.date_edit.setCalendarPopup(True)
-        self.today_button = QPushButton("Today")
+        self.today_button = QPushButton(tr("Today"))
         date_row.addWidget(self.date_edit)
         date_row.addWidget(self.today_button)
         left_layout.addLayout(date_row)
-        left_layout.addWidget(QLabel("Games"))
+        left_layout.addWidget(QLabel(tr("Games")))
         self.game_list = QListWidget()
         left_layout.addWidget(self.game_list, 1)
         splitter.addWidget(left)
@@ -111,16 +118,16 @@ class MainWindow(QMainWindow):
         self.player_view = PlayerView()
         self.compare_view = CompareView()
         self.league_view = LeagueView()
-        self.tabs.addTab(self.game_view, "Gameday")
-        self.tabs.addTab(self.lineup_view, "Lineups")
-        self.tabs.addTab(self.player_view, "Player")
-        self.tabs.addTab(self.compare_view, "Compare")
-        self.tabs.addTab(self.league_view, "Standings")
+        self.tabs.addTab(self.game_view, tr("Gameday"))
+        self.tabs.addTab(self.lineup_view, tr("Lineups"))
+        self.tabs.addTab(self.player_view, tr("Player"))
+        self.tabs.addTab(self.compare_view, tr("Compare"))
+        self.tabs.addTab(self.league_view, tr("Standings"))
         splitter.addWidget(self.tabs)
         splitter.setSizes([330, 1110])
 
         self.setStatusBar(QStatusBar())
-        self.statusBar().showMessage("Ready")
+        self.statusBar().showMessage(tr("Ready"))
 
         self.game_list.currentRowChanged.connect(self._on_game_row)
         self.date_edit.dateChanged.connect(self._on_date_changed)
@@ -159,15 +166,15 @@ class MainWindow(QMainWindow):
                 f"{game.home.abbreviation or game.home.name} {home_score}\n"
                 f"{game.detailed_status}{inning}"
             )
-            item = QListWidgetItem(text)
-            item.setToolTip(game.venue)
-            self.game_list.addItem(item)
+            item = QListWidgetItem(tr(text))
+            item.setToolTip(tr(game.venue))
+            self.game_list.addItem(tr(item))
             if game.game_pk == current_pk:
                 select_row = index
         if games:
             self.game_list.setCurrentRow(select_row if select_row >= 0 else 0)
         else:
-            self.statusBar().showMessage("No MLB games found for this date")
+            self.statusBar().showMessage(tr("No MLB games found for this date"))
 
     def set_game_detail(self, detail: GameDetail) -> None:
         self.game_view.set_game(detail)
@@ -198,10 +205,10 @@ class MainWindow(QMainWindow):
         self.tabs.setCurrentWidget(self.player_view)
 
     def show_error(self, title: str, message: str) -> None:
-        QMessageBox.warning(self, title, message)
+        QMessageBox.warning(self, tr(title), tr(message))
 
     def set_busy(self, message: str) -> None:
-        self.statusBar().showMessage(message)
+        self.statusBar().showMessage(tr(message))
 
     def _open_bref_downloads(self) -> None:
         QDesktopServices.openUrl(QUrl("https://www.baseball-reference.com/data/"))

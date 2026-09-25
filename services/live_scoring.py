@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr, tr_list
+
 from typing import Any
 
 EVENT_CODES = {
@@ -117,12 +119,12 @@ def install_live_scoring_support() -> None:
         score_layout = score_box.layout() if score_box is not None else None
         if score_layout is None:
             return
-        title = QLabel("득점 플레이")
+        title = QLabel(tr("득점 플레이"))
         title.setObjectName("subtitle")
         score_layout.addWidget(title)
         self.scoring_table = QTableWidget(0, 5)
         self.scoring_table.setHorizontalHeaderLabels(
-            ["이닝", "득점자", "득점 유형", "타점", "설명"]
+            tr_list(["이닝", "득점자", "득점 유형", "타점", "설명"])
         )
         self.scoring_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.scoring_table.setAlternatingRowColors(True)
@@ -145,7 +147,7 @@ def install_live_scoring_support() -> None:
                 str(row.get("description") or "—"),
             ]
             for col, value in enumerate(values):
-                table.setItem(row_index, col, QTableWidgetItem(value))
+                table.setItem(row_index, col, QTableWidgetItem(tr(value)))
         table.resizeColumnsToContents()
         if table.columnCount() >= 5:
             table.setColumnWidth(4, max(table.columnWidth(4), 420))

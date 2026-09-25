@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr
+
 import asyncio
 import logging
 from datetime import date
@@ -57,6 +59,8 @@ class AppController(QObject):
         self.window.team_stats_requested.connect(self.load_team_stats)
         self.window.bref_import_requested.connect(self.import_bref_file)
         self.window.refresh_requested.connect(self._refresh_requested)
+        from ui.settings_dialog import open_settings
+        self.window.settings_requested.connect(lambda: open_settings(self.window, self))
         self.window.player_view.trend_period_changed.connect(self.load_player_trend)
         self.window.player_view.pitcher_statcast_period_changed.connect(
             self.load_pitcher_statcast_period
@@ -67,8 +71,13 @@ class AppController(QObject):
     def start(self) -> None:
         self.load_schedule(date.today().isoformat())
         self.load_league()
-        self.refresh_timer.start()
-        self.player_refresh_timer.start()
+        self.apply_preferences()
+
+    def apply_preferences(self) -> None:
+        from config.preferences import read_preferences
+        preferences = read_preferences()
+        self.refresh_timer.start(preferences["refresh_seconds"] * 1000)
+        self.player_refresh_timer.start(preferences["player_refresh_seconds"] * 1000)
 
     def _run(
         self,
@@ -98,7 +107,7 @@ class AppController(QObject):
             self.season = int(date_text[:4])
         except ValueError:
             self.season = date.today().year
-        self.window.set_busy(f"Loading games for {date_text}…")
+        self.window.set_busy(tr(f"Loading games for {date_text}…"))
 
         async def task() -> list[GameSummary]:
             games = await self.mlb.get_schedule(date_text)
@@ -114,7 +123,7 @@ class AppController(QObject):
         def success(games: list[GameSummary]) -> None:
             self._schedule_busy = False
             self.window.set_games(games)
-            self.window.set_busy(f"{len(games)} games loaded")
+            self.window.set_busy(tr(f"{len(games)} games loaded"))
 
         def failure(message: str) -> None:
             self._schedule_busy = False
@@ -130,7 +139,7 @@ class AppController(QObject):
         if self._game_busy:
             return
         self._game_busy = True
-        self.window.set_busy(f"Loading game {game_pk}…")
+        self.window.set_busy(tr(f"Loading game {game_pk}…"))
 
         async def task() -> GameDetail:
             detail = await self.mlb.get_live_game(game_pk)
@@ -146,7 +155,7 @@ class AppController(QObject):
             if detail.game_pk and self.selected_game_pk not in (None, detail.game_pk):
                 return
             self.window.set_game_detail(detail)
-            self.window.set_busy(f"Updated game {game_pk}")
+            self.window.set_busy(tr(f"Updated game {game_pk}"))
 
         def failure(message: str) -> None:
             self._game_busy = False
@@ -197,7 +206,7 @@ class AppController(QObject):
         request_id = self._compare_request_ids[slot]
         season = self.season
         self.window.compare_view.set_loading(slot, player_id)
-        self.window.set_busy(f"Loading comparison player {player_id}…")
+        self.window.set_busy(tr(f"Loading comparison player {player_id}…"))
 
         async def task() -> Any:
             return await self.players.get_bundle(player_id, season)
@@ -206,7 +215,7 @@ class AppController(QObject):
             if self._compare_request_ids.get(slot) != request_id:
                 return
             self.window.compare_view.set_player(slot, bundle)
-            self.window.set_busy(f"Compare loaded: {bundle.profile.full_name}")
+            self.window.set_busy(tr(f"Compare loaded: {bundle.profile.full_name}"))
 
         self._run(task, success)
 
@@ -226,7 +235,7 @@ class AppController(QObject):
             if self.selected_player_id != player_id:
                 return
             self.window.show_player(bundle)
-            self.window.set_busy(f"Player data loaded: {bundle.profile.full_name}")
+            self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name}"))
             if bundle.profile.is_pitcher:
                 period = self.window.player_view.current_pitcher_statcast_period
                 if period != "yearly":
@@ -283,7 +292,7 @@ class AppController(QObject):
             if self.selected_player_id == player_id:
                 self.window.player_view.set_trend(period, rows)
                 self.window.set_busy(
-                    f"FanGraphs {period} trend loaded · {len(rows)} periods"
+                    tr(f"FanGraphs {period} trend loaded · {len(rows)} periods")
                 )
             run_pending()
 
@@ -341,7 +350,7 @@ class AppController(QObject):
             if self.selected_player_id == player_id:
                 self.window.player_view.set_pitcher_statcast_period(period, payload)
                 self.window.set_busy(
-                    f"Pitcher Statcast {period} loaded · {payload.get('label', '')}"
+                    tr(f"Pitcher Statcast {period} loaded · {payload.get('label', '')}")
                 )
             run_pending()
 
@@ -354,7 +363,7 @@ class AppController(QObject):
         self._run(task, success, on_error=failure)
 
     def import_bref_file(self, file_path: str) -> None:
-        self.window.set_busy("Importing Baseball-Reference WAR data…")
+        self.window.set_busy(tr("Importing Baseball-Reference WAR data…"))
 
         def task() -> dict[str, object]:
             return self.players.bref.import_local_file(file_path)
@@ -363,7 +372,7 @@ class AppController(QObject):
             batting = int(result.get("batting_rows", 0) or 0)
             pitching = int(result.get("pitching_rows", 0) or 0)
             self.window.set_busy(
-                f"B-Ref import complete · batting {batting:,} rows · pitching {pitching:,} rows"
+                tr(f"B-Ref import complete · batting {batting:,} rows · pitching {pitching:,} rows")
             )
             if self.selected_player_id:
                 self.load_player(self.selected_player_id)
@@ -372,7 +381,7 @@ class AppController(QObject):
 
     def load_league(self) -> None:
         season = self.season
-        self.window.set_busy(f"Loading {season} standings…")
+        self.window.set_busy(tr(f"Loading {season} standings…"))
 
         async def task() -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
             standings, league_stats = await asyncio.gather(
@@ -384,7 +393,7 @@ class AppController(QObject):
             standings, league_stats = payload
             self.window.league_view.set_standings(standings)
             self.window.league_view.set_league_stats(league_stats)
-            self.window.set_busy(f"{season} standings updated")
+            self.window.set_busy(tr(f"{season} standings updated"))
 
         self._run(task, success)
 
@@ -399,5 +408,5 @@ class AppController(QObject):
     def _default_error(self, trace: str) -> None:
         LOGGER.error("Worker failed:\n%s", trace)
         last_line = trace.strip().splitlines()[-1] if trace.strip() else "Unknown error"
-        self.window.set_busy(last_line)
+        self.window.set_busy(tr(last_line))
         self.window.show_error("Dugout Atlas", last_line)

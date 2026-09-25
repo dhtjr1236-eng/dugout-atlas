@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.i18n import tr, tr_list
+
 import html
 from typing import Any
 
@@ -58,9 +60,9 @@ class PlayerView(QWidget):
         self.content = QWidget()
         self.layout = QVBoxLayout(self.content)
 
-        self.name_label = QLabel("Select a player")
+        self.name_label = QLabel(tr("Select a player"))
         self.name_label.setObjectName("title")
-        self.profile_label = QLabel("Search by name or click a lineup player.")
+        self.profile_label = QLabel(tr("Search by name or click a lineup player."))
         self.profile_label.setObjectName("subtitle")
         self.layout.addWidget(self.name_label)
         self.layout.addWidget(self.profile_label)
@@ -74,17 +76,17 @@ class PlayerView(QWidget):
         self.pitcher_statcast_controls = QWidget()
         pitcher_statcast_layout = QHBoxLayout(self.pitcher_statcast_controls)
         pitcher_statcast_layout.setContentsMargins(0, 0, 0, 0)
-        pitcher_statcast_layout.addWidget(QLabel("Pitcher Statcast period:"))
+        pitcher_statcast_layout.addWidget(QLabel(tr("Pitcher Statcast period:")))
         self.pitcher_statcast_period = QComboBox()
-        self.pitcher_statcast_period.addItem("Yearly", "yearly")
-        self.pitcher_statcast_period.addItem("Monthly", "monthly")
-        self.pitcher_statcast_period.addItem("Daily", "daily")
+        self.pitcher_statcast_period.addItem(tr("Yearly"), "yearly")
+        self.pitcher_statcast_period.addItem(tr("Monthly"), "monthly")
+        self.pitcher_statcast_period.addItem(tr("Daily"), "daily")
         self.pitcher_statcast_period.setToolTip(
-            "Yearly: selected season · Monthly: latest month with a Statcast appearance · "
-            "Daily: latest Statcast appearance date"
+            tr("Yearly: selected season · Monthly: latest month with a Statcast appearance · "
+            "Daily: latest Statcast appearance date")
         )
         pitcher_statcast_layout.addWidget(self.pitcher_statcast_period)
-        self.pitcher_statcast_status = QLabel(self.PITCHER_STATCAST_LABELS["yearly"])
+        self.pitcher_statcast_status = QLabel(tr(self.PITCHER_STATCAST_LABELS["yearly"]))
         self.pitcher_statcast_status.setObjectName("subtitle")
         pitcher_statcast_layout.addWidget(self.pitcher_statcast_status)
         pitcher_statcast_layout.addStretch()
@@ -92,11 +94,11 @@ class PlayerView(QWidget):
 
         self.defense_box, self.defense_grid = self._metric_box("Defense")
 
-        self.pitch_box = QGroupBox("Pitch Arsenal")
+        self.pitch_box = QGroupBox(tr("Pitch Arsenal"))
         pitch_layout = QVBoxLayout(self.pitch_box)
         self.pitch_table = QTableWidget(0, 7)
         self.pitch_table.setHorizontalHeaderLabels(
-            [
+            tr_list([
                 "Pitch",
                 "Usage %",
                 "Avg Velo",
@@ -104,7 +106,7 @@ class PlayerView(QWidget):
                 "Spin",
                 "Run Value",
                 "Whiff %",
-            ]
+            ])
         )
         self.pitch_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         pitch_layout.addWidget(self.pitch_table)
@@ -113,17 +115,17 @@ class PlayerView(QWidget):
         self.trend_controls = QWidget()
         trend_layout = QHBoxLayout(self.trend_controls)
         trend_layout.setContentsMargins(0, 0, 0, 0)
-        trend_layout.addWidget(QLabel("WAR / wRC+ trend:"))
+        trend_layout.addWidget(QLabel(tr("WAR / wRC+ trend:")))
         self.trend_period = QComboBox()
-        self.trend_period.addItem("Yearly", "yearly")
-        self.trend_period.addItem("Monthly", "monthly")
-        self.trend_period.addItem("Daily", "daily")
+        self.trend_period.addItem(tr("Yearly"), "yearly")
+        self.trend_period.addItem(tr("Monthly"), "monthly")
+        self.trend_period.addItem(tr("Daily"), "daily")
         self.trend_period.setToolTip(
-            "Yearly: six seasons · Monthly: current season · "
-            "Daily: exact FanGraphs date-range values for the recent 14 games"
+            tr("Yearly: six seasons · Monthly: current season · "
+            "Daily: exact FanGraphs date-range values for the recent 14 games")
         )
         trend_layout.addWidget(self.trend_period)
-        self.trend_status = QLabel(self.PERIOD_LABELS["yearly"])
+        self.trend_status = QLabel(tr(self.PERIOD_LABELS["yearly"]))
         self.trend_status.setObjectName("subtitle")
         trend_layout.addWidget(self.trend_status)
         trend_layout.addStretch()
@@ -133,16 +135,16 @@ class PlayerView(QWidget):
         self.chart_tabs.setMinimumHeight(430)
         self.layout.addWidget(self.chart_tabs)
 
-        self.source_box = QGroupBox("Data Sources")
+        self.source_box = QGroupBox(tr("Data Sources"))
         source_layout = QVBoxLayout(self.source_box)
-        self.source_label = QLabel("")
+        self.source_label = QLabel(tr(""))
         self.source_label.setWordWrap(True)
         self.source_label.setOpenExternalLinks(True)
         self.source_label.setTextFormat(self.source_label.textFormat())
         source_layout.addWidget(self.source_label)
         self.layout.addWidget(self.source_box)
 
-        self.error_label = QLabel("")
+        self.error_label = QLabel(tr(""))
         self.error_label.setWordWrap(True)
         self.error_label.setObjectName("subtitle")
         self.layout.addWidget(self.error_label)
@@ -160,7 +162,7 @@ class PlayerView(QWidget):
         )
 
     def _metric_box(self, title: str) -> tuple[QGroupBox, MetricGrid]:
-        box = QGroupBox(title)
+        box = QGroupBox(tr(title))
         layout = QVBoxLayout(box)
         grid = MetricGrid(columns=4)
         layout.addWidget(grid)
@@ -168,9 +170,9 @@ class PlayerView(QWidget):
         return box, grid
 
     def set_loading(self, player_id: int) -> None:
-        self.name_label.setText(f"Loading player {player_id}…")
+        self.name_label.setText(tr(f"Loading player {player_id}…"))
         self.profile_label.setText(
-            "Collecting MLB, FanGraphs, Baseball Reference and Statcast data."
+            tr("Collecting MLB, FanGraphs, Baseball Reference and Statcast data.")
         )
 
     def set_bundle(self, bundle: PlayerBundle) -> None:
@@ -185,11 +187,11 @@ class PlayerView(QWidget):
 
         self._bundle = bundle
         profile = bundle.profile
-        self.name_label.setText(profile.full_name)
+        self.name_label.setText(tr(profile.full_name))
         hand = f"Bats: {profile.bats or '—'}  |  Throws: {profile.throws or '—'}"
         self.profile_label.setText(
-            f"{profile.team or '—'}  |  {profile.position or '—'}  |  "
-            f"Age {profile.age or '—'}  |  {hand}"
+            tr(f"{profile.team or '—'}  |  {profile.position or '—'}  |  "
+            f"Age {profile.age or '—'}  |  {hand}")
         )
 
         if profile.is_pitcher:
@@ -202,7 +204,7 @@ class PlayerView(QWidget):
             if selected_pitcher_period == "yearly" or not existing_pitcher_payload:
                 self._pitcher_period_payload = {}
                 self.pitcher_statcast_status.setText(
-                    self.PITCHER_STATCAST_LABELS["yearly"]
+                    tr(self.PITCHER_STATCAST_LABELS["yearly"])
                 )
                 self._show_pitcher(bundle)
             else:
@@ -212,7 +214,7 @@ class PlayerView(QWidget):
                     or self.PITCHER_STATCAST_LABELS[selected_pitcher_period]
                 )
                 self.pitcher_statcast_status.setText(
-                    f"{selected_pitcher_period.title()} · {label}"
+                    tr(f"{selected_pitcher_period.title()} · {label}")
                 )
                 self._show_pitcher(bundle, existing_pitcher_payload)
         else:
@@ -231,14 +233,14 @@ class PlayerView(QWidget):
                 ]
             else:
                 self._trend_rows = existing_trend
-            self.trend_status.setText(self.PERIOD_LABELS[selected_period])
+            self.trend_status.setText(tr(self.PERIOD_LABELS[selected_period]))
             self._show_batter(bundle)
 
         self._show_sources(bundle)
         self.error_label.setText(
-            "Some sources were unavailable: " + " | ".join(bundle.errors)
+            tr("Some sources were unavailable: " + " | ".join(bundle.errors)
             if bundle.errors
-            else ""
+            else "")
         )
 
     @property
@@ -257,13 +259,13 @@ class PlayerView(QWidget):
         if self.current_trend_period != period:
             return
         label = self.PERIOD_LABELS.get(period, period)
-        self.trend_status.setText(f"Loading FanGraphs {label.lower()}…")
+        self.trend_status.setText(tr(f"Loading FanGraphs {label.lower()}…"))
 
     def set_trend(self, period: str, rows: list[dict[str, Any]]) -> None:
         if self.current_trend_period != period or self._bundle is None:
             return
         self._trend_rows = rows
-        self.trend_status.setText(self.PERIOD_LABELS.get(period, period))
+        self.trend_status.setText(tr(self.PERIOD_LABELS.get(period, period)))
         if not self._bundle.profile.is_pitcher:
             self._render_batter_charts(self._bundle)
 
@@ -271,7 +273,7 @@ class PlayerView(QWidget):
         if self.current_pitcher_statcast_period != period:
             return
         label = self.PITCHER_STATCAST_LABELS.get(period, period)
-        self.pitcher_statcast_status.setText(f"Loading Statcast {label.lower()}…")
+        self.pitcher_statcast_status.setText(tr(f"Loading Statcast {label.lower()}…"))
 
     def set_pitcher_statcast_period(
         self, period: str, payload: dict[str, Any]
@@ -284,7 +286,7 @@ class PlayerView(QWidget):
             return
         self._pitcher_period_payload = payload
         label = str(payload.get("label") or self.PITCHER_STATCAST_LABELS.get(period, period))
-        self.pitcher_statcast_status.setText(f"{period.title()} · {label}")
+        self.pitcher_statcast_status.setText(tr(f"{period.title()} · {label}"))
         self._show_pitcher(self._bundle, payload)
 
     def _on_trend_period_changed(self) -> None:
@@ -297,7 +299,7 @@ class PlayerView(QWidget):
                 for row in self._bundle.history
                 if row.get("Season") is not None
             ]
-            self.trend_status.setText(self.PERIOD_LABELS[period])
+            self.trend_status.setText(tr(self.PERIOD_LABELS[period]))
             self._render_batter_charts(self._bundle)
             return
         self.set_trend_loading(period)
@@ -309,7 +311,7 @@ class PlayerView(QWidget):
         period = self.current_pitcher_statcast_period
         if period == "yearly":
             self._pitcher_period_payload = {}
-            self.pitcher_statcast_status.setText(self.PITCHER_STATCAST_LABELS[period])
+            self.pitcher_statcast_status.setText(tr(self.PITCHER_STATCAST_LABELS[period]))
             self._show_pitcher(self._bundle)
             return
         self.set_pitcher_statcast_loading(period)
@@ -478,7 +480,7 @@ class PlayerView(QWidget):
                     )
                 else:
                     text = str(value)
-                self.pitch_table.setItem(row_index, col, QTableWidgetItem(text))
+                self.pitch_table.setItem(row_index, col, QTableWidgetItem(tr(text)))
         self.pitch_table.resizeColumnsToContents()
 
     def _set_charts(self, charts: list[tuple[str, Figure]]) -> None:
@@ -493,7 +495,7 @@ class PlayerView(QWidget):
             holder.setMinimumHeight(390)
             layout = QVBoxLayout(holder)
             layout.addWidget(canvas)
-            self.chart_tabs.addTab(holder, title)
+            self.chart_tabs.addTab(holder, tr(title))
 
     def _show_sources(self, bundle: PlayerBundle) -> None:
         entries: list[dict[str, Any]] = []
@@ -542,10 +544,10 @@ class PlayerView(QWidget):
 
         if not rows:
             self.source_label.setText(
-                "No external sabermetric source returned data for this player."
+                tr("No external sabermetric source returned data for this player.")
             )
         else:
-            self.source_label.setText("<br>".join(rows))
+            self.source_label.setText(tr("<br>".join(rows)))
 
     @staticmethod
     def _number(value: Any) -> float:
