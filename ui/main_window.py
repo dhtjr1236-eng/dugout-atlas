@@ -89,6 +89,9 @@ class MainWindow(QMainWindow):
         self.refresh_button = QPushButton(tr("새로고침"))
         self.refresh_button.setToolTip(tr("현재 경기와 선택한 선수 데이터를 다시 조회"))
         top.addWidget(self.refresh_button)
+        self.advanced_compare_button = QPushButton(tr("Advanced Compare ↗"))
+        self.advanced_compare_button.clicked.connect(self._open_advanced_compare)
+        top.addWidget(self.advanced_compare_button)
         self.settings_button = QPushButton(tr("Settings"))
         self.settings_button.setAccessibleName(tr("Settings"))
         self.settings_button.clicked.connect(self.settings_requested)
@@ -209,6 +212,25 @@ class MainWindow(QMainWindow):
 
     def set_busy(self, message: str) -> None:
         self.statusBar().showMessage(tr(message))
+
+    def _open_advanced_compare(self) -> None:
+        from ui.advanced_compare_window import AdvancedCompareWindow
+        controller = getattr(self, "controller", None)
+        if controller is None:
+            return
+        window = getattr(self, "_advanced_compare_window", None)
+        if window is None:
+            window = AdvancedCompareWindow(controller.players, controller.season, self)
+            self._advanced_compare_window = window
+        else:
+            window.season.setValue(controller.season)
+            try:
+                window.retranslate()
+            except Exception:
+                pass
+        window.show()
+        window.raise_()
+        window.activateWindow()
 
     def _open_bref_downloads(self) -> None:
         QDesktopServices.openUrl(QUrl("https://www.baseball-reference.com/data/"))

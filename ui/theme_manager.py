@@ -14,10 +14,12 @@ from config.theme_tokens import (
     LIGHT_TOKENS,
     ThemeName,
     set_active_theme,
+    set_active_accent,
     tokens_for,
 )
 
 THEME_STORAGE_KEY = "dugout-atlas-theme"
+ACCENT_STORAGE_KEY = "dugout-atlas-accent"
 
 class ThemeManager:
     """Dugout Atlas의 PyQt6 전역 Light/Dark 테마를 관리한다."""
@@ -28,6 +30,7 @@ class ThemeManager:
         self.font_scale = read_preferences()["font_scale"]
         self.settings = QSettings("Dugout Atlas", "Dugout Atlas")
         self.current_theme: ThemeName = self._initial_theme()
+        self.current_accent = self._stored_accent()
         self._animation: QVariantAnimation | None = None
         self._button: QPushButton | None = None
         self._listeners: list[object] = []
@@ -45,6 +48,10 @@ class ThemeManager:
         if raw:
             self.settings.remove(THEME_STORAGE_KEY)
         return None
+
+    def _stored_accent(self) -> str:
+        raw = str(self.settings.value(ACCENT_STORAGE_KEY, "blue") or "blue").lower()
+        return raw if raw in {"blue","gold","purple","magenta","emerald"} else "blue"
 
     def _system_theme(self) -> ThemeName:
         try:
@@ -93,6 +100,7 @@ class ThemeManager:
         old_theme = self.current_theme
         self.current_theme = theme
         set_active_theme(theme)
+        set_active_accent(self.current_accent)
 
         if animate and not self._reduced_motion() and old_theme != theme:
             self._animate_theme(old_theme, theme)
@@ -119,9 +127,15 @@ class ThemeManager:
         self._button.setAccessibleName(tr(description))
         self._button.setAccessibleDescription(tr("Dugout Atlas 화면 테마 전환 버튼"))
 
-    @staticmethod
-    def _tokens(theme: ThemeName) -> dict[str, str]:
-        return tokens_for(theme)
+    def set_accent(self, accent: str, *, animate: bool = False) -> None:
+        self.current_accent = accent if accent in {"blue","gold","purple","magenta","emerald"} else "blue"
+        self.settings.setValue(ACCENT_STORAGE_KEY, self.current_accent)
+        self.settings.sync()
+        set_active_accent(self.current_accent)
+        self.apply(self.current_theme, animate=animate)
+
+    def _tokens(self, theme: ThemeName) -> dict[str, str]:
+        return tokens_for(theme, self.current_accent)
 
     def _render(self, tokens: dict[str, str]) -> str:
         rendered = self.template

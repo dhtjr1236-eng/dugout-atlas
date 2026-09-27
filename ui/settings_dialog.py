@@ -36,6 +36,20 @@ class SettingsDialog(QDialog):
         for key in ('light', 'dark'):
             self.theme.addItem(tr(key.title()), key)
         self.theme.setCurrentIndex(self.theme.findData(window.theme_manager.current_theme))
+        self.accent = QComboBox()
+        for key, label in (
+            ("blue", tr("Classic Blue")),
+            ("gold", tr("Midnight Gold")),
+            ("purple", tr("Obsidian Purple")),
+            ("magenta", tr("Magenta White")),
+            ("emerald", tr("Emerald")),
+        ):
+            self.accent.addItem(label, key)
+        self.accent.setCurrentIndex(self.accent.findData(window.theme_manager.current_accent))
+        self._original_accent = window.theme_manager.current_accent
+        self.accent.currentIndexChanged.connect(
+            lambda _index: window.theme_manager.set_accent(str(self.accent.currentData() or "blue"), animate=False)
+        )
         self.font = self._spin(self.values['font_scale'], 80, 160)
         self.font.setSingleStep(10)
         self.language = QComboBox()
@@ -45,6 +59,7 @@ class SettingsDialog(QDialog):
         form.addRow(tr('Game refresh interval (seconds)'), self.refresh)
         form.addRow(tr('Player refresh interval (seconds)'), self.player_refresh)
         form.addRow(tr('Theme'), self.theme)
+        form.addRow(tr('Accent color / style'), self.accent)
         form.addRow(tr('Font size (%)'), self.font)
         form.addRow(tr('App language'), self.language)
         form.addRow(self.notifications)
@@ -168,6 +183,13 @@ class SettingsDialog(QDialog):
     def _failed(self):
         QMessageBox.warning(self, tr('Settings'), tr('Operation failed. Check folder permissions and try again.'))
 
+    def reject(self) -> None:
+        try:
+            self.window.theme_manager.set_accent(self._original_accent, animate=False)
+        except Exception:
+            pass
+        super().reject()
+
     def _save(self):
         if self.controller._threads:
             return
@@ -193,9 +215,18 @@ class SettingsDialog(QDialog):
         manager.settings.setValue('dugout-atlas-theme', theme)
         manager.settings.sync()
         manager.font_scale = values['font_scale']
+        manager.set_accent(str(self.accent.currentData() or "blue"), animate=False)
+        previous_language = str(self.values.get('language', 'en'))
         set_language(values['language'])
         manager.apply(theme, animate=False)
-        translate_widgets(self.window)
+        from PyQt6.QtWidgets import QApplication
+        for top_level in QApplication.topLevelWidgets():
+            translate_widgets(top_level)
+            retranslate = getattr(top_level, "retranslate", None)
+            if callable(retranslate):
+                retranslate()
+        if previous_language != values['language']:
+            self.needs_refresh = True
         self.window.set_busy(tr('Settings saved.'))
         self.accept()
 
