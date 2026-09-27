@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5
+
+- Added a separate 2–4 player Advanced Compare window while keeping the existing Compare tab unchanged.
+- Balanced two-player and multi-player table columns and consolidated source/condition/status metadata into one footer.
+- Added English/Korean/Japanese Advanced Compare UI translation and immediate retranslation after Settings language changes.
+- Expanded lineup/player localization beyond the curated KR/JP/TW seed: MLB Korea/MLB Japan locale pages are cached by MLBAM ID; Korean display can fall back to Hangul converted from MLB Japan katakana.
+- Added Korean/Japanese names and short labels for all 30 MLB teams across schedules, Gameday, Lineups, Standings and league team stats.
+- Stripped MLB locale SEO suffixes such as `Stats, Age, Position...` before caching display names.
+- Added persistent accent palettes: Classic Blue, Midnight Gold, Obsidian Purple, Magenta White and Emerald, independent of Light/Dark mode.
+- Preserved MLBAM/English identity for FanGraphs, Baseball-Reference, Savant and MLB Stats API matching.
+- Details: [v1.5 patch notes](docs/PATCH_v1.5.md).
+
 ## 1.41
 
 - Added locale-aware display names and search aliases for 24 curated 2026 KR/JP/TW players.
