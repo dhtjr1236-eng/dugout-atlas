@@ -1203,5 +1203,120 @@
     "en": " points",
     "ko": " 점",
     "ja": " 点"
+  },
+  {
+    "en": "Advanced Compare ↗",
+    "ko": "심화 비교 ↗",
+    "ja": "詳細比較 ↗"
+  },
+  {
+    "en": "Advanced Compare",
+    "ko": "심화 비교",
+    "ja": "詳細比較"
+  },
+  {
+    "en": "Compare 2–4 players in a separate window. The existing Compare tab and main window remain unchanged.",
+    "ko": "2~4명을 별도 창에서 비교합니다. 기존 비교 탭과 메인 창은 그대로 유지됩니다.",
+    "ja": "2～4名を別ウィンドウで比較します。既存の比較タブとメイン画面はそのまま維持されます。"
+  },
+  {
+    "en": "+ Add Player",
+    "ko": "+ 선수 추가",
+    "ja": "+ 選手を追加"
+  },
+  {
+    "en": "Select 2 players to display the advanced comparison report.",
+    "ko": "선수 2명을 선택하면 심화 비교 리포트가 표시됩니다.",
+    "ja": "選手を2名選択すると詳細比較レポートが表示されます。"
+  },
+  {
+    "en": "Select 2 players to generate the report.",
+    "ko": "선수 2명을 선택하면 리포트를 생성합니다.",
+    "ja": "選手を2名選択するとレポートを生成します。"
+  },
+  {
+    "en": "A. Basic Comparison",
+    "ko": "A. 기본 비교",
+    "ja": "A. 基本比較"
+  },
+  {
+    "en": "B. Statcast Percentile Comparison",
+    "ko": "B. Statcast 백분위 비교",
+    "ja": "B. Statcast パーセンタイル比較"
+  },
+  {
+    "en": "Data Range / Sources / Status",
+    "ko": "데이터 범위 / 출처 / 상태",
+    "ja": "データ範囲 / 出典 / 状態"
+  },
+  {
+    "en": "Player A",
+    "ko": "선수 A",
+    "ja": "選手 A"
+  },
+  {
+    "en": "Player B",
+    "ko": "선수 B",
+    "ja": "選手 B"
+  },
+  {
+    "en": "Player C",
+    "ko": "선수 C",
+    "ja": "選手 C"
+  },
+  {
+    "en": "Player D",
+    "ko": "선수 D",
+    "ja": "選手 D"
+  },
+  {
+    "en": "Savant Percentile",
+    "ko": "Savant 백분위",
+    "ja": "Savant パーセンタイル"
+  },
+  {
+    "en": "Players",
+    "ko": "선수 수",
+    "ja": "選手数"
+  },
+  {
+    "en": "Sources",
+    "ko": "출처",
+    "ja": "出典"
+  },
+  {
+    "en": "Status: only provider-returned values are shown; unavailable metrics remain blank.",
+    "ko": "상태: 제공처가 반환한 값만 표시하며, 제공되지 않은 지표는 비워 둡니다.",
+    "ja": "状態: プロバイダーが返した値のみ表示し、取得できない指標は空欄のままにします。"
+  },
+  {
+    "en": "Accent color / style",
+    "ko": "강조색 / 스타일",
+    "ja": "アクセントカラー / スタイル"
+  },
+  {
+    "en": "Classic Blue",
+    "ko": "클래식 블루",
+    "ja": "クラシックブルー"
+  },
+  {
+    "en": "Midnight Gold",
+    "ko": "미드나이트 골드",
+    "ja": "ミッドナイトゴールド"
+  },
+  {
+    "en": "Obsidian Purple",
+    "ko": "옵시디언 퍼플",
+    "ja": "オブシディアンパープル"
+  },
+  {
+    "en": "Magenta White",
+    "ko": "마젠타 화이트",
+    "ja": "マゼンタホワイト"
+  },
+  {
+    "en": "Emerald",
+    "ko": "에메랄드",
+    "ja": "エメラルド"
   }
 ]
