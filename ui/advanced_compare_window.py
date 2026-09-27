@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer, Qt, QStringListModel
 from PyQt6.QtWidgets import (
     QCompleter,QGroupBox,QHBoxLayout,QHeaderView,QLabel,QLineEdit,QMainWindow,
-    QPushButton,QScrollArea,QSpinBox,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget,QStringListModel
+    QPushButton,QScrollArea,QSpinBox,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget
 )
 
 from config.i18n import tr
