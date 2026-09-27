@@ -110,6 +110,11 @@ class PlayerNameLocalizer:
         except (OSError, json.JSONDecodeError):
             return {}
 
+    @staticmethod
+    def language() -> str:
+        language = str(read_preferences().get("language", "en"))
+        return language if language in {"en", "ko", "ja"} else "en"
+
     def seed_entry(self, english_name: str) -> dict[str, Any]:
         needle = _norm(english_name)
         for row in self.players:
