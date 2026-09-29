@@ -47,7 +47,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle(f"{SETTINGS.app_name} v{SETTINGS.app_version}")
-        self.resize(1440, 900)
+        self.resize(1296, 810)
         self._games: list[GameSummary] = []
         self._search_map: dict[str, int] = {}
 
@@ -69,13 +69,6 @@ class MainWindow(QMainWindow):
         self.completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
         self.search.setCompleter(self.completer)
         top.addWidget(self.search)
-        self.theme_button = QPushButton(tr("Light"))
-        self.theme_button.setObjectName("themeToggle")
-        self.theme_button.setMinimumWidth(64)
-        self.theme_button.setToolTip(tr("Light Theme로 전환"))
-        self.theme_button.setAccessibleName(tr("Light Theme로 전환"))
-        self.theme_button.setAccessibleDescription(tr("Dugout Atlas 화면 테마 전환 버튼"))
-        top.addWidget(self.theme_button)
         self.bref_download_button = QPushButton(tr("B-Ref 다운로드"))
         self.bref_download_button.setToolTip(
             tr("Open Baseball-Reference official WAR downloads in your normal browser.")
@@ -84,19 +77,19 @@ class MainWindow(QMainWindow):
         self.bref_import_button.setToolTip(
             tr("Import an official war_archive ZIP or war_daily_bat/pitch TXT/CSV file.")
         )
-        top.addWidget(self.bref_download_button)
-        top.addWidget(self.bref_import_button)
         self.refresh_button = QPushButton(tr("새로고침"))
         self.refresh_button.setToolTip(tr("현재 경기와 선택한 선수 데이터를 다시 조회"))
-        top.addWidget(self.refresh_button)
-        self.advanced_compare_button = QPushButton(tr("Advanced Compare ↗"))
-        self.advanced_compare_button.clicked.connect(self._open_advanced_compare)
-        top.addWidget(self.advanced_compare_button)
         self.settings_button = QPushButton(tr("Settings"))
         self.settings_button.setAccessibleName(tr("Settings"))
         self.settings_button.clicked.connect(self.settings_requested)
         top.addWidget(self.settings_button)
         root.addLayout(top)
+        actions = QHBoxLayout()
+        actions.addStretch()
+        actions.addWidget(self.bref_download_button)
+        actions.addWidget(self.bref_import_button)
+        actions.addWidget(self.refresh_button)
+        root.addLayout(actions)
 
         splitter = QSplitter()
         root.addWidget(splitter, 1)
@@ -145,11 +138,14 @@ class MainWindow(QMainWindow):
         self.bref_download_button.clicked.connect(self._open_bref_downloads)
         self.bref_import_button.clicked.connect(self._choose_bref_import)
         self.refresh_button.clicked.connect(self.refresh_requested)
+        self.compare_view.advanced_compare_requested.connect(self._open_advanced_compare)
 
         self._search_timer = QTimer(self)
         self._search_timer.setSingleShot(True)
         self._search_timer.setInterval(350)
         self._search_timer.timeout.connect(self._emit_search)
+        from ui.window_sizing import compact_main_window
+        compact_main_window(self, 1440, 900)
 
     def set_games(self, games: list[GameSummary]) -> None:
         current_pk = None
@@ -273,3 +269,19 @@ class MainWindow(QMainWindow):
             if label.casefold().startswith(text):
                 self.search_player_selected.emit(player_id)
                 return
+
+    def closeEvent(self, event) -> None:
+        advanced = getattr(self, "_advanced_compare_window", None)
+        if advanced is not None:
+            advanced.race.cancel()
+            demo = advanced.race._demo_window
+            if demo is not None:
+                demo.cancel()
+            pending = bool(advanced._threads or advanced.race._workers or (demo and demo._workers))
+            if pending:
+                # Let queued finished signals clean up QThreads without blocking Qt.
+                event.ignore()
+                QTimer.singleShot(100, self.close)
+                return
+            advanced.close()
+        super().closeEvent(event)

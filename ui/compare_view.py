@@ -15,6 +15,7 @@ from models.player import PlayerBundle
 class CompareView(QWidget):
     search_requested = pyqtSignal(int, str)
     player_selected = pyqtSignal(int, int)
+    advanced_compare_requested = pyqtSignal()
     MAX_PLAYERS = 4
 
     def __init__(self) -> None:
@@ -28,8 +29,14 @@ class CompareView(QWidget):
         title = QLabel(tr("Compare Players")); title.setObjectName("title"); root.addWidget(title)
         sub = QLabel(tr("2~4명의 선수를 비교합니다. 원시 지표, 리그 내 위치, 선택 선수 간 강점을 함께 표시합니다."))
         sub.setObjectName("subtitle"); sub.setWordWrap(True); root.addWidget(sub)
-        tools = QHBoxLayout(); tools.addStretch(); self.add_button = QPushButton(tr("+ 선수 추가"))
-        self.add_button.clicked.connect(self._add_slot); tools.addWidget(self.add_button); root.addLayout(tools)
+        tools = QHBoxLayout(); tools.addStretch()
+        self.add_button = QPushButton(tr("+ 선수 추가"))
+        self.add_button.clicked.connect(self._add_slot)
+        self.advanced_compare_button = QPushButton(tr("Advanced Compare ↗"))
+        self.advanced_compare_button.clicked.connect(self.advanced_compare_requested)
+        tools.addWidget(self.add_button)
+        tools.addWidget(self.advanced_compare_button)
+        root.addLayout(tools)
         grid = QGridLayout(); root.addLayout(grid)
         for slot in range(4):
             pane = self._build_pane(slot); self._panes[slot] = pane; grid.addWidget(pane, slot // 2, slot % 2)

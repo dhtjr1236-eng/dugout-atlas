@@ -1,3 +1,12 @@
+> **v1.6**: 상단 버튼 정리, 심화 비교 버튼을 Compare 탭으로 이동, 사용자 지정 선수명 파일 적용. [패치노트](docs/PATCH_v1.6.md)
+
+> **v1.5.2 변경 이력**: 사용자 지정 101명 EN/JA/KO 표기 우선 적용, 기본 창 가로·세로 90% 축소 및 화면 크기 제한. [적용/복구 가이드](docs/PATCH_v1.5.2.md)
+
+> **v1.5.1 시즌 레이스 패치**: 심화 비교에 FanGraphs 실제 범위 fWAR 레이스를 추가했습니다.
+> [패치노트](docs/PATCH_v1.5.1.md) · [적용/복구/사용/검증 가이드](docs/SEASON_RACE_GUIDE_KO.md)
+> Preview/Full detail, 재생·슬라이더, 별도 가상 시연, PNG/JPEG 정지 화면을 지원합니다.
+> gameDate의 UTC 문자 날짜를 사용하며 당일은 제외합니다. 역사적 WAR 스냅샷이 아닙니다.
+
 <div align="center">
 
 # ⚾ Dugout Atlas

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+import asyncio
 import pandas as pd
 
 from services.dataframe_utils import first_existing, row_to_dict
@@ -35,7 +36,10 @@ class AdvancedCompareService:
         return await self.players.search(query)
 
     async def load(self,player_id:int,season:int):
-        return await self.players.get_bundle(player_id,season)
+        bundle = await self.players.get_bundle(player_id,season)
+        if not bundle.profile.is_pitcher:
+            await asyncio.to_thread(self._distributions, season)
+        return bundle
 
     def _distributions(self,season:int)->dict[str,list[float]]:
         if season in self._dist_cache:
@@ -96,7 +100,7 @@ class AdvancedCompareService:
         if bundle.profile.is_pitcher:
             return {}
         values=self.core_metrics(bundle)
-        dists=self._distributions(season)
+        dists=self._dist_cache.get(season, {})
         return {metric:percentile(values.get(metric),population) for metric,population in dists.items() if population}
 
     @staticmethod

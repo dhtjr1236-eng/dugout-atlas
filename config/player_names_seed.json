@@ -1,7 +1,8 @@
 {
   "_meta": {
-    "description": "Curated 2026 KR/JP/TW MLB/major-contract player display-name seed",
-    "count": 24
+    "description": "Existing KR/JP/TW names plus 101 user-specified EN/JA/KO display names; IDs remain authoritative for statistics.",
+    "count": 113,
+    "user_supplied_count": 101
   },
   "players": [
     {
@@ -19,9 +20,11 @@
     {
       "en": "Jung Hoo Lee",
       "ko": "이정후",
-      "ja": "イ・ジョンフ",
+      "ja": "李政厚",
       "country": "KR",
       "locked_locales": [
+        "en",
+        "ko",
         "ja"
       ],
       "aliases": [
@@ -30,8 +33,9 @@
         "Lee Jung-hoo",
         "이 정후",
         "イ ジョンフ",
-        "李政厚"
-      ]
+        "イ・ジョンフ"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Hye-Seong Kim",
@@ -87,71 +91,107 @@
     {
       "en": "Shohei Ohtani",
       "ko": "오타니 쇼헤이",
-      "ja": "大谷 翔平",
+      "ja": "大谷翔平",
       "country": "JP",
       "aliases": [
         "Ohtani Shohei",
         "Shohei Otani",
         "오타니",
-        "大谷翔平",
-        "おおたに しょうへい"
-      ]
+        "おおたに しょうへい",
+        "大谷 翔平"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Yoshinobu Yamamoto",
       "ko": "야마모토 요시노부",
-      "ja": "山本 由伸",
+      "ja": "山本由伸",
       "country": "JP",
       "aliases": [
         "Yamamoto Yoshinobu",
         "야마모토",
-        "山本由伸",
-        "やまもと よしのぶ"
-      ]
+        "やまもと よしのぶ",
+        "山本 由伸"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Yu Darvish",
       "ko": "다르빗슈 유",
-      "ja": "ダルビッシュ 有",
+      "ja": "ダルビッシュ有",
       "country": "JP",
       "aliases": [
         "Darvish Yu",
         "다르빗슈",
-        "ダルビッシュ有"
-      ]
+        "ダルビッシュ 有"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Shota Imanaga",
       "ko": "이마나가 쇼타",
-      "ja": "今永 昇太",
+      "ja": "今永昇太",
       "country": "JP",
       "aliases": [
         "Imanaga Shota",
         "이마나가",
-        "今永昇太"
-      ]
+        "今永 昇太"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Seiya Suzuki",
       "ko": "스즈키 세이야",
-      "ja": "鈴木 誠也",
+      "ja": "鈴木誠也",
       "country": "JP",
       "aliases": [
         "Suzuki Seiya",
         "스즈키",
-        "鈴木誠也"
-      ]
+        "鈴木 誠也"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Masataka Yoshida",
       "ko": "요시다 마사타카",
-      "ja": "吉田 正尚",
+      "ja": "吉田正尚",
       "country": "JP",
       "aliases": [
         "Yoshida Masataka",
         "요시다",
-        "吉田正尚"
-      ]
+        "吉田 正尚"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Roki Sasaki",
@@ -167,24 +207,36 @@
     {
       "en": "Yusei Kikuchi",
       "ko": "기쿠치 유세이",
-      "ja": "菊池 雄星",
+      "ja": "菊池雄星",
       "country": "JP",
       "aliases": [
         "Kikuchi Yusei",
         "기쿠치",
-        "菊池雄星"
-      ]
+        "菊池 雄星"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Kodai Senga",
       "ko": "센가 코다이",
-      "ja": "千賀 滉大",
+      "ja": "千賀滉大",
       "country": "JP",
       "aliases": [
         "Senga Kodai",
         "센가",
-        "千賀滉大"
-      ]
+        "千賀 滉大"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Yuki Matsui",
@@ -200,35 +252,54 @@
     {
       "en": "Munetaka Murakami",
       "ko": "무라카미 무네타카",
-      "ja": "村上 宗隆",
+      "ja": "村上宗隆",
       "country": "JP",
       "aliases": [
         "Murakami Munetaka",
         "무라카미",
-        "村上宗隆"
-      ]
+        "村上 宗隆"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Kazuma Okamoto",
       "ko": "오카모토 카즈마",
-      "ja": "岡本 和真",
+      "ja": "岡本和真",
       "country": "JP",
       "aliases": [
         "Okamoto Kazuma",
         "오카모토",
-        "岡本和真"
-      ]
+        "岡本 和真"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Tomoyuki Sugano",
-      "ko": "스가노 토모유키",
-      "ja": "菅野 智之",
+      "ko": "스가노 도모유키",
+      "ja": "菅野智之",
       "country": "JP",
       "aliases": [
         "Sugano Tomoyuki",
         "스가노",
-        "菅野智之"
-      ]
+        "菅野 智之",
+        "스가노 토모유키"
+      ],
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28"
     },
     {
       "en": "Tatsuya Imai",
@@ -285,6 +356,1098 @@
         "Lee Hao-Yu",
         "李 灝宇"
       ]
+    },
+    {
+      "en": "Aaron Judge",
+      "ja": "アーロン・ジャッジ",
+      "ko": "애런 저지",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Juan Soto",
+      "ja": "フアン・ソト",
+      "ko": "후안 소토",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Mookie Betts",
+      "ja": "ムーキー・ベッツ",
+      "ko": "무키 베츠",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Freddie Freeman",
+      "ja": "フレディ・フリーマン",
+      "ko": "프레디 프리먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Bryce Harper",
+      "ja": "ブライス・ハーパー",
+      "ko": "브라이스 하퍼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Mike Trout",
+      "ja": "マイク・トラウト",
+      "ko": "마이크 트라웃",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Yordan Alvarez",
+      "ja": "ヨルダン・アルバレス",
+      "ko": "요르단 알바레스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "José Ramírez",
+      "ja": "ホセ・ラミレス",
+      "ko": "호세 라미레스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Jose Ramirez"
+      ]
+    },
+    {
+      "en": "Vladimir Guerrero Jr.",
+      "ja": "ウラジーミル・ゲレーロ・ジュニア",
+      "ko": "블라디미르 게레로 주니어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Bobby Witt Jr.",
+      "ja": "ボビー・ウィット・ジュニア",
+      "ko": "바비 위트 주니어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Gunnar Henderson",
+      "ja": "ガナー・ヘンダーソン",
+      "ko": "거너 헨더슨",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Corey Seager",
+      "ja": "コーリー・シーガー",
+      "ko": "코리 시거",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Trea Turner",
+      "ja": "トレイ・ターナー",
+      "ko": "트레이 터너",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Francisco Lindor",
+      "ja": "フランシスコ・リンドーア",
+      "ko": "프란시스코 린도어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Manny Machado",
+      "ja": "マニー・マチャド",
+      "ko": "매니 마차도",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Fernando Tatis Jr.",
+      "ja": "フェルナンド・タティス・ジュニア",
+      "ko": "페르난도 타티스 주니어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Ronald Acuña Jr.",
+      "ja": "ロナルド・アクーニャ・ジュニア",
+      "ko": "로날드 아쿠냐 주니어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Ronald Acuna Jr."
+      ]
+    },
+    {
+      "en": "Austin Riley",
+      "ja": "オースティン・ライリー",
+      "ko": "오스틴 라일리",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Matt Olson",
+      "ja": "マット・オルソン",
+      "ko": "맷 올슨",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Ozzie Albies",
+      "ja": "オジー・アルビーズ",
+      "ko": "오지 알비스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Kyle Tucker",
+      "ja": "カイル・タッカー",
+      "ko": "카일 터커",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Kyle Schwarber",
+      "ja": "カイル・シュワーバー",
+      "ko": "카일 슈와버",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Pete Alonso",
+      "ja": "ピート・アロンソ",
+      "ko": "피트 알론소",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Christian Yelich",
+      "ja": "クリスチャン・イエリッチ",
+      "ko": "크리스티안 옐리치",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Rafael Devers",
+      "ja": "ラファエル・デバース",
+      "ko": "라파엘 데버스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Alex Bregman",
+      "ja": "アレックス・ブレグマン",
+      "ko": "알렉스 브레그먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Jose Altuve",
+      "ja": "ホセ・アルトゥーベ",
+      "ko": "호세 알투베",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Carlos Correa",
+      "ja": "カルロス・コレア",
+      "ko": "카를로스 코레아",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Bo Bichette",
+      "ja": "ボー・ビシェット",
+      "ko": "보 비셋",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Marcus Semien",
+      "ja": "マーカス・セミエン",
+      "ko": "마커스 세미엔",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Adley Rutschman",
+      "ja": "アドリー・ラッチマン",
+      "ko": "애들리 러치먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Cal Raleigh",
+      "ja": "カル・ローリー",
+      "ko": "칼 롤리",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "J.T. Realmuto",
+      "ja": "J.T.・リアルミュート",
+      "ko": "J.T. 리얼무토",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "William Contreras",
+      "ja": "ウィリアム・コントレラス",
+      "ko": "윌리엄 콘트레라스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Will Smith",
+      "ja": "ウィル・スミス",
+      "ko": "윌 스미스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Yandy Díaz",
+      "ja": "ヤンディ・ディアス",
+      "ko": "얀디 디아스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Yandy Diaz"
+      ]
+    },
+    {
+      "en": "Corbin Carroll",
+      "ja": "コービン・キャロル",
+      "ko": "코빈 캐럴",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Ketel Marte",
+      "ja": "ケテル・マルテ",
+      "ko": "케텔 마르테",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Christian Walker",
+      "ja": "クリスチャン・ウォーカー",
+      "ko": "크리스천 워커",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Luis Arraez",
+      "ja": "ルイス・アラエス",
+      "ko": "루이스 아라에스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Bryan Reynolds",
+      "ja": "ブライアン・レイノルズ",
+      "ko": "브라이언 레이놀즈",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Julio Rodríguez",
+      "ja": "フリオ・ロドリゲス",
+      "ko": "훌리오 로드리게스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Julio Rodriguez"
+      ]
+    },
+    {
+      "en": "Randy Arozarena",
+      "ja": "ランディ・アロサレーナ",
+      "ko": "랜디 아로자레나",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Byron Buxton",
+      "ja": "バイロン・バクストン",
+      "ko": "바이런 벅스턴",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Steven Kwan",
+      "ja": "スティーブン・クワン",
+      "ko": "스티븐 콴",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Cody Bellinger",
+      "ja": "コーディ・ベリンジャー",
+      "ko": "코디 벨린저",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Teoscar Hernández",
+      "ja": "テオスカー・ヘルナンデス",
+      "ko": "테오스카 에르난데스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Teoscar Hernandez"
+      ]
+    },
+    {
+      "en": "Jarren Duran",
+      "ja": "ジャレン・デュラン",
+      "ko": "재런 듀란",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Pete Crow-Armstrong",
+      "ja": "ピート・クロウ＝アームストロング",
+      "ko": "피트 크로우 암스트롱",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Elly De La Cruz",
+      "ja": "エリー・デラクルーズ",
+      "ko": "엘리 데 라 크루즈",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Jazz Chisholm Jr.",
+      "ja": "ジャズ・チザム・ジュニア",
+      "ko": "재즈 치좀 주니어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Spencer Steer",
+      "ja": "スペンサー・スティア",
+      "ko": "스펜서 스티어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Jeremy Peña",
+      "ja": "ジェレミー・ペーニャ",
+      "ko": "제러미 페냐",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Jeremy Pena"
+      ]
+    },
+    {
+      "en": "George Springer",
+      "ja": "ジョージ・スプリンガー",
+      "ko": "조지 스프링어",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Carlos Santana",
+      "ja": "カルロス・サンタナ",
+      "ko": "카를로스 산타나",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Eugenio Suárez",
+      "ja": "エウヘニオ・スアレス",
+      "ko": "에우헤니오 수아레스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Eugenio Suarez"
+      ]
+    },
+    {
+      "en": "Brandon Nimmo",
+      "ja": "ブランドン・ニモ",
+      "ko": "브랜든 니모",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Max Muncy",
+      "ja": "マックス・マンシー",
+      "ko": "맥스 먼시",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Tommy Edman",
+      "ja": "トミー・エドマン",
+      "ko": "토미 에드먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Gerrit Cole",
+      "ja": "ゲリット・コール",
+      "ko": "게릿 콜",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Tarik Skubal",
+      "ja": "タリック・スクーバル",
+      "ko": "타릭 스쿠벌",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Zack Wheeler",
+      "ja": "ザック・ウィーラー",
+      "ko": "잭 휠러",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Corbin Burnes",
+      "ja": "コービン・バーンズ",
+      "ko": "코빈 번스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Logan Webb",
+      "ja": "ローガン・ウェブ",
+      "ko": "로건 웹",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Framber Valdez",
+      "ja": "フランバー・バルデス",
+      "ko": "프램버 발데스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Max Fried",
+      "ja": "マックス・フリード",
+      "ko": "맥스 프리드",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Garrett Crochet",
+      "ja": "ギャレット・クロシェ",
+      "ko": "개럿 크로셰",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Dylan Cease",
+      "ja": "ディラン・シース",
+      "ko": "딜런 시즈",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "George Kirby",
+      "ja": "ジョージ・カービー",
+      "ko": "조지 커비",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Luis Castillo",
+      "ja": "ルイス・カスティーヨ",
+      "ko": "루이스 카스티요",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Sandy Alcantara",
+      "ja": "サンディ・アルカンタラ",
+      "ko": "샌디 알칸타라",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Cristopher Sánchez",
+      "ja": "クリストファー・サンチェス",
+      "ko": "크리스토퍼 산체스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Cristopher Sanchez"
+      ]
+    },
+    {
+      "en": "Jesús Luzardo",
+      "ja": "ヘスス・ルサルド",
+      "ko": "헤수스 루사르도",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Jesus Luzardo"
+      ]
+    },
+    {
+      "en": "Chris Sale",
+      "ja": "クリス・セール",
+      "ko": "크리스 세일",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Max Scherzer",
+      "ja": "マックス・シャーザー",
+      "ko": "맥스 슈어저",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Sonny Gray",
+      "ja": "ソニー・グレイ",
+      "ko": "소니 그레이",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Kevin Gausman",
+      "ja": "ケビン・ガウスマン",
+      "ko": "케빈 가우스먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Aaron Nola",
+      "ja": "アーロン・ノラ",
+      "ko": "애런 놀라",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Ranger Suárez",
+      "ja": "レンジャー・スアレス",
+      "ko": "레인저 수아레스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Ranger Suarez"
+      ]
+    },
+    {
+      "en": "Blake Snell",
+      "ja": "ブレイク・スネル",
+      "ko": "블레이크 스넬",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Emmanuel Clase",
+      "ja": "エマニュエル・クラセ",
+      "ko": "엠마누엘 클라세",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Edwin Díaz",
+      "ja": "エドウィン・ディアス",
+      "ko": "에드윈 디아즈",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Edwin Diaz"
+      ]
+    },
+    {
+      "en": "Josh Hader",
+      "ja": "ジョシュ・ヘイダー",
+      "ko": "조시 헤이더",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Robert Suárez",
+      "ja": "ロベルト・スアレス",
+      "ko": "로베르트 수아레스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": [
+        "Robert Suarez"
+      ]
+    },
+    {
+      "en": "Raisel Iglesias",
+      "ja": "レイセル・イグレシアス",
+      "ko": "라이셀 이글레시아스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Aroldis Chapman",
+      "ja": "アロルディス・チャップマン",
+      "ko": "아롤디스 채프먼",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Kenley Jansen",
+      "ja": "ケンリー・ジャンセン",
+      "ko": "켄리 잰슨",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Devin Williams",
+      "ja": "デビン・ウィリアムズ",
+      "ko": "데빈 윌리엄스",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
+    },
+    {
+      "en": "Justin Verlander",
+      "ja": "ジャスティン・バーランダー",
+      "ko": "저스틴 벌랜더",
+      "locked_locales": [
+        "en",
+        "ko",
+        "ja"
+      ],
+      "display_source": "user-request-2026-09-28",
+      "aliases": []
     }
   ]
 }

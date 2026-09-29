@@ -1318,5 +1318,165 @@
     "en": "Emerald",
     "ko": "에메랄드",
     "ja": "エメラルド"
+  },
+  {
+    "en": "Season Race",
+    "ko": "시즌 레이스",
+    "ja": "シーズンレース"
+  },
+  {
+    "en": "Batting",
+    "ko": "타격",
+    "ja": "打撃"
+  },
+  {
+    "en": "Pitching",
+    "ko": "투구",
+    "ja": "投球"
+  },
+  {
+    "en": "Preview",
+    "ko": "Preview / 저빈도 조회",
+    "ja": "Preview / 低頻度取得"
+  },
+  {
+    "en": "Full detail",
+    "ko": "Full detail / 전체 조회",
+    "ja": "Full detail / 全日取得"
+  },
+  {
+    "en": "Fictional demo",
+    "ko": "가상 데이터 시연",
+    "ja": "架空データデモ"
+  },
+  {
+    "en": "Save current still",
+    "ko": "현재 화면 PNG/JPEG 저장",
+    "ja": "現在の静止画を保存"
+  },
+  {
+    "en": "Play",
+    "ko": "재생",
+    "ja": "再生"
+  },
+  {
+    "en": "Pause",
+    "ko": "일시정지",
+    "ja": "一時停止"
+  },
+  {
+    "en": "Restart",
+    "ko": "처음부터",
+    "ja": "最初から"
+  },
+  {
+    "en": "Animation OFF",
+    "ko": "애니메이션 효과 끄기",
+    "ja": "演出をオフ"
+  },
+  {
+    "en": "Failed",
+    "ko": "실패",
+    "ja": "失敗"
+  },
+  {
+    "en": "Cancelled",
+    "ko": "취소됨",
+    "ja": "キャンセル済み"
+  },
+  {
+    "en": "Requests",
+    "ko": "최대 범위 요청",
+    "ja": "最大範囲リクエスト"
+  },
+  {
+    "en": "Cache hits",
+    "ko": "캐시 적중",
+    "ja": "キャッシュ一致"
+  },
+  {
+    "en": "Cache updated",
+    "ko": "캐시 갱신",
+    "ja": "キャッシュ更新"
+  },
+  {
+    "en": "Samples",
+    "ko": "실제 조회 포인트",
+    "ja": "取得ポイント"
+  },
+  {
+    "en": "No sampled point",
+    "ko": "조회 포인트 없음",
+    "ja": "取得ポイントなし"
+  },
+  {
+    "en": "Peak",
+    "ko": "조회 최고점",
+    "ja": "取得最高点"
+  },
+  {
+    "en": "Select two players; the race uses slots A and B.",
+    "ko": "선수 A·B를 선택하세요. 레이스는 첫 두 슬롯을 사용합니다.",
+    "ja": "選手A・Bを選択してください。レースは最初の2枠を使います。"
+  },
+  {
+    "en": "FanGraphs currently returned fWAR for regular-season start through the selected date; not a historical snapshot.",
+    "ko": "정규시즌 시작일 ~ 현재 선택 날짜 범위에 대해 FanGraphs가 현재 반환하는 fWAR입니다. 당시 발표값의 역사적 스냅샷이 아닙니다.",
+    "ja": "レギュラーシーズン開始日～選択日についてFanGraphsが現在返すfWARです。当時の履歴スナップショットではありません。"
+  },
+  {
+    "en": "Lines only connect samples. Markers and values represent successful FanGraphs range requests only.",
+    "ko": "연결선은 연속 표시용입니다. 실제 마커·수치는 FanGraphs 범위 요청에 성공한 날짜만 의미합니다.",
+    "ja": "線は表示上の接続です。マーカーと数値はFanGraphsの範囲取得に成功した日のみを示します。"
+  },
+  {
+    "en": "Custom-range fielding components may use period-based processing; range WAR need not add up to final season WAR.",
+    "ko": "사용자 지정 범위의 수비 구성 요소는 기간 단위로 처리될 수 있어 범위 WAR의 합이 시즌 최종 WAR와 같지 않을 수 있습니다.",
+    "ja": "カスタム期間の守備要素は期間単位で処理され、範囲WARの合計が最終シーズンWARと一致しない場合があります。"
+  },
+  {
+    "en": "FanGraphs ID mapping failed",
+    "ko": "FanGraphs ID 매핑 실패",
+    "ja": "FanGraphs ID照合失敗"
+  },
+  {
+    "en": "FanGraphs ID mismatch",
+    "ko": "FanGraphs ID 불일치",
+    "ja": "FanGraphs ID不一致"
+  },
+  {
+    "en": "No regular-season schedule available.",
+    "ko": "정규시즌 일정을 찾을 수 없습니다.",
+    "ja": "レギュラーシーズン日程がありません。"
+  },
+  {
+    "en": "No completed regular-season dates available.",
+    "ko": "조회 가능한 완료된 정규시즌 날짜가 없습니다.",
+    "ja": "取得可能な終了済み日付がありません。"
+  },
+  {
+    "en": "FanGraphs cooldown; try again later.",
+    "ko": "FanGraphs 요청 대기 중입니다. 잠시 후 다시 시도하세요.",
+    "ja": "FanGraphsへのリクエストを待機中です。後でもう一度お試しください。"
+  },
+  {
+    "en": "Choose PNG or JPEG.",
+    "ko": "PNG 또는 JPEG 확장자를 선택하세요.",
+    "ja": "PNGまたはJPEGを選択してください。"
+  },
+  {
+    "en": "Image save failed.",
+    "ko": "이미지 저장에 실패했습니다.",
+    "ja": "画像を保存できませんでした。"
+  },
+  {
+    "en": "Demo requires completed June and September dates.",
+    "ko": "가상 시연에는 6월과 9월의 완료된 경기일이 필요합니다.",
+    "ja": "デモには6月と9月の終了済み試合日が必要です。"
+  },
+  {
+    "en": "Fictional values for UI demonstration only. No real player records or FanGraphs cache writes.",
+    "ko": "UI 검증용 가상 데이터입니다. 실제 선수 기록이 아니며 FanGraphs 캐시에 저장하지 않습니다.",
+    "ja": "UI確認用の架空データです。実際の選手記録ではなく、FanGraphsキャッシュに保存しません。"
   }
 ]

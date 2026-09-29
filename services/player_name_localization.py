@@ -23,7 +23,7 @@ MLB_PLAYER_PAGE = "https://www.mlb.com/{locale}/player/{slug}-{player_id}"
 
 
 def _norm(value: str) -> str:
-    value = unicodedata.normalize("NFKC", str(value or "")).casefold()
+    value = unicodedata.normalize("NFKD", str(value or "")).casefold()
     return "".join(ch for ch in value if ch.isalnum())
 
 
@@ -118,7 +118,7 @@ class PlayerNameLocalizer:
     def seed_entry(self, english_name: str) -> dict[str, Any]:
         needle = _norm(english_name)
         for row in self.players:
-            names = [row.get("en", ""), *(row.get("aliases", []) or [])]
+            names = [row.get("en", ""), row.get("ko", ""), row.get("ja", ""), *(row.get("aliases", []) or [])]
             if any(_norm(str(name)) == needle for name in names if name):
                 return row
         return {}
@@ -133,9 +133,9 @@ class PlayerNameLocalizer:
 
     def display_name(self, player_id: int, english_name: str, language: str | None = None) -> str:
         language = language or str(read_preferences().get("language", "en"))
-        if language == "en":
-            return english_name
         seed = self.seed_entry(english_name)
+        if language == "en":
+            return str(seed.get("en") or english_name) if "en" in (seed.get("locked_locales") or []) else english_name
         if language in (seed.get("locked_locales") or []):
             return str(seed.get(language) or english_name)
         cached = self.cache.get(str(int(player_id)), {})
@@ -184,7 +184,8 @@ class PlayerNameLocalizer:
         for cached in self.cache.values():
             if not isinstance(cached, dict):
                 continue
-            target = self._sanitize_cached_display_name(cached.get(language))
+            seed = self.seed_entry(str(cached.get("en") or ""))
+            target = str(seed.get(language) or "") if language in (seed.get("locked_locales") or []) else self._sanitize_cached_display_name(cached.get(language))
             if not target and language == "ko":
                 target = katakana_to_hangul(self._sanitize_cached_display_name(cached.get("ja")))
             if not target:

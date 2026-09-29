@@ -9,17 +9,18 @@ SEED = Path(__file__).resolve().parents[1] / "config" / "player_names_seed.json"
 def loc(tmp_path: Path) -> PlayerNameLocalizer:
     return PlayerNameLocalizer(SEED, tmp_path / "cache.json")
 
-def test_seed_has_24_players() -> None:
+def test_seed_preserves_original_countries_and_adds_user_names() -> None:
     rows = json.loads(SEED.read_text(encoding="utf-8"))["players"]
-    assert len(rows) == 24
-    assert sum(r["country"] == "KR" for r in rows) == 6
-    assert sum(r["country"] == "JP" for r in rows) == 15
-    assert sum(r["country"] == "TW" for r in rows) == 3
+    assert len(rows) == 113
+    assert sum(r.get("display_source") == "user-request-2026-09-28" for r in rows) == 101
+    assert sum(r.get("country") == "KR" for r in rows) == 6
+    assert sum(r.get("country") == "JP" for r in rows) == 15
+    assert sum(r.get("country") == "TW" for r in rows) == 3
 
 def test_jung_hoo_lee_japanese_is_exact_and_cache_cannot_override(tmp_path: Path) -> None:
     x = loc(tmp_path)
     x.cache = {"808982": {"en": "Jung Hoo Lee", "ja": "イ イ・ジョンフ"}}
-    assert x.display_name(808982, "Jung Hoo Lee", "ja") == "イ・ジョンフ"
+    assert x.display_name(808982, "Jung Hoo Lee", "ja") == "李政厚"
 
 def test_jung_hoo_replacement_is_idempotent(tmp_path: Path, monkeypatch) -> None:
     x = loc(tmp_path)
@@ -28,7 +29,7 @@ def test_jung_hoo_replacement_is_idempotent(tmp_path: Path, monkeypatch) -> None
     assert ("ジョンフ", "イ・ジョンフ") not in pairs
     value = "イ・ジョンフ"
     for source, target in pairs: value = value.replace(source, target)
-    assert value == "イ・ジョンフ"
+    assert value == "李政厚"
 
 def test_hye_seong_kim_2026_team_is_lad(tmp_path: Path) -> None:
     assert loc(tmp_path).display_team("Hye-Seong Kim", "", 2026) == "LAD"

@@ -5,13 +5,14 @@ from typing import Any
 from PyQt6.QtCore import QTimer, Qt, QStringListModel
 from PyQt6.QtWidgets import (
     QCompleter,QGroupBox,QHBoxLayout,QHeaderView,QLabel,QLineEdit,QMainWindow,
-    QPushButton,QScrollArea,QSpinBox,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget
+    QPushButton,QScrollArea,QSpinBox,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget,QTabWidget,QFileDialog,QMessageBox
 )
 
 from config.i18n import tr
 from services.advanced_compare_service import AdvancedCompareService
 from services.player_name_localization import localized_player_name
 from workers.qt_worker import TaskThread
+from ui.season_race_view import SeasonRaceView
 
 @dataclass
 class Slot:
@@ -29,8 +30,9 @@ class AdvancedCompareWindow(QMainWindow):
         self.service=AdvancedCompareService(player_service)
         self._threads:set[TaskThread]=set()
         self.slots:list[Slot]=[]
+        self._load_versions = [0, 0, 0, 0]
         self.setWindowTitle(tr("Advanced Compare"))
-        self.resize(1500,900)
+        self.resize(1350,810)
         central=QWidget(); self.setCentralWidget(central)
         root=QVBoxLayout(central)
 
@@ -57,18 +59,33 @@ class AdvancedCompareWindow(QMainWindow):
         self.stat_table=QTableWidget(0,1); stat_layout.addWidget(self.stat_table); self.report.addWidget(self.stat_group)
         self.footer_group=QGroupBox(tr("Data Range / Sources / Status")); foot=QVBoxLayout(self.footer_group)
         self.footer=QLabel(""); self.footer.setWordWrap(True); foot.addWidget(self.footer); self.report.addWidget(self.footer_group)
-        self.report.addStretch(); scroll.setWidget(content); root.addWidget(scroll,1)
+        self.report.addStretch(); scroll.setWidget(content)
+        self.tabs = QTabWidget()
+        self.tabs.addTab(scroll, tr("Advanced Compare"))
+        self.race = SeasonRaceView(player_service, self)
+        self.race.season = season
+        self.tabs.addTab(self.race, tr("Season Race"))
+        root.addWidget(self.tabs, 1)
+        self.tabs.currentChanged.connect(lambda index: self.race.cancel() if index != 1 else None)
+        self.export_button = QPushButton(tr("Save current still"))
+        self.export_button.clicked.connect(self._export_current)
+        root.addWidget(self.export_button)
+        manager = getattr(parent, "theme_manager", None)
+        if manager is not None:
+            manager.add_listener(self.race._draw)
 
         self._add_slot(); self._add_slot()
         self._render()
         self.season.valueChanged.connect(lambda _v:self._reload_selected())
+        from ui.window_sizing import compact_main_window
+        compact_main_window(self, 1500, 900)
 
     def _run(self,task,on_success,on_error=None):
         thread=TaskThread(task,self); self._threads.add(thread)
         def cleanup():
             self._threads.discard(thread); thread.deleteLater()
-        thread.succeeded.connect(on_success); thread.succeeded.connect(lambda _v:cleanup())
-        thread.failed.connect(on_error or (lambda _m:None)); thread.failed.connect(lambda _m:cleanup()); thread.start()
+        thread.succeeded.connect(on_success)
+        thread.failed.connect(on_error or (lambda _m:None)); thread.finished.connect(cleanup); thread.start()
 
     def _add_slot(self)->None:
         if len(self.slots)>=4: return
@@ -96,7 +113,7 @@ class AdvancedCompareWindow(QMainWindow):
         if slot.edit.text().strip()!=query:return
         slot.mapping={}; labels=[]
         for row in rows:
-            label=f"{row.get('name','')} — {row.get('team','')} {row.get('position','')}".strip()
+            label=f"{localized_player_name(int(row.get('id',0) or 0), row.get('name',''))} — {row.get('team','')} {row.get('position','')} [MLBAM {row.get('id', 0)}]".strip()
             slot.mapping[label]=int(row.get("id",0) or 0); labels.append(label)
         slot.model.setStringList(labels)
         if labels: slot.completer.complete()
@@ -104,20 +121,60 @@ class AdvancedCompareWindow(QMainWindow):
     def _select(self,index:int,label:str)->None:
         player_id=self.slots[index].mapping.get(label)
         if not player_id:return
-        slot=self.slots[index]; slot.status.setText(tr("Loading…"))
-        season=self.season.value()
-        self._run(lambda:self.service.load(player_id,season),lambda bundle,idx=index:self._loaded(idx,bundle))
+        self._load_slot(index, player_id)
 
-    def _loaded(self,index:int,bundle:Any)->None:
+    def _load_slot(self,index:int,player_id:int)->None:
+        self.race.cancel()
+        slot = self.slots[index]
+        slot.bundle = None
+        slot.status.setText(tr("Loading…"))
+        self._load_versions[index] += 1
+        version = self._load_versions[index]
+        season = self.season.value()
+        self._sync_race()
+        self._run(lambda:self.service.load(player_id,season),
+                  lambda bundle:self._loaded(index,bundle,version,season),
+                  lambda message:self._load_failed(index,version,message))
+
+    def _load_failed(self,index,version,message):
+        if version == self._load_versions[index]:
+            self.slots[index].status.setText(tr("Failed"))
+            self.slots[index].status.setToolTip(message)
+
+    def _loaded(self,index:int,bundle:Any,version=None,season=None)->None:
+        if version is not None and (version != self._load_versions[index] or season != self.season.value()):
+            return
         slot=self.slots[index]; slot.bundle=bundle
         slot.status.setText(localized_player_name(bundle.profile.id,bundle.profile.full_name))
+        self._sync_race()
         self._render()
 
+    def _sync_race(self):
+        selected = [s.bundle for s in self.slots[:2]]
+        self.race.set_players(selected if len(selected)==2 and all(selected) else [], self.season.value())
+
     def _reload_selected(self)->None:
-        for i,slot in enumerate(self.slots):
-            if slot.bundle is not None:
-                pid=slot.bundle.profile.id
-                self._run(lambda pid=pid:self.service.load(pid,self.season.value()),lambda bundle,idx=i:self._loaded(idx,bundle))
+        selected = [(i,s.bundle.profile.id) for i,s in enumerate(self.slots) if s.bundle is not None]
+        # Invalidate all old requests, including requests with no loaded bundle yet.
+        self._load_versions = [v+1 for v in self._load_versions]
+        for slot in self.slots: slot.bundle = None
+        self._sync_race()
+        for i,pid in selected: self._load_slot(i,pid)
+        self._render()
+
+    def _export_current(self):
+        if self.tabs.currentIndex() == 1:
+            self.race.save_image(); return
+        path, _ = QFileDialog.getSaveFileName(self,tr("Save current still"),"advanced-compare.png","PNG (*.png);;JPEG (*.jpg *.jpeg)")
+        if path and not self.centralWidget().grab().save(path):
+            QMessageBox.warning(self,tr("Save"),tr("Image save failed."))
+
+    def closeEvent(self,event):
+        self.race.cancel()
+        self.race.close()
+        # Keep the parented threads alive until bounded in-flight HTTP calls return.
+        # QMainWindow close hides this reusable window; it is not delete-on-close.
+        super().closeEvent(event)
 
     @staticmethod
     def _format(value:Any)->str:
@@ -174,6 +231,8 @@ class AdvancedCompareWindow(QMainWindow):
         )
 
     def retranslate(self)->None:
+        self.tabs.setTabText(0,tr("Advanced Compare")); self.tabs.setTabText(1,tr("Season Race"))
+        self.export_button.setText(tr("Save current still")); self.race.retranslate()
         self.setWindowTitle(tr("Advanced Compare")); self.title.setText(tr("Advanced Compare"))
         self.subtitle.setText(tr("Compare 2–4 players in a separate window. The existing Compare tab and main window remain unchanged."))
         self.season_label.setText(tr("Season")); self.add_button.setText(tr("+ Add Player"))

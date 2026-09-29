@@ -35,7 +35,6 @@ def main() -> int:
     theme_manager = ThemeManager(app, theme_template)
     db = SQLiteManager()
     window = MainWindow()
-    theme_manager.attach_button(window.theme_button)
     def refresh_theme_dependent_content() -> None:
         player_view = window.player_view
         bundle = player_view.current_bundle
