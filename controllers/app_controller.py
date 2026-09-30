@@ -219,9 +219,15 @@ class AppController(QObject):
 
         self._run(task, success)
 
-    def load_player(self, player_id: int) -> None:
-        if self._player_busy and self.selected_player_id == player_id:
+    def load_player(self, player_id: int, season: int | None = None) -> None:
+        requested_season = self.season if season is None else season
+        request_key = (player_id, requested_season)
+        if self._player_busy and getattr(self, '_player_request_key', None) == request_key:
             return
+        self._player_request_key = request_key
+        self._player_generation = getattr(self, '_player_generation', 0) + 1
+        generation = self._player_generation
+        self.season = requested_season
         self.selected_player_id = player_id
         self._player_busy = True
         self.window.show_player_loading(player_id)
@@ -231,9 +237,9 @@ class AppController(QObject):
             return await self.players.get_bundle(player_id, season)
 
         def success(bundle: Any) -> None:
-            self._player_busy = False
-            if self.selected_player_id != player_id:
+            if generation != self._player_generation:
                 return
+            self._player_busy = False
             self.window.show_player(bundle)
             self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name}"))
             if bundle.profile.is_pitcher:
@@ -246,6 +252,8 @@ class AppController(QObject):
                     self.load_player_trend(period)
 
         def failure(message: str) -> None:
+            if generation != self._player_generation:
+                return
             self._player_busy = False
             self._default_error(message)
 

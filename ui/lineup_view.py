@@ -4,7 +4,7 @@ from config.i18n import tr
 
 from typing import Any
 
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
@@ -66,6 +66,7 @@ class LineupView(QWidget):
             order = player.batting_order or index
             text = f"{order}. {player.name}   {player.position}".strip()
             button = QPushButton(tr(text))
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
             button.clicked.connect(
                 lambda _checked=False, pid=player.id: self.player_clicked.emit(pid)
             )
@@ -85,6 +86,7 @@ class LineupView(QWidget):
             if line:
                 text += f"   |   {line}"
             button = QPushButton(tr(text))
+            button.setCursor(Qt.CursorShape.PointingHandCursor)
             button.clicked.connect(
                 lambda _checked=False, pid=pitcher.id: self.player_clicked.emit(pid)
             )

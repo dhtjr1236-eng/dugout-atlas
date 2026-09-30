@@ -92,11 +92,57 @@ def season_axis(payload: dict, season: int, today: date | None = None) -> Season
     return SeasonAxis(season, dates[0], dates[-1], tuple(complete))
 
 
-def sample_dates(axis: SeasonAxis, preview: bool) -> tuple[str, ...]:
-    if not preview or len(axis.dates) < 2:
-        return axis.dates
-    # Seven official game dates, not seven invented calendar dates.
-    return tuple(dict.fromkeys((*axis.dates[::7], axis.dates[-1])))
+def sample_dates(axis: SeasonAxis, preview: bool | str = "weekly",
+                 start: str | None = None, end: str | None = None) -> tuple[str, ...]:
+    """Select real completed dates; range filters never reset cumulative WAR start."""
+    mode = ('weekly' if preview else 'full') if isinstance(preview, bool) else preview.lower()
+    days = tuple(d for d in axis.dates if (start is None or d >= start) and (end is None or d <= end))
+    if start and end and start > end:
+        raise RaceError('Start date must precede end date.')
+    if mode not in {'monthly', 'bi-weekly', 'weekly', 'preview', 'full', 'range'}:
+        raise RaceError('Unknown sampling mode.')
+    if len(days) < 2 or mode in {'full', 'range'}:
+        return days
+    if mode == 'monthly':
+        months = {d[:7]: d for d in days}
+        return tuple(months.values())
+    if mode in {'weekly', 'preview'}:
+        return tuple(dict.fromkeys((*days[::7], days[-1])))
+    selected = [days[0]]
+    for day in days[1:]:
+        if (date.fromisoformat(day) - date.fromisoformat(selected[-1])).days >= 14:
+            selected.append(day)
+    return tuple(dict.fromkeys((*selected, days[-1])))
+
+
+@dataclass(frozen=True)
+class RacePlan:
+    """Snapshot of cached points approved before any range requests begin."""
+    axis: SeasonAxis
+    players: tuple[RacePlayer, ...]
+    jobs: tuple[tuple[RacePlayer, str, Point | None], ...]
+    interval: float
+
+    @property
+    def total_jobs(self) -> int:
+        return len(self.jobs)
+
+    @property
+    def cache_hits(self) -> int:
+        return sum(point is not None for _, _, point in self.jobs)
+
+    @property
+    def new_jobs(self) -> int:
+        return self.total_jobs - self.cache_hits
+
+    @property
+    def estimated_seconds(self) -> float:
+        return self.new_jobs * self.interval
+
+    def message(self) -> dict:
+        return {'kind': 'plan', 'axis': self.axis, 'players': list(self.players),
+                'total': self.total_jobs, 'hits': self.cache_hits, 'new': self.new_jobs,
+                'estimated_seconds': self.estimated_seconds}
 
 
 def strict_row(rows: list[dict], player: RacePlayer) -> dict | None:
@@ -245,28 +291,46 @@ class RaceService:
                                       'source': 'FanGraphs', 'params': params})
             return point
 
-    def load(self, players: list[RacePlayer], season: int, preview: bool,
-             cancel: threading.Event, emit: Callable[[dict], None]):
-        axis = self.schedule(season, cancel)
-        if not axis.dates:
+    def plan(self, players: list[RacePlayer], axis: SeasonAxis, mode: bool | str,
+             start: str | None = None, end: str | None = None) -> RacePlan:
+        """Local-only preflight; callers must supply strictly resolved IDs."""
+        if any(p.fg_id is None for p in players):
+            raise RaceError('Unverified player or date')
+        days = sample_dates(axis, mode, start, end)
+        if not days:
             raise RaceError('No completed regular-season dates available.')
+        jobs = dict.fromkeys((p, day) for p in players for day in days)
+        return RacePlan(axis, tuple(players),
+                        tuple((p, d, self.cached(p, axis, d)) for p, d in jobs), self.interval)
+
+    def prepare(self, players: list[RacePlayer], season: int, mode: bool | str,
+                cancel: threading.Event, start: str | None = None,
+                end: str | None = None) -> RacePlan:
+        """Resolve schedule/IDs in a worker; never request date-range WAR here."""
+        axis = self.schedule(season, cancel)
         resolved = [self.resolve(p, axis, cancel) for p in players]
-        days = sample_dates(axis, preview)
-        jobs = list(dict.fromkeys((p, day) for p in resolved for day in days))
-        cached = {(p, d): self.cached(p, axis, d) for p, d in jobs}
-        misses = sum(p is None for p in cached.values())
-        emit({'kind': 'plan', 'axis': axis, 'players': resolved, 'total': len(jobs),
-              'hits': len(jobs) - misses, 'new': misses})
+        self.check(cancel)
+        return self.plan(resolved, axis, mode, start, end)
+
+    def execute(self, plan: RacePlan, cancel: threading.Event,
+                emit: Callable[[dict], None]) -> SeasonAxis:
+        """Execute an approved snapshot; cache expiration cannot increase its budget."""
+        self.check(cancel)
+        emit(plan.message())
         done = 0
-        for player, day in jobs:
+        for player, day, point in plan.jobs:
             self.check(cancel)
-            point = cached[player, day]
             if point is None:
-                point = self.fetch(player, axis, day, cancel)
+                point = self.fetch(player, plan.axis, day, cancel)
                 done += 1
             emit({'kind': 'point', 'player': player, 'day': day, 'point': point,
-                  'done': done, 'new': misses})
-        return axis
+                  'done': done, 'new': plan.new_jobs})
+        return plan.axis
+
+    def load(self, players: list[RacePlayer], season: int, preview: bool | str,
+             cancel: threading.Event, emit: Callable[[dict], None]):
+        """Compatibility entry point; interactive clients use prepare then execute."""
+        return self.execute(self.prepare(players, season, preview, cancel), cancel, emit)
 
 
 def demo_points(axis: SeasonAxis) -> list[dict[str, Point]]:

@@ -87,10 +87,19 @@ def extract_scoring_plays(detail: Any) -> list[dict[str, Any]]:
         else:
             inning_text = "—"
 
+        scorer_people = []
+        for runner in play.get('runners', []) or []:
+            if isinstance(runner, dict) and str((runner.get('movement') or {}).get('end', '')).lower() == 'score':
+                person = (runner.get('details') or {}).get('runner') or {}
+                if person not in scorer_people:
+                    scorer_people.append(person)
+        if not scorer_people and code == 'HR' and batter_name:
+            scorer_people = [batter]
         description = str(result.get("description") or "").strip()
         rows.append(
             {
                 "inning": inning_text,
+                "scorer_people": scorer_people,
                 "scorers": ", ".join(scorers) if scorers else (batter_name or "—"),
                 "play": code,
                 "rbi": rbi,
@@ -122,10 +131,7 @@ def install_live_scoring_support() -> None:
         title = QLabel(tr("득점 플레이"))
         title.setObjectName("subtitle")
         score_layout.addWidget(title)
-        self.scoring_table = QTableWidget(0, 5)
-        self.scoring_table.setHorizontalHeaderLabels(
-            tr_list(["이닝", "득점자", "득점 유형", "타점", "설명"])
-        )
+        self.scoring_table = self._player_table(["이닝", "득점자", "득점 유형", "타점", "설명"])
         self.scoring_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.scoring_table.setAlternatingRowColors(True)
         self.scoring_table.setMinimumHeight(150)
@@ -136,7 +142,13 @@ def install_live_scoring_support() -> None:
         table = getattr(self, "scoring_table", None)
         if table is None:
             return
-        rows = extract_scoring_plays(detail)
+        rows = []
+        for row in extract_scoring_plays(detail):
+            # Separate scoring runners so every clickable name has exactly one ID.
+            people = row['scorer_people'] or [{}]
+            for person in people:
+                rows.append({**row, 'scorers': person.get('fullName') or row['scorers'],
+                             'scorer_id': person.get('id')})
         table.setRowCount(len(rows))
         for row_index, row in enumerate(rows):
             values = [
@@ -147,7 +159,8 @@ def install_live_scoring_support() -> None:
                 str(row.get("description") or "—"),
             ]
             for col, value in enumerate(values):
-                table.setItem(row_index, col, QTableWidgetItem(tr(value)))
+                item = self._person_item(tr(value), row['scorer_id']) if col == 1 else QTableWidgetItem(tr(value))
+                table.setItem(row_index, col, item)
         table.resizeColumnsToContents()
         if table.columnCount() >= 5:
             table.setColumnWidth(4, max(table.columnWidth(4), 420))

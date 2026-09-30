@@ -1,15 +1,6 @@
-> **v1.6**: 상단 버튼 정리, 심화 비교 버튼을 Compare 탭으로 이동, 사용자 지정 선수명 파일 적용. [패치노트](docs/PATCH_v1.6.md)
-
-> **v1.5.2 변경 이력**: 사용자 지정 101명 EN/JA/KO 표기 우선 적용, 기본 창 가로·세로 90% 축소 및 화면 크기 제한. [적용/복구 가이드](docs/PATCH_v1.5.2.md)
-
-> **v1.5.1 시즌 레이스 패치**: 심화 비교에 FanGraphs 실제 범위 fWAR 레이스를 추가했습니다.
-> [패치노트](docs/PATCH_v1.5.1.md) · [적용/복구/사용/검증 가이드](docs/SEASON_RACE_GUIDE_KO.md)
-> Preview/Full detail, 재생·슬라이더, 별도 가상 시연, PNG/JPEG 정지 화면을 지원합니다.
-> gameDate의 UTC 문자 날짜를 사용하며 당일은 제외합니다. 역사적 WAR 스냅샷이 아닙니다.
-
 <div align="center">
 
-# ⚾ Dugout Atlas
+# ⚾ Dugout Atlas v1.61
 
 **경기의 흐름과 선수의 가치를 한 화면에서.**
 
@@ -17,12 +8,12 @@
 
 Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.6**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.61**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.5-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.61-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -33,6 +24,16 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 > **개발 중인 데스크톱 프로젝트입니다.** 현재 배포물은 Python 소스이며 별도 설치형 EXE는 제공하지 않습니다. 외부 통계의 최신성은 각 데이터 제공처의 갱신 시점에 따릅니다.
 
 [소스 ZIP 다운로드](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) · [문제 제보](https://github.com/dhtjr1236-eng/dugout-atlas/issues)
+
+## v1.61 업데이트
+
+- 경기의 타자·투수·득점자 클릭 시 해당 시즌의 선수 분석으로 이동합니다.
+- Season Race에 월간·격주·주간·전체 상세 샘플과 월/일 범위 필터를 제공합니다.
+- 날짜별 조회 전 캐시·신규 요청량과 최소 대기 시간을 계산하고, 전체 상세 신규 50개 초과 시 확인합니다.
+- 벡터 헬멧 또는 비동기 MLB 선수 사진을 사용하며 사진 실패 시 헬멧으로 표시합니다.
+- Compare 내부 심화 비교 버튼, Settings 테마 선택, 사용자 지정 선수명, 축소된 기본 창 크기를 포함합니다.
+
+[**v1.61 패치노트**](docs/PATCH_v1.61.md) · [**시즌 레이스 사용 가이드**](docs/SEASON_RACE_V161_GUIDE_KO.md)
 
 ## 한눈에 보기
 
@@ -92,7 +93,7 @@ py -3.12 -m venv .venv
 | 진단정보 | 앱·OS·Python·의존성 버전과 소스별 캐시 상태 확인 및 JSON 내보내기 |
 | 소스별 새로고침 | MLB / FanGraphs / Baseball-Reference / Savant의 캐시를 선택 삭제하고 설정을 닫으면 재조회 |
 
-번역은 앱에 포함된 번역문을 사용하므로 별도 번역 서비스 연결 없이 동작합니다. v1.5에서는 심화 비교 창까지 English/한국어/日本語 전환을 지원합니다. 선수 표시는 기존 KR/JP/TW 주요 선수 24명의 검증된 이름을 우선하고, 그 밖의 실제 라인업 선수는 MLB Korea/MLB Japan locale 페이지를 best-effort로 확인해 표시명 캐시에 저장합니다. 한국어 이름이 제공되지 않는 외국인 선수는 MLB Japan의 가타카나 표기를 한글 발음 표기로 변환해 영어 이름이 그대로 남는 경우를 줄입니다. 내부 통계 소스 식별은 계속 MLBAM ID와 영문 원본명을 유지합니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
+번역은 앱에 포함된 번역문을 사용하므로 별도 번역 서비스 연결 없이 동작합니다. 심화 비교 창까지 English/한국어/日本語 전환을 지원합니다. 선수 표시는 `config/player_names_seed.json`의 사용자 지정 EN/KO/JA 이름을 우선하고, 그 밖의 실제 라인업 선수는 MLB Korea/MLB Japan locale 페이지를 best-effort로 확인해 표시명 캐시에 저장합니다. 한국어 이름이 제공되지 않는 외국인 선수는 MLB Japan의 가타카나 표기를 한글 발음 표기로 변환해 영어 이름이 그대로 남는 경우를 줄입니다. 내부 통계 소스 식별은 계속 MLBAM ID와 영문 원본명을 유지합니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
 
 ## 주요 기능
 
@@ -101,7 +102,7 @@ py -3.12 -m venv .venv
 - **즐겨찾기 경기 알림:** 즐겨찾기 팀 경기의 점수 또는 상태가 바뀌면 Windows 시스템 트레이 알림을 표시하고, 트레이를 사용할 수 없으면 상태바로 폴백합니다.
 - **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표 설명을 영어·한국어·일본어로 제공합니다.
 - **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
-- **선수명·팀명 현지화:** 2026 KR/JP/TW 주요 선수 24명의 검증된 표시명을 우선하고, 실제 경기 라인업의 나머지 선수도 MLB locale 자료를 활용해 한국어/일본어 표시를 시도합니다. 30개 MLB 팀 이름과 경기 목록의 짧은 팀 표기도 한국어/일본어로 현지화합니다. 이정후 일본어는 `イ・ジョンフ`, 김혜성의 2026 팀 표기는 `LAD`, Tsung-Che Cheng 한국어는 `정쭝저`로 유지합니다.
+- **선수명·팀명 현지화:** `config/player_names_seed.json`의 사용자 지정 표시명을 우선하고, 실제 경기 라인업의 나머지 선수도 MLB locale 자료를 활용해 한국어/일본어 표시를 시도합니다. 30개 MLB 팀 이름과 경기 목록의 짧은 팀 표기도 한국어/일본어로 현지화합니다. 선수 이름을 직접 수정하려면 `config/player_names_seed.json`을 편집합니다.
 - **심화 비교:** 메인 Compare 탭을 유지하면서 별도 `심화 비교 ↗ / Advanced Compare ↗ / 詳細比較 ↗` 창에서 2–4명을 비교합니다. 선수 열은 같은 폭으로 정렬하고, Statcast 백분위와 핵심 지표를 보여주며 출처·조건·상태는 하단 한 곳에 모읍니다.
 - **Accent Theme:** Dark/Light와 별개로 Classic Blue, Midnight Gold, Obsidian Purple, Magenta White, Emerald 강조색을 선택할 수 있습니다. 선택 탭·버튼·포커스·차트의 primary 색에 적용하고 성공/경고/오류 의미색은 유지합니다.
 - **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열과 현지화 별칭으로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
@@ -116,7 +117,7 @@ py -3.12 -m venv .venv
 - **투수 Statcast 기간 선택:** 투수 화면에서 Yearly / Monthly / Daily로 전환할 수 있습니다. Monthly는 해당 시즌의 가장 최근 실제 등판 월, Daily는 가장 최근 실제 등판일을 기준으로 Savant pitch-level 데이터를 다시 집계합니다.
 - **투수 기간별 연동:** 기간 변경 시 Statcast 카드뿐 아니라 Pitch Arsenal, Pitch Usage, Run Value, Whiff%, Velocity 차트도 같은 구간으로 함께 바뀝니다.
 - **타자·투수별 차트:** 타구 품질과 시즌 추이, 구종 특성을 시각화합니다.
-- **Light / Dark Theme:** 기존 남색 Dark Theme와 새로운 Light Theme를 헤더에서 즉시 전환할 수 있습니다. 사용자 선택을 저장하고, 저장값이 없을 때 운영체제 테마를 초기값으로 사용합니다.
+- **Light / Dark Theme:** 기존 남색 Dark Theme와 새로운 Light Theme를 Settings에서 전환할 수 있습니다. 사용자 선택을 저장하고, 저장값이 없을 때 운영체제 테마를 초기값으로 사용합니다.
 - **백그라운드 데이터 조회:** 외부 데이터를 불러오는 작업을 UI 스레드와 분리합니다.
 - **출처 표시:** 선수 화면에서 데이터 출처, 조회 시각과 소스별 상태를 확인할 수 있습니다.
 
@@ -164,6 +165,14 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
+- [v1.61 패치 노트](docs/PATCH_v1.61.md): 현재 버전 변경 및 검증
+- [시즌 레이스 가이드](docs/SEASON_RACE_V161_GUIDE_KO.md): 샘플 간격·사진·요청량 확인
+
+이전 버전의 변경 이력:
+
+- [v1.6 패치 노트](docs/PATCH_v1.6.md): 버튼 배치와 사용자 선수명
+- [v1.5.2 패치 노트](docs/PATCH_v1.5.2.md): 이름 및 기본 창 크기
+- [v1.5.1 패치 노트](docs/PATCH_v1.5.1.md): 시즌 레이스 도입
 - [v1.5 패치 노트](docs/PATCH_v1.5.md): 심화 비교, 전체 라인업/팀 현지화, Accent Theme
 - [v1.41 패치 노트](docs/PATCH_v1.41.md): 선수명 현지화 기반
 - [v1.30 패치 노트](docs/PATCH_v1.30.md): 보안·안정성·사용성 변경과 검증 결과
@@ -184,7 +193,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-v1.5의 심화 비교·현지화·Accent Theme 변경은 [v1.5 패치 노트](docs/PATCH_v1.5.md)에 정리했습니다. v1.41의 선수명 현지화 기반은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에서 확인할 수 있습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
+현재 v1.61 검증은 [v1.61 패치노트](docs/PATCH_v1.61.md)를 참고하세요. 이전 v1.5의 심화 비교·현지화·Accent Theme 변경은 [v1.5 패치 노트](docs/PATCH_v1.5.md)에 정리했습니다. v1.41의 선수명 현지화 기반은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에서 확인할 수 있습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
 
 ## 프로젝트 안내
 

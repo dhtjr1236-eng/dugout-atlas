@@ -131,8 +131,8 @@ class MainWindow(QMainWindow):
         self.search.textChanged.connect(self._debounce_search)
         self.completer.activated[str].connect(self._on_completion)
         self.search.returnPressed.connect(self._on_search_enter)
-        self.game_view.player_clicked.connect(self.search_player_selected)
-        self.lineup_view.player_clicked.connect(self.search_player_selected)
+        self.game_view.player_selected.connect(self._open_game_player)
+        self.lineup_view.player_clicked.connect(self._open_game_player)
         self.league_view.refresh_requested.connect(self.league_refresh_requested)
         self.league_view.team_selected.connect(self.team_stats_requested)
         self.bref_download_button.clicked.connect(self._open_bref_downloads)
@@ -174,6 +174,17 @@ class MainWindow(QMainWindow):
             self.game_list.setCurrentRow(select_row if select_row >= 0 else 0)
         else:
             self.statusBar().showMessage(tr("No MLB games found for this date"))
+
+    def _open_game_player(self, mlbam_id: int) -> None:
+        """Use the displayed game's context rather than the current calendar year."""
+        season = self.game_view.game_season or self.date_edit.date().year()
+        game_date = QDate.fromString(self.game_view.game_date or '', 'yyyy-MM-dd')
+        if game_date.isValid():
+            self.date_edit.blockSignals(True)
+            self.date_edit.setDate(game_date)
+            self.date_edit.blockSignals(False)
+        self.tabs.setCurrentWidget(self.player_view)
+        self.controller.load_player(mlbam_id, season)
 
     def set_game_detail(self, detail: GameDetail) -> None:
         self.game_view.set_game(detail)
@@ -277,7 +288,7 @@ class MainWindow(QMainWindow):
             demo = advanced.race._demo_window
             if demo is not None:
                 demo.cancel()
-            pending = bool(advanced._threads or advanced.race._workers or (demo and demo._workers))
+            pending = bool(advanced._threads or advanced.race._workers or advanced.race._image_workers or (demo and demo._workers))
             if pending:
                 # Let queued finished signals clean up QThreads without blocking Qt.
                 event.ignore()

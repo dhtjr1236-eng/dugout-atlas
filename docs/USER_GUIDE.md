@@ -1,8 +1,20 @@
-# Dugout Atlas
+# Dugout Atlas v1.61
 
 Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다. MLB Gameday 스타일의 실시간 경기 상태와 FanGraphs / Baseball Reference / Baseball Savant / Statcast 지표를 한 화면에서 조회하도록 구성되어 있습니다.
 
 > 이 프로젝트는 MLB/FanGraphs/Baseball Reference/Baseball Savant의 공식 데스크톱 클라이언트가 아닙니다. 공개 웹/API 데이터의 구조가 바뀌면 외부 소스 어댑터를 업데이트해야 할 수 있습니다.
+
+## 현재 버전 v1.61
+
+경기 화면의 선수 이름을 누르면 해당 경기 시즌의 선수 분석으로 이동합니다.
+Compare 탭의 **심화 비교**에서 Season Race를 열고 월간·격주·주간·전체 상세와 기간 범위를 선택합니다.
+전체 상세 신규 요청이 50개를 초과하면 예상 시간을 확인한 뒤 진행합니다.
+마커는 벡터 헬멧 또는 MLB 선수 사진을 선택할 수 있고, 사진 실패 시 헬멧으로 표시합니다.
+테마는 상단 Settings 내부에서 변경합니다. 선수명은 `config/player_names_seed.json`에서 수정합니다.
+
+[현재 패치노트](PATCH_v1.61.md) · [시즌 레이스 상세 가이드](SEASON_RACE_V161_GUIDE_KO.md)
+
+아래 버전별 항목은 기능 도입 당시의 변경 이력입니다. 현재 동작은 위 안내와 최신 패치노트를 우선합니다.
 
 ## 업데이트 1.40 — Settings와 앱 언어
 

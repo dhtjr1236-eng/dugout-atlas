@@ -1478,5 +1478,75 @@
     "en": "Fictional values for UI demonstration only. No real player records or FanGraphs cache writes.",
     "ko": "UI 검증용 가상 데이터입니다. 실제 선수 기록이 아니며 FanGraphs 캐시에 저장하지 않습니다.",
     "ja": "UI確認用の架空データです。実際の選手記録ではなく、FanGraphsキャッシュに保存しません。"
+  },
+  {
+    "en": "Bi-Weekly",
+    "ko": "격주",
+    "ja": "隔週"
+  },
+  {
+    "en": "Weekly",
+    "ko": "주간",
+    "ja": "週次"
+  },
+  {
+    "en": "Custom Range",
+    "ko": "기간 지정",
+    "ja": "期間指定"
+  },
+  {
+    "en": "Vector helmet",
+    "ko": "벡터 헬멧",
+    "ja": "ベクターヘルメット"
+  },
+  {
+    "en": "MLB headshot",
+    "ko": "MLB 선수 사진",
+    "ja": "MLB選手写真"
+  },
+  {
+    "en": "Load samples",
+    "ko": "샘플 불러오기",
+    "ja": "サンプルを取得"
+  },
+  {
+    "en": "Preparing request estimate…",
+    "ko": "요청량 계산 중…",
+    "ja": "リクエスト数を計算中…"
+  },
+  {
+    "en": "Awaiting confirmation",
+    "ko": "확인 대기 중",
+    "ja": "確認待ち"
+  },
+  {
+    "en": "Start date must precede end date.",
+    "ko": "시작일은 종료일보다 늦을 수 없습니다.",
+    "ja": "開始日は終了日以前にしてください。"
+  },
+  {
+    "en": "Box Score",
+    "ko": "박스스코어",
+    "ja": "ボックススコア"
+  },
+  {
+    "en": "Play-by-play",
+    "ko": "플레이별 기록",
+    "ja": "プレー記録"
+  },
+  {
+    "en": "Game stats",
+    "ko": "경기 기록",
+    "ja": "試合成績"
+  },
+  {
+    "en": "Requests: {total}; cache hits: {hits}; new: {new}. Minimum estimated wait: {seconds} seconds. Network time is additional. Continue?",
+    "ko": "전체 요청: {total}; 캐시: {hits}; 신규: {new}. 최소 예상 대기: {seconds}초. 통신 시간은 추가됩니다. 계속하시겠습니까?",
+    "ja": "全リクエスト: {total}、キャッシュ: {hits}、新規: {new}。最短待機時間: {seconds}秒。通信時間は別途必要です。続行しますか？"
+  },
+  {
+    "en": "Minimum wait (seconds)",
+    "ko": "최소 대기(초)",
+    "ja": "最短待機（秒）"
   }
 ]

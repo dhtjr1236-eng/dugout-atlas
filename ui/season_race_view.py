@@ -4,23 +4,24 @@ import threading
 from pathlib import Path
 from types import SimpleNamespace
 
-from PyQt6.QtCore import QTimer, Qt, pyqtSignal
+from PyQt6.QtCore import QDate, QTimer, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QCheckBox, QComboBox, QFileDialog, QHBoxLayout, QLabel, QMessageBox,
+    QCheckBox, QComboBox, QDateEdit, QFileDialog, QHBoxLayout, QLabel, QMessageBox,
     QPushButton, QSlider, QVBoxLayout, QWidget,
 )
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.offsetbox import AnnotationBbox, DrawingArea
-from matplotlib.patches import Circle, Arc
+from matplotlib.offsetbox import AnnotationBbox
 
 from config.i18n import tr
 from services.player_name_localization import localized_player_name
 from config.theme_tokens import chart_colors, active_theme
 from services.season_race import (
-    Cancelled, RacePlayer, RaceService, demo_points, drawdown, peak,
+    RacePlan, RacePlayer, RaceService, demo_points, drawdown, peak,
 )
 from workers.qt_worker import TaskThread
+from ui.character_renderer import CharacterRenderer
+from services.headshots import load_headshot
 
 NOTICE = 'FanGraphs currently returned fWAR for regular-season start through the selected date; not a historical snapshot.'
 LINK_NOTICE = 'Lines only connect samples. Markers and values represent successful FanGraphs range requests only.'
@@ -43,6 +44,10 @@ class SeasonRaceView(QWidget):
         self.points = [{}, {}]
         self.resolved = []
         self._workers = set()
+        self._image_workers = set()
+        self._image_requested = set()
+        self.renderer = CharacterRenderer()
+        self._confirmation = None
         self._cancel = None
         self._generation = 0
         self._seen = set()
@@ -51,6 +56,7 @@ class SeasonRaceView(QWidget):
         self.mode = 'Ready'
         self._progress_text = ''
         self._counts = None
+        self._estimated_seconds = 0.0
         self._last_error = ''
         root = QVBoxLayout(self)
         self.heading = QLabel(); self.heading.setObjectName('title'); root.addWidget(self.heading)
@@ -64,12 +70,34 @@ class SeasonRaceView(QWidget):
             roles.addWidget(combo); self.role_boxes.append(combo)
         roles.addStretch(); root.addLayout(roles)
         actions = QHBoxLayout()
-        self.preview = QPushButton(); self.full = QPushButton(); self.cancel_button = QPushButton()
+        self.granularity = QComboBox()
+        for label, mode in [('Monthly', 'monthly'), ('Bi-Weekly', 'bi-weekly'),
+                            ('Weekly', 'weekly'), ('Full detail', 'full')]:
+            self.granularity.addItem(tr(label), mode)
+        self.granularity.setCurrentIndex(2)
+        self.preview = QPushButton()
+        self.full = self.preview  # Compatibility alias; only one load action.
+        self.cancel_button = QPushButton()
         self.demo_button = QPushButton(); self.save_button = QPushButton()
-        for b in (self.preview, self.full, self.cancel_button, self.demo_button, self.save_button): actions.addWidget(b)
+        for b in (self.granularity, self.preview, self.cancel_button, self.demo_button, self.save_button):
+            actions.addWidget(b)
         root.addLayout(actions)
-        self.preview.clicked.connect(lambda: self.start(True))
-        self.full.clicked.connect(lambda: self.start(False))
+        filters = QHBoxLayout()
+        self.range_enabled = QCheckBox(tr('Custom Range'))
+        self.range_start = QDateEdit(QDate(2025, 3, 1))
+        self.range_end = QDateEdit(QDate(2025, 10, 31))
+        for edit in (self.range_start, self.range_end):
+            edit.setDisplayFormat('MM-dd'); edit.setCalendarPopup(True)
+            edit.setEnabled(False)
+            self.range_enabled.toggled.connect(edit.setEnabled)
+        self.marker_mode = QComboBox()
+        self.marker_mode.addItem(tr('Vector helmet'), 'vector')
+        self.marker_mode.addItem(tr('MLB headshot'), 'headshot')
+        self.marker_mode.currentIndexChanged.connect(self._marker_changed)
+        for widget in (self.range_enabled, self.range_start, self.range_end, self.marker_mode):
+            filters.addWidget(widget)
+        root.addLayout(filters)
+        self.preview.clicked.connect(lambda: self.start(self.granularity.currentData()))
         self.cancel_button.clicked.connect(self.cancel)
         self.demo_button.clicked.connect(self.start_demo)
         self.save_button.clicked.connect(self.save_image)
@@ -99,7 +127,7 @@ class SeasonRaceView(QWidget):
         self.effects.toggled.connect(self._effects_changed)
         self.retranslate()
         if demo_only:
-            for widget in (self.preview, self.full, *self.role_boxes, *self.role_labels): widget.hide()
+            for widget in (self.preview, self.granularity, self.range_enabled, self.range_start, self.range_end, self.marker_mode, *self.role_boxes, *self.role_labels): widget.hide()
             self.setWindowTitle(tr('Fictional demo'))
         self._buttons()
 
@@ -108,13 +136,17 @@ class SeasonRaceView(QWidget):
         self.players = [RacePlayer(p.profile.id, p.profile.full_name,
                                   'pit' if p.profile.is_pitcher else 'bat') for p in bundles[:2]]
         self.season = season
+        for edit in (self.range_start, self.range_end):
+            old = edit.date()
+            edit.setDateRange(QDate(season, 1, 1), QDate(season, 12, 31))
+            edit.setDate(QDate(season, old.month(), min(old.day(), QDate(season, old.month(), 1).daysInMonth())))
         self.axis = None; self.points = [{}, {}]; self.resolved = []; self._demo = False
         self._seen.clear(); self._sparkles.clear(); self._last_error = ''; self._progress_text = ''; self._counts = None
         for i, box in enumerate(self.role_boxes):
             box.blockSignals(True)
             box.setCurrentIndex(1 if i < len(self.players) and self.players[i].role == 'pit' else 0)
             box.blockSignals(False)
-        self.mode = 'Ready'; self._buttons(); self._draw()
+        self.mode = 'Ready'; self._buttons(); self._marker_changed()
 
     def _role_changed(self):
         self.cancel(); self.axis = None; self.points = [{}, {}]; self.resolved = []
@@ -122,13 +154,15 @@ class SeasonRaceView(QWidget):
         self.mode = 'Ready'; self._buttons(); self._draw()
 
     def _buttons(self):
-        busy = bool(self._workers)
+        busy = bool(self._workers or self._confirmation)
         enabled = len(self.players) == 2 and not busy
         self.preview.setEnabled(enabled); self.full.setEnabled(enabled)
         self.demo_button.setEnabled(not busy); self.cancel_button.setEnabled(busy)
         self.play.setEnabled(bool(self.axis and self.axis.dates) and not busy)
         self.save_button.setEnabled(bool(self.axis))
-        for box in self.role_boxes: box.setEnabled(not busy)
+        for box in (*self.role_boxes, self.granularity, self.range_enabled): box.setEnabled(not busy)
+        for edit in (self.range_start, self.range_end):
+            edit.setEnabled(not busy and self.range_enabled.isChecked())
 
     def _launch(self, task, on_success):
         self.cancel()
@@ -151,16 +185,76 @@ class SeasonRaceView(QWidget):
         thread.finished.connect(finished)
         thread.start(); self._buttons()
 
-    def start(self, preview=True):
-        if len(self.players) != 2 or self._workers: return
+    def start(self, preview: bool | str = True) -> None:
+        if len(self.players) != 2 or self._workers or self._confirmation:
+            return
+        mode = ('weekly' if preview else 'full') if isinstance(preview, bool) else preview
+        start = self.range_start.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else None
+        end = self.range_end.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else None
+        if start and end and start > end:
+            self._last_error = 'Start date must precede end date.'; self._draw(); return
         self._demo = False; self.axis = None; self.points = [{}, {}]; self.resolved = []
         self._seen.clear(); self._sparkles.clear(); self._last_error = ''; self._progress_text = ''; self._counts = None
-        mode = 'Preview' if preview else 'Full detail'
         players = [RacePlayer(p.mlbam_id, p.name, b.currentData()) for p, b in zip(self.players, self.role_boxes)]
         season = self.season
-        self._launch(lambda cancel, emit: self.service.load(players, season, preview, cancel, emit),
-                     lambda _axis: self._loaded(mode))
-        self.mode = 'Loading…'; self._draw()
+        self._launch(lambda cancel, emit: self.service.prepare(players, season, mode, cancel, start, end),
+                     lambda plan: self._prepared(plan, mode))
+        self.mode = 'Preparing request estimate…'; self._draw()
+
+    def _prepared(self, plan: RacePlan, mode: str) -> None:
+        """Keep the Qt event loop running while the user reviews a large request."""
+        self._progress(plan.message())
+        generation = self._generation
+        def run():
+            if generation != self._generation:
+                return
+            self._launch(lambda cancel, emit: self.service.execute(plan, cancel, emit),
+                         lambda _axis: self._loaded({'full': 'Full detail', 'weekly': 'Weekly',
+                                                    'monthly': 'Monthly', 'bi-weekly': 'Bi-Weekly'}[mode]))
+            self.mode = 'Loading…'; self._draw()
+        if mode == 'full' and plan.new_jobs > 50:
+            dialog = QMessageBox(self)
+            dialog.setWindowTitle(tr('Full detail'))
+            dialog.setText(tr('Requests: {total}; cache hits: {hits}; new: {new}. Minimum estimated wait: {seconds} seconds. Network time is additional. Continue?').format(
+                total=plan.total_jobs, hits=plan.cache_hits, new=plan.new_jobs,
+                seconds=round(plan.estimated_seconds, 1)))
+            dialog.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            dialog.setDefaultButton(QMessageBox.StandardButton.No)
+            self._confirmation = dialog
+            def decided(result):
+                self._confirmation = None
+                dialog.deleteLater()
+                if result == QMessageBox.StandardButton.Yes:
+                    QTimer.singleShot(0, run)
+                else:
+                    self.mode = 'Cancelled'; self._draw()
+                self._buttons()
+            dialog.finished.connect(decided)
+            self.mode = 'Awaiting confirmation'; self._draw()
+            dialog.open()
+        else:
+            QTimer.singleShot(0, run)
+
+    def _marker_changed(self) -> None:
+        """Download each chosen ID once per view, with immediate vector placeholders."""
+        if self.marker_mode.currentData() == 'headshot' and not self._demo:
+            for player in self.players:
+                pid = player.mlbam_id
+                if pid in self._image_requested:
+                    continue
+                self._image_requested.add(pid)
+                worker = TaskThread(lambda pid=pid: load_headshot(pid), self)
+                self._image_workers.add(worker)
+                def loaded(rgba, pid=pid):
+                    if rgba is not None:
+                        self.renderer.set_headshot(pid, rgba)
+                        self._draw()
+                def finished(worker=worker):
+                    self._image_workers.discard(worker); worker.deleteLater()
+                worker.succeeded.connect(loaded)
+                worker.finished.connect(finished)
+                worker.start()
+        self._draw()
 
     def _loaded(self, mode):
         self.mode = mode
@@ -171,6 +265,7 @@ class SeasonRaceView(QWidget):
             self.axis = message['axis']; self.resolved = message['players']
             self.slider.setRange(0, max(0, len(self.axis.dates)-1))
             self._counts = [message['total'], message['hits'], 0, message['new']]
+            self._estimated_seconds = message.get('estimated_seconds', 0)
         else:
             for i, player in enumerate(self.resolved):
                 if player == message['player'] and message['point'] is not None:
@@ -180,6 +275,8 @@ class SeasonRaceView(QWidget):
 
     def cancel(self):
         self._generation += 1
+        if self._confirmation is not None:
+            self._confirmation.reject()
         if self._cancel: self._cancel.set()
         self.timer.stop(); self.effect_timer.stop(); self._sparkles.clear()
         if self._workers: self.mode = 'Cancelled'
@@ -245,18 +342,10 @@ class SeasonRaceView(QWidget):
     def _clear_effect(self):
         self._sparkles.clear(); self._draw()
 
-    @staticmethod
-    def _face(color):
-        area = DrawingArea(34, 34, 0, 0)
-        area.add_artist(Circle((17,17), 14, facecolor=color, edgecolor='#172033', linewidth=1.2))
-        for x in (12,22): area.add_artist(Circle((x,20), 1.7, color='#172033'))
-        area.add_artist(Arc((17,15), 10, 8, theta1=195, theta2=345, color='#172033', linewidth=1.6))
-        return area
-
     def _draw(self):
         if self._counts:
             total, hits, done, new = self._counts
-            self._progress_text = f"{tr('Requests')}: {total} · {tr('Cache hits')}: {hits} · {done} / {new}"
+            self._progress_text = f"{tr('Requests')}: {total} · {tr('Cache hits')}: {hits} · {done} / {new} · {tr('Minimum wait (seconds)')}: {self._estimated_seconds:g}"
         colors = chart_colors()
         self.figure.clear(); ax = self.figure.add_subplot(111)
         self.figure.set_facecolor(colors['figure']); ax.set_facecolor(colors['axes'])
@@ -284,7 +373,7 @@ class SeasonRaceView(QWidget):
                             color=palette[i], marker='o' if i == 0 else 's', markersize=3, label=name)
                     # Holding the last real marker is a visual connection only.
                     last = previous[-1]; x = date_index[last.day]
-                    ax.add_artist(AnnotationBbox(self._face(palette[i]), (x,last.war), frameon=False))
+                    ax.add_artist(AnnotationBbox(self.renderer.marker(self.players[i].mlbam_id if not self._demo and i < len(self.players) else -(i+1), name, palette[i], self.marker_mode.currentData()), (x,last.war), frameon=False))
                     if i in self._sparkles and not self.effects.isChecked():
                         ax.scatter([x], [last.war], marker='*', s=1900, color='#FFD166', alpha=.4, zorder=2)
                     if drawdown(points, day) and not self.effects.isChecked():
@@ -338,10 +427,15 @@ class SeasonRaceView(QWidget):
         return ok
 
     def retranslate(self):
-        for button, label in ((self.preview,'Preview'),(self.full,'Full detail'),(self.cancel_button,'Cancel'),
+        for button, label in ((self.preview,'Load samples'),(self.cancel_button,'Cancel'),
                               (self.demo_button,'Fictional demo'),(self.save_button,'Save current still'),
                               (self.restart,'Restart')): button.setText(tr(label))
         self.play.setText(tr('Pause' if self.timer.isActive() else 'Play'))
+        for i, label in enumerate(('Monthly', 'Bi-Weekly', 'Weekly', 'Full detail')):
+            self.granularity.setItemText(i, tr(label))
+        self.range_enabled.setText(tr('Custom Range'))
+        self.marker_mode.setItemText(0, tr('Vector helmet'))
+        self.marker_mode.setItemText(1, tr('MLB headshot'))
         self.speed_label.setText(tr('Speed')); self.effects.setText(tr('Animation OFF'))
         for box in self.role_boxes:
             box.setItemText(0,tr('Batting')); box.setItemText(1,tr('Pitching'))
