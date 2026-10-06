@@ -153,3 +153,12 @@ QStatusBar {
     color: {{--color-text-muted}};
     border-top: 1px solid {{--color-border}};
 }
+
+/* Home uses the existing theme/accent token system. */
+QLabel#homeTitle { font-size: 23pt; font-weight: 700; color: {{--color-text}}; }
+QLabel#homeEyebrow { color: {{--color-primary}}; font-weight: 700; }
+QLabel#homeCounts { font-size: 15pt; font-weight: 600; }
+QLabel#homeSection { font-size: 13pt; font-weight: 700; }
+QLabel#homeNotice { background: {{--color-primary-soft}}; border-radius: 7px; padding: 12px; }
+
+QFrame[homeCard="true"] QLabel { background: transparent; }

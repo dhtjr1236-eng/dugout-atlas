@@ -1548,5 +1548,150 @@
     "en": "Minimum wait (seconds)",
     "ko": "최소 대기(초)",
     "ja": "最短待機（秒）"
+  },
+  {
+    "en": "User data is stored under LOCALAPPDATA/Dugout Atlas. See the Windows packaging guide for manual migration.",
+    "ko": "사용자 데이터는 LOCALAPPDATA/Dugout Atlas에 저장됩니다. 수동 이관은 Windows 패키징 가이드를 참고하세요.",
+    "ja": "ユーザーデータはLOCALAPPDATA/Dugout Atlasに保存されます。手動移行はWindowsパッケージングガイドをご確認ください。"
+  },
+  {
+    "en": "Home season",
+    "ko": "홈 조회 시즌",
+    "ja": "ホームのシーズン"
+  },
+  {
+    "en": "A home for every part of the season",
+    "ko": "경기가 없는 날에도, 야구는 계속됩니다",
+    "ja": "試合のない日も、野球を楽しもう"
+  },
+  {
+    "en": "No game today? Revisit a season, follow a favorite, or start a comparison.",
+    "ko": "지난 시즌을 돌아보고, 관심 선수를 살펴보고, 새로운 비교를 시작하세요.",
+    "ja": "過去のシーズンやお気に入り選手を振り返り、比較を始めましょう。"
+  },
+  {
+    "en": "Season to explore",
+    "ko": "살펴볼 시즌",
+    "ja": "対象シーズン"
+  },
+  {
+    "en": "Refresh local overview",
+    "ko": "로컬 현황 새로고침",
+    "ja": "ローカル情報を更新"
+  },
+  {
+    "en": "LOCAL LIBRARY · selected season",
+    "ko": "내 기록 보관함 · 선택 시즌",
+    "ja": "ローカル記録 · 選択シーズン"
+  },
+  {
+    "en": "Explore a player",
+    "ko": "선수 탐색",
+    "ja": "選手を探す"
+  },
+  {
+    "en": "Search a player and inspect the selected season.",
+    "ko": "선수를 검색해 선택한 시즌의 기록을 확인합니다.",
+    "ja": "選手を検索して対象シーズンの記録を確認します。"
+  },
+  {
+    "en": "Compare seasons and players",
+    "ko": "선수 비교하기",
+    "ja": "選手を比較"
+  },
+  {
+    "en": "Open the existing comparison workspace.",
+    "ko": "기존 비교 화면에서 선수별 지표를 살펴봅니다.",
+    "ja": "比較画面で選手の指標を確認します。"
+  },
+  {
+    "en": "Replay the season race",
+    "ko": "시즌 레이스 다시 보기",
+    "ja": "シーズンレースを振り返る"
+  },
+  {
+    "en": "Choose two players in Advanced Compare, then open Season Race.",
+    "ko": "심화 비교에서 선수 두 명을 선택한 뒤 시즌 레이스를 실행하세요.",
+    "ja": "詳細比較で2選手を選び、シーズンレースを実行してください。"
+  },
+  {
+    "en": "Review league standings",
+    "ko": "리그 순위 돌아보기",
+    "ja": "リーグ順位を確認"
+  },
+  {
+    "en": "Load standings for the selected season.",
+    "ko": "선택한 시즌의 리그 순위를 조회합니다.",
+    "ja": "選択シーズンのリーグ順位を取得します。"
+  },
+  {
+    "en": "Your favorite players",
+    "ko": "다시 만나고 싶은 선수",
+    "ja": "お気に入り選手"
+  },
+  {
+    "en": "Click a player to open this season. Add favorites from a player profile.",
+    "ko": "선수를 누르면 선택 시즌으로 이동합니다. 선수 화면에서 즐겨찾기를 추가하세요.",
+    "ja": "選手を押すと選択シーズンを開きます。選手画面でお気に入りを追加できます。"
+  },
+  {
+    "en": "Overview uses local records only. Opening an analysis may request fresh data. Missing statistics remain missing.",
+    "ko": "이 현황은 로컬 기록만 사용합니다. 분석 화면을 열면 새 데이터를 조회할 수 있습니다. 없는 지표는 추정하지 않습니다.",
+    "ja": "概要にはローカル記録のみを使用します。分析を開くと新しいデータを取得する場合があります。欠損値は推定しません。"
+  },
+  {
+    "en": "Schedule has not been checked.",
+    "ko": "경기 일정을 아직 확인하지 않았습니다.",
+    "ja": "日程はまだ確認していません。"
+  },
+  {
+    "en": "Checking the selected date…",
+    "ko": "선택한 날짜의 일정을 확인하고 있습니다…",
+    "ja": "選択日の日程を確認中…"
+  },
+  {
+    "en": "No games on this date. This does not mean the season has ended.",
+    "ko": "선택한 날짜에는 경기가 없습니다. 시즌 종료를 의미하지는 않습니다.",
+    "ja": "選択日に試合はありません。シーズン終了を意味するものではありません。"
+  },
+  {
+    "en": "Games are available. Open Gameday from the tabs.",
+    "ko": "조회된 경기가 있습니다. 경기 탭에서 확인하세요.",
+    "ja": "試合があります。Gamedayタブで確認できます。"
+  },
+  {
+    "en": "Schedule unavailable. Check your connection; local browsing is still available.",
+    "ko": "일정을 불러오지 못했습니다. 연결을 확인해 주세요. 로컬 기록은 계속 살펴볼 수 있습니다.",
+    "ja": "日程を取得できません。接続をご確認ください。ローカル記録は閲覧できます。"
+  },
+  {
+    "en": "Cached records",
+    "ko": "캐시 항목",
+    "ja": "キャッシュ項目"
+  },
+  {
+    "en": "Reading your local library…",
+    "ko": "로컬 기록을 읽고 있습니다…",
+    "ja": "ローカル記録を読み込み中…"
+  },
+  {
+    "en": "Could not read local data. Previous results are retained. Try refreshing.",
+    "ko": "로컬 기록을 읽지 못했습니다. 이전 결과를 유지합니다. 새로고침해 주세요.",
+    "ja": "ローカル記録を読み込めません。前の結果を保持しています。再度更新してください。"
+  },
+  {
+    "en": "No cached statistics for this season yet. Open a player or standings to begin.",
+    "ko": "아직 이 시즌의 캐시 기록이 없습니다. 선수 탐색이나 순위 조회부터 시작해 보세요.",
+    "ja": "このシーズンのキャッシュはありません。選手や順位の確認から始めましょう。"
+  },
+  {
+    "en": "Last cache write (UTC)",
+    "ko": "마지막 캐시 저장 (UTC)",
+    "ja": "最終キャッシュ保存 (UTC)"
+  },
+  {
+    "en": "No favorites to display. Search for a player to get started.",
+    "ko": "표시할 즐겨찾기가 없습니다. 선수 검색부터 시작해 보세요.",
+    "ja": "お気に入りはありません。選手の検索から始めましょう。"
   }
 ]

@@ -1,9 +1,31 @@
 from __future__ import annotations
 
 import json
+import os
+import tempfile
+from pathlib import Path
+
+# Set paths before test collection imports config.settings; never touch real profiles.
+_TEST_PROFILE = tempfile.TemporaryDirectory(prefix="dugout-tests-")
+for _name in ("HOME", "USERPROFILE", "LOCALAPPDATA", "XDG_CONFIG_HOME"):
+    os.environ[_name] = str(Path(_TEST_PROFILE.name) / _name)
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
 
 import pandas as pd
 import pytest
+
+# Isolate legacy QSettings as well as the runtime root before collection imports.
+from PyQt6.QtCore import QSettings
+from config import preferences as _preferences
+
+def _collection_store():
+    return QSettings(str(Path(_TEST_PROFILE.name) / "settings.ini"), QSettings.Format.IniFormat)
+
+_preferences.store = _collection_store
+_collection_settings = _collection_store()
+_collection_settings.setValue("preferences/data_root", str(Path(_TEST_PROFILE.name) / "runtime"))
+_collection_settings.sync()
 
 
 @pytest.fixture(autouse=True)
@@ -54,3 +76,10 @@ def _legacy_fangraphs_history_transport(request, monkeypatch):
 
     monkeypatch.setattr(FanGraphsService, "_fetch_api", compat_fetch)
     yield
+
+
+@pytest.fixture(autouse=True)
+def _isolated_preferences(tmp_path, monkeypatch):
+    from PyQt6.QtCore import QSettings
+    from config import preferences
+    monkeypatch.setattr(preferences, "store", lambda: QSettings(str(tmp_path / "preferences.ini"), QSettings.Format.IniFormat))

@@ -130,3 +130,10 @@ The migration path is intentionally thin:
 5. Use a WebSocket/SSE endpoint for the 30-second live refresh or a server-side polling scheduler.
 6. React replaces only `ui/`; chart endpoints can return JSON series rather than rendered Matplotlib figures.
 7. For multi-user deployment, move SQLite to PostgreSQL and replace the local JSON/file cache with Redis/object storage.
+
+
+## v1.7 홈 연결
+
+`ui/home_view.py`는 홈 UI와 이동 신호를 담당합니다. `services/home_service.py`가 즐겨찾기와 선택 시즌의 SQLite 캐시 메타데이터를 읽으며 `controllers/app_controller.py`가 worker 실행 및 오래된 응답 제외를 처리합니다. 홈에서 선수 클릭은 MLBAM ID와 시즌을 전달합니다. 기존 화면 탭은 보존하며 새 홈은 마지막 탭으로 추가해 기존 인덱스 의존을 줄입니다.
+
+소스 실행의 데이터 위치와 QSettings는 기존 정책을 유지합니다. 패키지 리소스 경로 도우미와 frozen 준비 코드는 있으나 설치형 배포는 검증 전입니다.

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.paths import exports_dir
+
 from dataclasses import dataclass
 from typing import Any
 from PyQt6.QtCore import QTimer, Qt, QStringListModel
@@ -165,7 +167,7 @@ class AdvancedCompareWindow(QMainWindow):
     def _export_current(self):
         if self.tabs.currentIndex() == 1:
             self.race.save_image(); return
-        path, _ = QFileDialog.getSaveFileName(self,tr("Save current still"),"advanced-compare.png","PNG (*.png);;JPEG (*.jpg *.jpeg)")
+        path, _ = QFileDialog.getSaveFileName(self,tr("Save current still"),str(exports_dir() / "advanced-compare.png"),"PNG (*.png);;JPEG (*.jpg *.jpeg)")
         if path and not self.centralWidget().grab().save(path):
             QMessageBox.warning(self,tr("Save"),tr("Image save failed."))
 

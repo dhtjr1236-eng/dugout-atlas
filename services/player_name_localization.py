@@ -17,7 +17,8 @@ from config.settings import DATA_DIR, SETTINGS
 from services.team_localization import apply_team_ref, localized_team_name
 
 LOGGER = logging.getLogger(__name__)
-SEED_PATH = Path(__file__).resolve().parent.parent / "config" / "player_names_seed.json"
+from config.paths import resource_path, data_path
+SEED_PATH = resource_path("config", "player_names_seed.json")
 CACHE_PATH = DATA_DIR / "player_name_locales.json"
 MLB_PLAYER_PAGE = "https://www.mlb.com/{locale}/player/{slug}-{player_id}"
 
@@ -93,14 +94,41 @@ def katakana_to_hangul(value: str) -> str:
 
 
 class PlayerNameLocalizer:
-    def __init__(self, seed_path: Path = SEED_PATH, cache_path: Path = CACHE_PATH) -> None:
+    def __init__(self, seed_path: Path = SEED_PATH, cache_path: Path = CACHE_PATH, override_path: Path | None = None) -> None:
         self.seed_path = Path(seed_path)
         self.cache_path = Path(cache_path)
         self.seed = self._read(self.seed_path)
         self.cache = self._read(self.cache_path)
         self.players = [row for row in self.seed.get("players", []) if isinstance(row, dict)]
+        self._load_override(override_path if override_path is not None else data_path("config", "player_names_override.json", create_parent=False))
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": SETTINGS.user_agent})
+
+    def _load_override(self, path: Path) -> None:
+        """Merge validated display names; never change provider ID matching."""
+        try:
+            payload = json.loads(Path(path).read_text(encoding="utf-8"))
+            rows = payload.get("players") if isinstance(payload, dict) else None
+            if not isinstance(rows, list):
+                raise ValueError("Expected players list")
+            for row in rows:
+                if not isinstance(row, dict) or not isinstance(row.get("en"), str) or not row["en"].strip():
+                    raise ValueError("Expected English name")
+                if any(k in row and (not isinstance(row[k], str) or not row[k].strip()) for k in ("ko", "ja")):
+                    raise ValueError("Expected display name string")
+                if any(k not in {"en", "ko", "ja"} for k in row):
+                    raise ValueError("Unsupported override field")
+            merged = {_norm(row.get("en", "")): dict(row) for row in self.players}
+            for row in rows:
+                key = _norm(row["en"])
+                entry = merged.setdefault(key, {})
+                entry.update(row)
+                entry["locked_locales"] = sorted(set(entry.get("locked_locales", [])) | set(row))
+            self.players = list(merged.values())
+        except FileNotFoundError:
+            pass
+        except (OSError, ValueError, TypeError):
+            LOGGER.warning("Invalid or unreadable player name override; using seed names")
 
     @staticmethod
     def _read(path: Path) -> dict[str, Any]:

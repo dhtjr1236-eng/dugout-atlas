@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.paths import exports_dir, is_frozen
+
 import json
 import sqlite3
 
@@ -82,7 +84,7 @@ class SettingsDialog(QDialog):
         open_button.clicked.connect(lambda: QDesktopServices.openUrl(QUrl.fromLocalFile(str(RUNTIME_ROOT))))
         row.addWidget(open_button)
         layout.addLayout(row)
-        note = QLabel(tr('Data location changes apply after restarting the app. Existing data will be copied; the old folder is retained.'))
+        note = QLabel(tr('User data is stored under LOCALAPPDATA/Dugout Atlas. See the Windows packaging guide for manual migration.') if is_frozen() else tr('Data location changes apply after restarting the app. Existing data will be copied; the old folder is retained.'))
         note.setWordWrap(True)
         layout.addWidget(note)
         self.clear = QPushButton(tr('Clear cache'))
@@ -134,6 +136,7 @@ class SettingsDialog(QDialog):
         busy = bool(self.controller._threads)
         for button in (self.choose, self.clear, self.export, self.reload, self.save_button):
             button.setEnabled(not busy)
+        self.choose.setEnabled(not busy and not is_frozen())
         if busy:
             self.status.setText(tr('Waiting for active requests to finish.'))
         elif self.status.text() == tr('Waiting for active requests to finish.'):
@@ -172,7 +175,7 @@ class SettingsDialog(QDialog):
             self._failed()
 
     def _export(self):
-        path, _ = QFileDialog.getSaveFileName(self, tr('Export diagnostics'), 'dugout-atlas-diagnostics.json', 'JSON (*.json)')
+        path, _ = QFileDialog.getSaveFileName(self, tr('Export diagnostics'), str(exports_dir() / "dugout-atlas-diagnostics.json"), 'JSON (*.json)')
         if path:
             try:
                 export_diagnostics(path, self.controller.db, read_preferences())

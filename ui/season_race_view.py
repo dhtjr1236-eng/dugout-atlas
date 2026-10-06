@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from config.paths import exports_dir
+
 import threading
 from pathlib import Path
 from types import SimpleNamespace
@@ -416,7 +418,7 @@ class SeasonRaceView(QWidget):
     def save_image(self, path=None):
         if not self.axis: return False
         if not isinstance(path, (str, Path)):
-            path, _ = QFileDialog.getSaveFileName(self, tr('Save current still'), 'season-race.png', 'PNG (*.png);;JPEG (*.jpg *.jpeg)')
+            path, _ = QFileDialog.getSaveFileName(self, tr('Save current still'), str(exports_dir() / "season-race.png"), 'PNG (*.png);;JPEG (*.jpg *.jpeg)')
         if not path: return False
         suffix = Path(path).suffix.lower()
         if suffix not in {'.png','.jpg','.jpeg'}:

@@ -34,6 +34,7 @@ class AppController(QObject):
         self.selected_game_pk: int | None = None
         self.selected_player_id: int | None = None
         self._threads: set[TaskThread] = set()
+        self._home_request = 0
         self._schedule_busy = False
         self._game_busy = False
         self._player_busy = False
@@ -51,6 +52,10 @@ class AppController(QObject):
         self.player_refresh_timer.setInterval(300_000)
         self.player_refresh_timer.timeout.connect(self.refresh_selected_player)
 
+        self.window.home_view.refresh_requested.connect(self.load_home)
+        self.window.home_view.player_selected.connect(self.load_player)
+        self.window.tabs.currentChanged.connect(
+            lambda _index: self.load_home() if self.window.tabs.currentWidget() is self.window.home_view else None)
         self.window.game_selected.connect(self.select_game)
         self.window.date_changed.connect(self.load_schedule)
         self.window.search_requested.connect(self.search_players)
@@ -69,9 +74,29 @@ class AppController(QObject):
         self.window.compare_view.player_selected.connect(self.load_compare_player)
 
     def start(self) -> None:
+        self.load_home()
         self.load_schedule(date.today().isoformat())
         self.load_league()
         self.apply_preferences()
+
+    def load_home(self) -> None:
+        """Refresh the local overview off the GUI thread; ignore stale seasons."""
+        from services.home_service import load_home_snapshot
+        self._home_request += 1
+        request = self._home_request
+        season = self.window.home_view.season.value()
+        self.window.home_view.set_state('loading')
+
+        def success(snapshot) -> None:
+            if request == self._home_request:
+                self.window.home_view.set_snapshot(snapshot)
+
+        def failure(_message: str) -> None:
+            if request == self._home_request:
+                LOGGER.warning('Home overview could not read local data')
+                self.window.home_view.set_state('error')
+
+        self._run(lambda: load_home_snapshot(self.db, season), success, on_error=failure)
 
     def apply_preferences(self) -> None:
         from config.preferences import read_preferences
@@ -103,10 +128,14 @@ class AppController(QObject):
         if self._schedule_busy:
             return
         self._schedule_busy = True
-        try:
-            self.season = int(date_text[:4])
-        except ValueError:
-            self.season = date.today().year
+        # Polling the same day must not reset the season chosen from Home.
+        if date_text != getattr(self, '_last_schedule_date', None):
+            try:
+                self.season = int(date_text[:4])
+            except ValueError:
+                self.season = date.today().year
+        self._last_schedule_date = date_text
+        self.window.home_view.set_schedule_state("loading", date_text)
         self.window.set_busy(tr(f"Loading games for {date_text}…"))
 
         async def task() -> list[GameSummary]:
@@ -122,11 +151,13 @@ class AppController(QObject):
 
         def success(games: list[GameSummary]) -> None:
             self._schedule_busy = False
+            self.window.home_view.set_schedule_state("ready" if games else "empty", date_text, len(games))
             self.window.set_games(games)
             self.window.set_busy(tr(f"{len(games)} games loaded"))
 
         def failure(message: str) -> None:
             self._schedule_busy = False
+            self.window.home_view.set_schedule_state("error", date_text)
             self._default_error(message)
 
         self._run(task, success, on_error=failure)

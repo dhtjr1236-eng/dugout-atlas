@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import json
 import re
-from pathlib import Path
+from config.paths import resource_path
 
 LANGUAGES = {'en': 'English', 'ko': '한국어', 'ja': '日本語'}
 _language = 'en'
 _phrases = {}
 _pattern = None
-_rows = json.loads((Path(__file__).parent / 'translations.json').read_text(encoding='utf-8'))
+_rows = json.loads(resource_path('config', 'translations.json').read_text(encoding='utf-8'))
 _exact = {text: row for row in _rows for text in row.values()}
 
 

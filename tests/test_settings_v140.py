@@ -124,6 +124,7 @@ def test_settings_save_applies_theme_and_intervals(app, isolated_preferences, tm
     controller._threads.clear()
     dialog._update_busy()
     assert dialog.clear.isEnabled()
+    assert dialog.choose.isEnabled()
     dialog.refresh.setValue(75)
     dialog.player_refresh.setValue(600)
     dialog.font.setValue(130)

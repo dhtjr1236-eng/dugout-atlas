@@ -10,6 +10,6 @@ call .venv\Scripts\activate.bat
 python main.py
 if errorlevel 1 (
     echo.
-    echo The application exited with an error. Check logs\app.log.
+    echo The application exited with an error. Check logs\dugout_atlas.log under your configured data folder.
     pause
 )

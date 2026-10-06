@@ -5,7 +5,7 @@ from config.i18n import tr
 import re
 from config.preferences import read_preferences
 
-from PyQt6.QtCore import QEasingCurve, QSettings, Qt, QVariantAnimation
+from PyQt6.QtCore import QEasingCurve, Qt, QVariantAnimation
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QApplication, QPushButton
 
@@ -28,7 +28,8 @@ class ThemeManager:
         self.app = app
         self.template = template
         self.font_scale = read_preferences()["font_scale"]
-        self.settings = QSettings("Dugout Atlas", "Dugout Atlas")
+        from config.preferences import store
+        self.settings = store()
         self.current_theme: ThemeName = self._initial_theme()
         self.current_accent = self._stored_accent()
         self._animation: QVariantAnimation | None = None

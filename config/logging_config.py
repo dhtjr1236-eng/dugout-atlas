@@ -23,27 +23,33 @@ class PrivateDataFilter(logging.Filter):
 
 
 def configure_logging() -> None:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
     root = logging.getLogger()
-    if root.handlers:
-        return
     root.setLevel(logging.INFO)
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
     )
 
-    console = logging.StreamHandler()
-    console.addFilter(PrivateDataFilter())
-    console.setFormatter(formatter)
-
-    file_handler = RotatingFileHandler(
-        LOG_DIR / "app.log",
-        maxBytes=2_000_000,
-        backupCount=5,
-        encoding="utf-8",
-    )
+    if not any(getattr(handler, "_dugout_role", None) == "console" for handler in root.handlers):
+        console = logging.StreamHandler()
+        console._dugout_role = "console"
+        console.addFilter(PrivateDataFilter())
+        console.setFormatter(formatter)
+        root.addHandler(console)
+    if any(getattr(handler, "_dugout_role", None) == "file" for handler in root.handlers):
+        return
+    try:
+        LOG_DIR.mkdir(parents=True, exist_ok=True)
+        file_handler = RotatingFileHandler(
+            LOG_DIR / "dugout_atlas.log",
+            maxBytes=2_000_000,
+            backupCount=5,
+            encoding="utf-8",
+        )
+    except OSError:
+        root.error("Cannot open application file log; console logging remains available")
+        return
+    file_handler._dugout_role = "file"
     file_handler.addFilter(PrivateDataFilter())
     file_handler.setFormatter(formatter)
 
-    root.addHandler(console)
     root.addHandler(file_handler)

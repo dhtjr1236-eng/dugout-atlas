@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from io import BytesIO
+import logging
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -37,7 +38,7 @@ async def load_headshot(mlbam_id: int, cache: HeadshotCache | None = None) -> np
             try:
                 return circular_thumbnail(path.read_bytes())
             except (OSError, ValueError):
-                pass
+                logging.getLogger(__name__).warning("Cannot decode cached headshot")
         data = await async_get_bytes(HEADSHOT_URL.format(mlbam_id=mlbam_id), timeout=10, retries=1)
         thumbnail = circular_thumbnail(data)
         normalized = BytesIO()
@@ -45,4 +46,5 @@ async def load_headshot(mlbam_id: int, cache: HeadshotCache | None = None) -> np
         cache.write(mlbam_id, normalized.getvalue())
         return thumbnail
     except Exception:
+        logging.getLogger(__name__).warning("Headshot unavailable; using vector marker")
         return None

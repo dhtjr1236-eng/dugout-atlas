@@ -28,6 +28,7 @@ from models.game import GameDetail, GameSummary
 from models.player import PlayerBundle
 from ui.compare_view import CompareView
 from ui.game_view import GameView
+from ui.home_view import HomeView
 from ui.league_view import LeagueView
 from ui.lineup_view import LineupView
 from ui.player_view import PlayerView
@@ -109,6 +110,7 @@ class MainWindow(QMainWindow):
         splitter.addWidget(left)
 
         self.tabs = QTabWidget()
+        self.home_view = HomeView()
         self.game_view = GameView()
         self.lineup_view = LineupView()
         self.player_view = PlayerView()
@@ -119,6 +121,8 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(self.player_view, tr("Player"))
         self.tabs.addTab(self.compare_view, tr("Compare"))
         self.tabs.addTab(self.league_view, tr("Standings"))
+        self.tabs.addTab(self.home_view, tr("Home"))
+        self.tabs.setCurrentWidget(self.home_view)
         splitter.addWidget(self.tabs)
         splitter.setSizes([330, 1110])
 
@@ -140,12 +144,36 @@ class MainWindow(QMainWindow):
         self.refresh_button.clicked.connect(self.refresh_requested)
         self.compare_view.advanced_compare_requested.connect(self._open_advanced_compare)
 
+        self.home_view.navigate_requested.connect(self._navigate_home)
+
         self._search_timer = QTimer(self)
         self._search_timer.setSingleShot(True)
         self._search_timer.setInterval(350)
         self._search_timer.timeout.connect(self._emit_search)
         from ui.window_sizing import compact_main_window
         compact_main_window(self, 1440, 900)
+
+    def retranslate(self) -> None:
+        self.home_view.retranslate()
+
+    def _navigate_home(self, destination: str, season: int) -> None:
+        controller = getattr(self, 'controller', None)
+        if controller is None:
+            return
+        controller.season = season
+        if destination == 'player':
+            self.tabs.setCurrentWidget(self.player_view)
+            self.search.setFocus()
+        elif destination == 'compare':
+            self.tabs.setCurrentWidget(self.compare_view)
+        elif destination == 'standings':
+            self.tabs.setCurrentWidget(self.league_view)
+            controller.load_league()
+        elif destination == 'race':
+            self._open_advanced_compare()
+            advanced = getattr(self, '_advanced_compare_window', None)
+            if advanced is not None:
+                advanced.tabs.setCurrentWidget(advanced.race)
 
     def set_games(self, games: list[GameSummary]) -> None:
         current_pk = None
@@ -282,6 +310,14 @@ class MainWindow(QMainWindow):
                 return
 
     def closeEvent(self, event) -> None:
+        controller = getattr(self, 'controller', None)
+        if controller is not None:
+            controller.refresh_timer.stop()
+            controller.player_refresh_timer.stop()
+            if controller._threads:
+                event.ignore()
+                QTimer.singleShot(100, self.close)
+                return
         advanced = getattr(self, "_advanced_compare_window", None)
         if advanced is not None:
             advanced.race.cancel()

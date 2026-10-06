@@ -1,18 +1,20 @@
-# Dugout Atlas v1.61
+# Dugout Atlas v1.7
 
 Windows 11 + Python 3.12+용 PyQt6 데스크톱 MLB 분석 프로그램입니다. MLB Gameday 스타일의 실시간 경기 상태와 FanGraphs / Baseball Reference / Baseball Savant / Statcast 지표를 한 화면에서 조회하도록 구성되어 있습니다.
 
 > 이 프로젝트는 MLB/FanGraphs/Baseball Reference/Baseball Savant의 공식 데스크톱 클라이언트가 아닙니다. 공개 웹/API 데이터의 구조가 바뀌면 외부 소스 어댑터를 업데이트해야 할 수 있습니다.
 
-## 현재 버전 v1.61
+## 현재 버전 v1.7
+
+홈에서 시즌과 즐겨찾기를 선택해 기존 분석 화면으로 이동할 수 있습니다. [홈 사용 가이드](OFFSEASON_HOME_GUIDE_KO.md)를 먼저 참고하세요.
 
 경기 화면의 선수 이름을 누르면 해당 경기 시즌의 선수 분석으로 이동합니다.
 Compare 탭의 **심화 비교**에서 Season Race를 열고 월간·격주·주간·전체 상세와 기간 범위를 선택합니다.
 전체 상세 신규 요청이 50개를 초과하면 예상 시간을 확인한 뒤 진행합니다.
 마커는 벡터 헬멧 또는 MLB 선수 사진을 선택할 수 있고, 사진 실패 시 헬멧으로 표시합니다.
-테마는 상단 Settings 내부에서 변경합니다. 선수명은 `config/player_names_seed.json`에서 수정합니다.
+테마는 상단 Settings 내부에서 변경합니다. 기본 선수명은 `config/player_names_seed.json`에 두고, 사용자 변경은 `%LOCALAPPDATA%\Dugout Atlas\config\player_names_override.json`으로 지정합니다. 기존 QSettings와 data_root는 유지됩니다.
 
-[현재 패치노트](PATCH_v1.61.md) · [시즌 레이스 상세 가이드](SEASON_RACE_V161_GUIDE_KO.md)
+[현재 패치노트](PATCH_v1.7.md) · [시즌 레이스 상세 가이드](SEASON_RACE_V161_GUIDE_KO.md)
 
 아래 버전별 항목은 기능 도입 당시의 변경 이력입니다. 현재 동작은 위 안내와 최신 패치노트를 우선합니다.
 
@@ -389,11 +391,11 @@ python -m pip install pybaseball==2.2.7
 
 - 해당 날짜가 MLB 비경기일인지 확인하십시오.
 - 인터넷 연결과 방화벽에서 `statsapi.mlb.com` HTTPS 접근이 가능한지 확인하십시오.
-- `logs\app.log`를 확인하십시오.
+- `logs\dugout_atlas.log`를 확인하십시오.
 
 ## 선수 페이지에서 일부 값만 `—`
 
-외부 사이트에서 해당 지표를 제공하지 않았거나, 데이터 구조가 변경되었거나, 일시적으로 요청이 실패한 경우입니다. 하단의 `Some sources were unavailable` 메시지와 `logs\app.log`를 확인하십시오.
+외부 사이트에서 해당 지표를 제공하지 않았거나, 데이터 구조가 변경되었거나, 일시적으로 요청이 실패한 경우입니다. 하단의 `Some sources were unavailable` 메시지와 `logs\dugout_atlas.log`를 확인하십시오.
 
 ## pybaseball가 오래된 데이터를 반환함
 

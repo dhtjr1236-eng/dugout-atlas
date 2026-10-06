@@ -1,4 +1,4 @@
-# Python 3.12 direct dependency pins for Dugout Atlas v1.61 (inherited versions).
+# Python 3.12 direct dependency pins for Dugout Atlas v1.7 (inherited versions).
 # Use with: python -m pip install -r requirements.txt -c constraints-release.txt
 PyQt6==6.11.0
 requests==2.34.2

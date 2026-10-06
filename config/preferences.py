@@ -31,4 +31,6 @@ def save_preferences(values: dict) -> None:
         settings.setValue('preferences/' + key, value)
     settings.sync()
     if settings.status() != QSettings.Status.NoError:
+        import logging
+        logging.getLogger(__name__).error('Cannot save application preferences')
         raise OSError('Could not save settings')

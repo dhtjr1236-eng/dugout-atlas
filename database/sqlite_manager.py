@@ -8,7 +8,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterator
 
-from config.settings import DB_PATH, SCHEMA_PATH, ensure_runtime_dirs
+from config.settings import DB_PATH, SCHEMA_PATH
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,14 +21,19 @@ class SQLiteManager:
     """
 
     def __init__(self, db_path: Path = DB_PATH, schema_path: Path = SCHEMA_PATH) -> None:
-        ensure_runtime_dirs()
         self.db_path = Path(db_path)
+        from config.paths import ensure_directory
+        ensure_directory(self.db_path.parent)
         self.schema_path = Path(schema_path)
         self.initialize()
 
     @contextmanager
     def connection(self) -> Iterator[sqlite3.Connection]:
-        connection = sqlite3.connect(self.db_path, timeout=30)
+        try:
+            connection = sqlite3.connect(self.db_path, timeout=30)
+        except sqlite3.Error:
+            LOGGER.error("Cannot open application database")
+            raise
         connection.row_factory = sqlite3.Row
         try:
             yield connection

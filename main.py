@@ -2,26 +2,27 @@ from __future__ import annotations
 
 import sys
 from PyQt6.QtWidgets import QApplication
-from config.logging_config import configure_logging
-from config.settings import SETTINGS, THEME_QSS_PATH, ensure_runtime_dirs
-from controllers.app_controller import AppController
-from database.sqlite_manager import SQLiteManager
-from services.compare_league_context import install_compare_league_position
-from services.convenience_features import install_convenience_features
-from services.live_scoring import install_live_scoring_support
-from services.player_enhancements import install_player_enhancements
-from services.player_name_localization import install_player_name_localization
-from services.running_metrics import install_running_support
-from ui.main_window import MainWindow
-from ui.theme_manager import ThemeManager
 
 
 def main() -> int:
+    from config.logging_config import configure_logging
+    from config.settings import SETTINGS, THEME_QSS_PATH, ensure_runtime_dirs
+    from controllers.app_controller import AppController
+    from database.sqlite_manager import SQLiteManager
+    from services.compare_league_context import install_compare_league_position
+    from services.convenience_features import install_convenience_features
+    from services.live_scoring import install_live_scoring_support
+    from services.player_enhancements import install_player_enhancements
+    from services.player_name_localization import install_player_name_localization
+    from services.running_metrics import install_running_support
+    from ui.main_window import MainWindow
+    from ui.theme_manager import ThemeManager
+
     from config.preferences import read_preferences
     from config.i18n import set_language
     set_language(read_preferences()["language"])
-    ensure_runtime_dirs()
     configure_logging()
+    ensure_runtime_dirs()
     install_running_support()
     install_player_enhancements()
     install_live_scoring_support()
@@ -49,4 +50,14 @@ def main() -> int:
     controller.start()
     return app.exec()
 
-if __name__ == "__main__": raise SystemExit(main())
+if __name__ == "__main__":
+    import logging
+    import sqlite3
+    try:
+        raise SystemExit(main())
+    except (OSError, sqlite3.Error):
+        logging.getLogger(__name__).error("Application data could not be opened; check permissions and disk space")
+        from PyQt6.QtWidgets import QMessageBox
+        error_app = QApplication.instance() or QApplication(sys.argv)
+        QMessageBox.critical(None, "Dugout Atlas", "사용자 데이터에 접근할 수 없습니다. 폴더 권한과 디스크 공간을 확인해 주세요.")
+        raise SystemExit(1)

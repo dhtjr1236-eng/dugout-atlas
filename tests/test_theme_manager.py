@@ -43,7 +43,8 @@ def test_theme_tokens_have_required_roles() -> None:
 def test_invalid_saved_theme_is_removed(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path))
     app = _app()
-    settings = QSettings("Dugout Atlas", "Dugout Atlas")
+    from config.preferences import store
+    settings = store()
     settings.setValue(THEME_STORAGE_KEY, "banana")
     settings.sync()
 

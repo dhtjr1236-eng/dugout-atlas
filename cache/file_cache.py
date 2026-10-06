@@ -1,21 +1,23 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+import logging
 from pathlib import Path
 
 from config.settings import CACHE_DIR
+from config.paths import safe_join, ensure_directory
 
 
 class FileCache:
     def __init__(self, root: Path = CACHE_DIR) -> None:
         self.root = Path(root) / "files"
-        self.root.mkdir(parents=True, exist_ok=True)
+        ensure_directory(self.root)
 
     def path_for(self, namespace: str, filename: str) -> Path:
-        directory = self.root / namespace
-        directory.mkdir(parents=True, exist_ok=True)
+        directory = safe_join(self.root, namespace)
+        ensure_directory(directory)
         safe = "".join(ch for ch in filename if ch.isalnum() or ch in "._-")
-        return directory / safe
+        return safe_join(directory, safe)
 
     @staticmethod
     def is_fresh(path: Path, ttl_days: int) -> bool:
@@ -41,13 +43,16 @@ class HeadshotCache:
         import os
         import tempfile
         path = self.path_for(mlbam_id)
-        path.parent.mkdir(parents=True, exist_ok=True)
+        ensure_directory(path.parent)
         temporary = None
         try:
             with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as stream:
                 temporary = Path(stream.name)
                 stream.write(data)
             os.replace(temporary, path)
+        except OSError:
+            logging.getLogger(__name__).warning("Cannot write headshot cache")
+            raise
         finally:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)

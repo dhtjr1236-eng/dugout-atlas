@@ -1,19 +1,19 @@
 <div align="center">
 
-# ⚾ Dugout Atlas v1.61
+# ⚾ Dugout Atlas v1.7
 
-**경기의 흐름과 선수의 가치를 한 화면에서.**
+**경기 있는 날에는 실시간 분석, 경기 없는 날에는 시즌을 돌아보는 야구 작업 공간.**
 
 더그아웃 아틀라스 · MLB 경기와 선수 분석을 위한 데스크톱 데이터 지도
 
-Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함께 살펴보는 분석 앱입니다.
+Windows 11에서 MLB 실시간 경기, 선수 지표와 시즌 레이스를 살펴보고, 비시즌에는 홈에서 관심 선수와 과거 시즌 분석을 이어가는 PyQt6 데스크톱 앱입니다.
 
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.61**입니다.
+기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.7**입니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
 ![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
-![Version](https://img.shields.io/badge/Version-v1.61-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.7-172B4D)
 
 [빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
 
@@ -25,15 +25,22 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 
 [소스 ZIP 다운로드](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) · [문제 제보](https://github.com/dhtjr1236-eng/dugout-atlas/issues)
 
-## v1.61 업데이트
+## v1.7 업데이트
 
-- 경기의 타자·투수·득점자 클릭 시 해당 시즌의 선수 분석으로 이동합니다.
-- Season Race에 월간·격주·주간·전체 상세 샘플과 월/일 범위 필터를 제공합니다.
-- 날짜별 조회 전 캐시·신규 요청량과 최소 대기 시간을 계산하고, 전체 상세 신규 50개 초과 시 확인합니다.
-- 벡터 헬멧 또는 비동기 MLB 선수 사진을 사용하며 사진 실패 시 헬멧으로 표시합니다.
-- Compare 내부 심화 비교 버튼, Settings 테마 선택, 사용자 지정 선수명, 축소된 기본 창 크기를 포함합니다.
+- **비시즌 홈**: 시즌 선택, 로컬 캐시 현황, 즐겨찾기 선수, 선수·비교·순위·Season Race 바로가기를 제공합니다.
+- 경기 없음·조회 중·조회 실패·캐시 없음 상태를 구분하며, 경기 없는 하루를 시즌 종료로 단정하지 않습니다.
+- 소스 실행은 기존 QSettings와 사용자 지정 data_root를 유지합니다. 기존 DB·캐시를 자동 이동하거나 초기화하지 않습니다.
+- 선수명은 기본 seed를 유지하면서 사용자 override JSON으로 변경할 수 있습니다.
+- 시작 단계 오류 처리, 파일 로그 등록 및 중복 방지, 경로 검증을 보완했습니다.
+- 기존 선수 탐색·시즌 레이스 기능을 유지합니다. PyInstaller 파일은 준비안이며 EXE/installer는 제공하지 않습니다.
 
-[**v1.61 패치노트**](docs/PATCH_v1.61.md) · [**시즌 레이스 사용 가이드**](docs/SEASON_RACE_V161_GUIDE_KO.md)
+[**v1.7 패치노트**](docs/PATCH_v1.7.md) · [**홈 사용·적용 가이드**](docs/OFFSEASON_HOME_GUIDE_KO.md) · [시즌 레이스 가이드](docs/SEASON_RACE_V161_GUIDE_KO.md)
+
+## 홈 사용법
+
+앱을 실행하면 **홈**이 열립니다. 시즌을 고른 뒤 즐겨찾기 선수나 분석 바로가기를 누르세요. 홈의 숫자는 **로컬 캐시 항목 현황**이며 MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 홈 자체는 외부 API 요청을 추가하지 않으며, 기존 일정 자동 갱신과 분석 조회는 유지됩니다.
+
+사용자 선수명 파일은 `%LOCALAPPDATA%\Dugout Atlas\config\player_names_override.json`입니다. 형식과 복구 절차는 [홈 가이드](docs/OFFSEASON_HOME_GUIDE_KO.md)와 [패키징 안내](docs/WINDOWS_PACKAGING_GUIDE_KO.md)를 참고하세요.
 
 ## 한눈에 보기
 
@@ -43,6 +50,7 @@ Windows 데스크톱에서 MLB 실시간 경기와 세이버메트릭스를 함�
 
 | 화면 | 확인할 수 있는 내용 |
 | :--- | :--- |
+| **Home** | 선택 시즌의 로컬 캐시 현황, 즐겨찾기 선수 연결, 분석 바로가기, 조회 상태 안내 |
 | **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세, 즐겨찾기 팀 경기 알림 |
 | **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
 | **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits, 선수 즐겨찾기 |
@@ -165,7 +173,7 @@ py -3.12 -m venv .venv
 - [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
 - [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
 - [변경 기록](CHANGELOG.md): 버전별 수정 내역
-- [v1.61 패치 노트](docs/PATCH_v1.61.md): 현재 버전 변경 및 검증
+- [v1.7 패치 노트](docs/PATCH_v1.7.md): 현재 버전 변경 및 검증
 - [시즌 레이스 가이드](docs/SEASON_RACE_V161_GUIDE_KO.md): 샘플 간격·사진·요청량 확인
 
 이전 버전의 변경 이력:
@@ -193,7 +201,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-현재 v1.61 검증은 [v1.61 패치노트](docs/PATCH_v1.61.md)를 참고하세요. 이전 v1.5의 심화 비교·현지화·Accent Theme 변경은 [v1.5 패치 노트](docs/PATCH_v1.5.md)에 정리했습니다. v1.41의 선수명 현지화 기반은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에서 확인할 수 있습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
+현재 v1.7 검증은 [v1.7 패치노트](docs/PATCH_v1.7.md)를 참고하세요. 이전 v1.5의 심화 비교·현지화·Accent Theme 변경은 [v1.5 패치 노트](docs/PATCH_v1.5.md)에 정리했습니다. v1.41의 선수명 현지화 기반은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에서 확인할 수 있습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
 
 ## 프로젝트 안내
 
