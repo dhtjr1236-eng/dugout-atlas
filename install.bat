@@ -35,6 +35,7 @@ exit /b 0
 
 :error
 echo.
-echo Installation failed. Review the error above and logs\app.log if it exists.
+echo Installation or verification failed. Review the error above.
+echo App runtime logs, if available: logs\dugout_atlas.log under your configured data folder.
 pause
 exit /b 1

@@ -1,7 +1,7 @@
 from __future__ import annotations
 import json
 from datetime import date
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QStyleFactory
 from PyQt6.QtCore import Qt
 import pytest
 from ui.home_view import HomeView
@@ -120,10 +120,31 @@ def test_home_retranslation_and_narrow_layout(app,language):
     view.close();set_language('en')
 
 
-def test_large_font_narrow_home_scrolls_vertically(app):
-    view=HomeView();view.setStyleSheet('QWidget { font-size: 17pt; }')
-    view.resize(540,820);view.show();app.processEvents()
-    assert view._columns==1
-    assert view.horizontalScrollBar().maximum()==0
-    assert view.verticalScrollBar().maximum()>0
-    view.close()
+@pytest.mark.parametrize('language', ['en', 'ko', 'ja'])
+@pytest.mark.parametrize('font_size', [17, 24])
+@pytest.mark.parametrize('style_name', QStyleFactory.keys())
+def test_large_font_narrow_home_scrolls_vertically(app, language, font_size, style_name):
+    from config import i18n
+    from config.i18n import set_language
+    previous_language = i18n._language
+    previous_style = app.style().objectName()
+    view = None
+    try:
+        app.setStyle(style_name)
+        set_language(language)
+        view = HomeView()
+        view.setStyleSheet(f'QWidget {{ font-size: {font_size}pt; }}')
+        view.resize(540, 820)
+        view.show()
+        app.processEvents()
+        assert view._columns == 1
+        assert view.horizontalScrollBar().maximum() == 0
+        assert view.verticalScrollBar().maximum() > 0
+        for button in [view.refresh, *view.buttons.values()]:
+            assert button.text()
+            assert button.height() >= button.heightForWidth(button.width())
+    finally:
+        if view is not None:
+            view.close()
+        set_language(previous_language)
+        app.setStyle(previous_style)

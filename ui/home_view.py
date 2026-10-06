@@ -1,11 +1,46 @@
 from __future__ import annotations
 
 from datetime import date
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtWidgets import (QWidget, QScrollArea, QVBoxLayout, QHBoxLayout,
-    QGridLayout, QLabel, QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem)
+    QGridLayout, QLabel, QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem, QSizePolicy)
 from config.i18n import tr
 from services.home_service import HomeSnapshot
+
+
+class HomeActionButton(QPushButton):
+    """Wrap action text without forcing the scroll area's minimum width."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._caption = QLabel(self)
+        self._caption.setWordWrap(True)
+        self._caption.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._caption.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self._caption.setMinimumWidth(0)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(16, 10, 16, 10)
+        layout.addWidget(self._caption)
+        policy = QSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        policy.setHeightForWidth(True)
+        self.setSizePolicy(policy)
+
+    def setText(self, text: str) -> None:
+        self._caption.setText(text)
+        self.setAccessibleName(text)
+        self.updateGeometry()
+
+    def text(self) -> str:
+        return self._caption.text()
+
+    def heightForWidth(self, width: int) -> int:
+        return self._caption.heightForWidth(max(1, width - 32)) + 20
+
+    def minimumSizeHint(self) -> QSize:
+        return QSize(0, self._caption.fontMetrics().height() + 20)
+
+    def sizeHint(self) -> QSize:
+        return QSize(240, self.heightForWidth(240))
 
 
 class HomeView(QScrollArea):
@@ -31,6 +66,7 @@ class HomeView(QScrollArea):
         root.setContentsMargins(22, 20, 22, 20)
         root.setSpacing(16)
         self.eyebrow = QLabel('DUGOUT ATLAS  /  SEASON DESK')
+        self.eyebrow.setWordWrap(True)
         self.eyebrow.setObjectName('homeEyebrow')
         root.addWidget(self.eyebrow)
         self.title = QLabel()
@@ -43,11 +79,12 @@ class HomeView(QScrollArea):
         self.selection = QGridLayout()
         selection = self.selection
         self.season_label = QLabel()
+        self.season_label.setWordWrap(True)
         self.season = QSpinBox()
         self.season.setRange(1876, date.today().year)
         self.season.setValue(date.today().year)
         self.season.setAccessibleName(tr('Home season'))
-        self.refresh = QPushButton()
+        self.refresh = HomeActionButton()
         selection.addWidget(self.season_label, 0, 0)
         selection.addWidget(self.season, 0, 1)
         selection.addWidget(self.refresh, 0, 3)
@@ -62,6 +99,7 @@ class HomeView(QScrollArea):
         self.inventory.setProperty('homeCard', True)
         inventory_layout = QVBoxLayout(self.inventory)
         self.inventory_title = QLabel()
+        self.inventory_title.setWordWrap(True)
         inventory_layout.addWidget(self.inventory_title)
         self.counts = QLabel()
         self.counts.setWordWrap(True)
@@ -82,7 +120,7 @@ class HomeView(QScrollArea):
             ('standings', 'Review league standings', 'Load standings for the selected season.')]:
             card = QFrame(); card.setObjectName('panel'); card.setProperty('homeCard', True)
             layout = QVBoxLayout(card)
-            button = QPushButton(); button.setProperty('homeHeading', heading)
+            button = HomeActionButton(); button.setProperty('homeHeading', heading)
             button.setCursor(Qt.CursorShape.PointingHandCursor)
             button.clicked.connect(lambda _checked=False, k=key: self.navigate_requested.emit(k, self.season.value()))
             label = QLabel(); label.setWordWrap(True); label.setProperty('homeDetail', detail)
@@ -90,6 +128,7 @@ class HomeView(QScrollArea):
             self.cards.append(card); self.buttons[key] = button
         root.addLayout(self.grid)
         self.favorite_heading = QLabel()
+        self.favorite_heading.setWordWrap(True)
         self.favorite_heading.setObjectName('homeSection')
         root.addWidget(self.favorite_heading)
         self.favorite_hint = QLabel(); self.favorite_hint.setWordWrap(True)
@@ -163,7 +202,9 @@ class HomeView(QScrollArea):
             for button in card.findChildren(QPushButton):
                 button.setText(tr(button.property('homeHeading')) + '  →')
             for label in card.findChildren(QLabel):
-                label.setText(tr(label.property('homeDetail')))
+                detail = label.property('homeDetail')
+                if detail is not None:
+                    label.setText(tr(detail))
         self._render()
 
     def _render(self) -> None:
