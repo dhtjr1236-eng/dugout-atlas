@@ -1,20 +1,6 @@
-# Dugout Atlas v1.61 — 시즌 레이스 및 선수 탐색 가이드
+# Dugout Atlas 시즌 레이스 및 선수 탐색 가이드
 
-이 문서는 v1.61에서 도입된 기능의 가이드입니다. 현재 버전은 **v1.7**이며 [최신 패치노트](PATCH_v1.7.md)를 우선 참고하세요. v1.6 기능 확장 미리보기의 세 기능을 통합했습니다.
-
-## 설치 및 업데이트
-
-1. 실행 중인 프로그램을 종료합니다.
-2. [main 소스 ZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip)을 내려받아 새 폴더에 풉니다.
-3. Windows 11 / Python 3.12 이상에서 `install.bat`, 다음으로 `run.bat`을 실행합니다.
-4. 기존 사용자 데이터 위치가 있다면 Settings에서 해당 데이터 경로를 사용합니다.
-
-Git 사용자는 작업 내용을 보관한 뒤 `git pull --ff-only origin main`으로 갱신합니다.
-의존성 설치: `python -m pip install -r requirements.txt -c constraints-release.txt`.
-검증: `python -m pytest -q`. 실행: `python main.py`.
-
-이전 미리보기 패치 ZIP은 당시 v1.6 기준 파일용입니다. v1.61 위에 다시 적용하지 않습니다.
-현재 소스에는 사용자 선수명 파일과 축소된 기본 창 크기가 포함됩니다.
+현재 v1.7 사용법입니다. 설치와 업데이트는 [사용자 가이드](USER_GUIDE.md)를 참고하세요. 파일명은 기존 문서 링크 호환성을 위해 유지합니다.
 
 ## 1. 경기에서 선수 분석으로 이동
 
@@ -77,30 +63,6 @@ Git 사용자는 작업 내용을 보관한 뒤 `git pull --ff-only origin main`
 - 새 사진을 받고 싶다면 프로그램 종료 후 해당 ID의 PNG만 삭제합니다.
 - Matplotlib의 DrawingArea/OffsetImage를 메모리에 유지하므로 슬라이더 조작 때마다 이미지 다운로드·디코딩·썸네일 생성은 반복하지 않습니다.
 
-## 4. 직접 수정할 파일
+## 참고
 
-| 경로 | 역할 |
-| --- | --- |
-| `config/player_names_seed.json` | 기존 EN/JA/KO 선수 이름 데이터 |
-| `ui/game_view.py` | 선수 셀 UserRole, 클릭 신호, 경기 문맥 |
-| `ui/main_window.py` | 선수 탭 이동 및 시즌 전달 |
-| `controllers/app_controller.py` | 비동기 선수 조회와 오래된 응답 제외 |
-| `services/live_scoring.py` | 득점자별 정확한 ID 연결 |
-| `services/season_race.py` | 샘플 날짜, 로컬 계획, 조회 실행, 기존 WAR 캐시 |
-| `ui/season_race_view.py` | 간격/기간 선택, 비차단 확인창, 사진 작업 관리 |
-| `ui/character_renderer.py` | 헬멧 그림과 마커 메모리 캐시 |
-| `services/headshots.py` | 기존 `base_http.async_get_bytes` 재사용, 이미지 검증/원형 처리 |
-| `cache/file_cache.py` | 사진 경로 및 원자적 저장 |
-| `config/translations.json` | 추가 EN/KO/JA UI 문구 |
-
-`services/base_http.py`는 기존 타임아웃·응답 크기 제한 기능을 재사용하므로 수정하지 않았습니다.
-
-## 5. 검증 및 한계
-
-- 기능 확장 검증: 기존 133개와 신규 14개, 총 **147 passed**. v1.61은 버전 일치 회귀 검사도 추가했습니다.
-- 신규 파일: `test_game_player_navigation.py`, `test_season_race_granularities.py`, `test_character_renderer.py`.
-- 선수 ID 신호, 경기 시즌 전달, 이전 요청 배제, 월간/격주/기간 샘플, 로컬 계획, Full 확인/취소, 사진 실패 대체, 원형 이미지/캐시, GUI 스레드 밖 다운로드를 검증했습니다.
-- 기존 라이트/다크/강조색·언어·이미지 내보내기 회귀 테스트도 통과했습니다.
-- Python 컴파일 검사와 Git whitespace 검사를 통과했습니다. 이전 미리보기 패치의 검사·적용·원복 및 Git diff 적용도 별도 복사본에서 확인했습니다.
-- Linux Qt offscreen 환경에서 검증했습니다. Windows 실화면 및 실제 MLB/FanGraphs 외부 통신은 이번 검증 범위에 포함하지 않았습니다.
-- 테스트 환경의 CJK 폰트 부재로 Matplotlib 글리프 경고 19개가 발생했습니다. 데이터/기능 테스트 실패는 없습니다. 실제 환경에서는 한글·일본어 지원 폰트를 사용해 주세요.
+현재 버전 검증과 제한은 [v1.7 패치노트](PATCH_v1.7.md)를 확인하세요. 과거 기능 도입 기록은 [v1.61 패치노트](PATCH_v1.61.md)에 있습니다. Windows 실화면 및 실제 외부 통신 결과는 Linux offscreen 회귀 테스트와 구분해야 합니다.

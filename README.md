@@ -1,220 +1,66 @@
-<div align="center">
-
 # ⚾ Dugout Atlas v1.7
 
-**경기 있는 날에는 실시간 분석, 경기 없는 날에는 시즌을 돌아보는 야구 작업 공간.**
+Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
 
-더그아웃 아틀라스 · MLB 경기와 선수 분석을 위한 데스크톱 데이터 지도
-
-Windows 11에서 MLB 실시간 경기, 선수 지표와 시즌 레이스를 살펴보고, 비시즌에는 홈에서 관심 선수와 과거 시즌 분석을 이어가는 PyQt6 데스크톱 앱입니다.
-
-기존 MLB Advanced Gameday를 계승한 **Dugout Atlas v1.7**입니다.
-
-![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Windows_11-0078D4)
-![UI](https://img.shields.io/badge/UI-PyQt6-41CD52)
+![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
 ![Version](https://img.shields.io/badge/Version-v1.7-172B4D)
 
-[빠른 시작](#빠른-시작) · [주요 기능](#주요-기능) · [사용자 가이드](docs/USER_GUIDE.md) · [구조](ARCHITECTURE.md) · [변경 기록](CHANGELOG.md)
+## 설치와 실행
 
-</div>
+1. Python 3.12 이상을 설치하고 **Add python.exe to PATH**를 선택합니다.
+2. [소스 ZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip)을 내려받아 압축을 풉니다.
+3. `install.bat`을 실행합니다.
+4. 설치가 끝나면 `run.bat`을 실행합니다.
 
----
+현재 배포 형태는 Python 소스입니다. 설치형 EXE는 아직 제공하지 않습니다. 업데이트 전에는 앱을 종료하고 프로그램 폴더와 별도로 설정한 데이터 폴더를 백업하세요. 이전 버전용 패치를 최신 소스 위에 다시 적용하지 마세요.
 
-> **개발 중인 데스크톱 프로젝트입니다.** 현재 배포물은 Python 소스이며 별도 설치형 EXE는 제공하지 않습니다. 외부 통계의 최신성은 각 데이터 제공처의 갱신 시점에 따릅니다.
+## 주요 기능
 
-[소스 ZIP 다운로드](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) · [문제 제보](https://github.com/dhtjr1236-eng/dugout-atlas/issues)
+| 화면 | 용도 |
+| --- | --- |
+| 홈 | 시즌 선택, 로컬 기록 보유 현황, 즐겨찾기와 분석 바로가기 |
+| 경기·라인업 | 일정·점수·플레이·등판 선수 확인, 선수 클릭으로 분석 이동 |
+| 선수 | 기본 기록과 FanGraphs·B-Ref·Statcast 지표, 차트와 즐겨찾기 |
+| 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 WAR 변화 탐색 |
+| 리그 | 순위와 팀 통계 조회 |
+| 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
 
-## v1.7 업데이트
+홈의 숫자는 **내 앱에 저장된 캐시 현황**입니다. MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 선수 이름을 클릭할 때는 MLBAM ID로 연결합니다. 한국어·영어·일본어와 밝은/어두운 테마를 지원합니다.
 
-- **비시즌 홈**: 시즌 선택, 로컬 캐시 현황, 즐겨찾기 선수, 선수·비교·순위·Season Race 바로가기를 제공합니다.
-- 경기 없음·조회 중·조회 실패·캐시 없음 상태를 구분하며, 경기 없는 하루를 시즌 종료로 단정하지 않습니다.
-- 소스 실행은 기존 QSettings와 사용자 지정 data_root를 유지합니다. 기존 DB·캐시를 자동 이동하거나 초기화하지 않습니다.
-- 선수명은 기본 seed를 유지하면서 사용자 override JSON으로 변경할 수 있습니다.
-- 시작 단계 오류 처리, 파일 로그 등록 및 중복 방지, 경로 검증을 보완했습니다.
-- 기존 선수 탐색·시즌 레이스 기능을 유지합니다. PyInstaller 파일은 준비안이며 EXE/installer는 제공하지 않습니다.
+![선수 분석 화면](docs/images/player-analysis-before-rename.png)
 
-[**v1.7 패치노트**](docs/PATCH_v1.7.md) · [**홈 사용·적용 가이드**](docs/OFFSEASON_HOME_GUIDE_KO.md) · [시즌 레이스 가이드](docs/SEASON_RACE_V161_GUIDE_KO.md)
+*이름 변경 전 실제 실행 화면이며, 통계는 촬영 당시 값입니다.*
 
-## 홈 사용법
+## 데이터와 설정
 
-앱을 실행하면 **홈**이 열립니다. 시즌을 고른 뒤 즐겨찾기 선수나 분석 바로가기를 누르세요. 홈의 숫자는 **로컬 캐시 항목 현황**이며 MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 홈 자체는 외부 API 요청을 추가하지 않으며, 기존 일정 자동 갱신과 분석 조회는 유지됩니다.
+- 소스 실행은 기존 QSettings와 설정한 데이터 위치를 유지합니다. 별도 위치가 없으면 프로젝트 폴더 아래 `data/`, `cache/`, `logs/`를 사용합니다.
+- 사용자 선수명은 `%LOCALAPPDATA%\Dugout Atlas\config\player_names_override.json`으로 덮어쓸 수 있습니다. 기본 seed 파일을 직접 고치기보다 override를 사용하세요.
+- 캐시는 **설정 → 캐시 관리/소스별 새로고침**에서 관리하세요. `cache/`와 `database/`에는 실행 코드도 있으므로 폴더 전체를 삭제하면 안 됩니다.
+- 기존 DB·캐시·설정을 자동 이관하거나 초기화하지 않습니다.
 
-사용자 선수명 파일은 `%LOCALAPPDATA%\Dugout Atlas\config\player_names_override.json`입니다. 형식과 복구 절차는 [홈 가이드](docs/OFFSEASON_HOME_GUIDE_KO.md)와 [패키징 안내](docs/WINDOWS_PACKAGING_GUIDE_KO.md)를 참고하세요.
+외부 데이터의 갱신·접근 상태에 따라 일부 값은 늦거나 비어 있을 수 있습니다. 없는 WAR를 추정하거나 fWAR와 bWAR를 합산하지 않습니다. B-Ref 자동 접근이 차단되면 공식 WAR 파일을 다운로드해 앱에서 가져오세요.
 
-## 한눈에 보기
+## 문서
 
-![투수의 기본 기록, WAR, Statcast 지표와 구종 분석 화면](docs/images/player-analysis-before-rename.png)
+- [사용자 가이드](docs/USER_GUIDE.md): 설치, 설정, 선수명, B-Ref, 문제 해결
+- [홈 사용법](docs/OFFSEASON_HOME_GUIDE_KO.md)
+- [Season Race 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md)
+- [코드 구조](ARCHITECTURE.md)
+- [변경 기록](CHANGELOG.md) · [v1.7 패치노트](docs/PATCH_v1.7.md)
+- [Windows 패키징 준비](docs/WINDOWS_PACKAGING_GUIDE_KO.md): 개발자용, 설치형 배포 검증 전
 
-*사용자가 제공한 실제 실행 화면입니다. 화면 속 통계는 촬영 당시 표시값입니다.*
+과거 패치노트는 당시 변경 기록입니다. 현재 설치와 사용에는 위 가이드를 우선하세요.
 
-| 화면 | 확인할 수 있는 내용 |
-| :--- | :--- |
-| **Home** | 선택 시즌의 로컬 캐시 현황, 즐겨찾기 선수 연결, 분석 바로가기, 조회 상태 안내 |
-| **Gameday** | 날짜별 일정, 실시간 점수, 볼·스트라이크·아웃, 주자, 현재 타자·투수, 최근 플레이, Linescore 아래 득점 플레이 상세, 즐겨찾기 팀 경기 알림 |
-| **Lineups** | 홈·원정 타순, 실제 등판한 투수 전원, 투수별 경기 기록 |
-| **Player** | 성/이름 부분 검색, 시즌 선택, 기본 기록, WAR·wRC+·예상 성적·타구 품질·수비 지표·Running·Platoon Splits, 선수 즐겨찾기 |
-| **Compare** | 2–4명을 검색해 MLB/FanGraphs/B-Ref/Statcast 지표와 League Position 비교, 선택 언어로 지표 설명 제공 |
-| **Advanced Compare** | 별도 창에서 2–4명 핵심 지표와 Baseball Savant 백분위를 균형 잡힌 표로 비교. 출처·조건·상태는 하단에 중복 없이 통합 |
-| **Charts** | 타구 속도, Barrel%, Hard Hit%, 타자 WAR·wRC+ 연/월/일 추이, 투수 Statcast 연/월/일 구간, 구종 비율·구속·Run Value·Whiff% |
-| **League** | 정규시즌 및 와일드카드 순위, 팀·리그 팀 통계 |
-| **Settings** | 자동갱신, 테마, 글자 크기, 알림, 앱 언어, 캐시·데이터 위치, 진단정보, 소스별 새로고침 |
-
-## 빠른 시작
-
-**준비:** Windows 11, Python 3.12 이상, 인터넷 연결.
-
-Python 설치 시 **Add python.exe to PATH**를 선택하세요. 자동 설치는 Python 3.12를 먼저 찾고, 없으면 PATH의 기본 Python을 사용합니다. 기본 Python도 3.12 이상이어야 합니다.
-
-1. GitHub 저장소 상단의 **Code → Download ZIP**으로 소스를 내려받고 압축을 풉니다.
-2. `install.bat`을 더블클릭해 실행 환경과 검증된 배포 의존성을 설치합니다.
-3. 설치 완료 후 `run.bat`을 더블클릭합니다.
-4. 날짜와 경기를 선택하거나 상단 검색창에서 선수를 검색합니다.
-
-설치 스크립트는 가상환경 생성, 의존성 설치, 문법 검사, 포함된 테스트 실행을 수행합니다. 문제가 있으면 [설치·문제 해결 가이드](docs/USER_GUIDE.md)를 참고하세요.
-
-<details>
-<summary>명령줄로 실행하기</summary>
-
-프로젝트 폴더에서 다음 명령을 실행합니다.
+## 개발자 실행과 검증
 
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt -c constraints-release.txt
 .\.venv\Scripts\python.exe main.py
-```
-
-</details>
-
-## Settings — 앱 설정
-
-화면 상단 **설정 / Settings / 設定**에서 아래 항목을 관리합니다. 선택한 설정은 재실행 후에도 유지됩니다.
-
-| 항목 | 제공 기능 |
-| :--- | :--- |
-| 자동갱신 | 경기 15–3,600초, 선수 60–3,600초. 기본값은 각각 30초, 300초 |
-| 테마·글자 | Light/Dark, 글자 크기 80–160%, Classic Blue / Midnight Gold / Obsidian Purple / Magenta White / Emerald 강조색 |
-| 알림 | 즐겨찾기 팀의 경기 알림 켜기/끄기 |
-| 앱 언어 | English / 한국어 / 日本語. 저장하면 화면 문구와 내장 지표 설명을 즉시 전환 |
-| 캐시 삭제 | 다운로드 캐시와 DB 캐시 삭제. 가져온 B-Ref 원본과 즐겨찾기는 보존 |
-| 데이터 위치 | 현재 위치 열기, 새 빈 폴더로 데이터 복사. 새 위치는 앱 재시작 후 적용 |
-| 진단정보 | 앱·OS·Python·의존성 버전과 소스별 캐시 상태 확인 및 JSON 내보내기 |
-| 소스별 새로고침 | MLB / FanGraphs / Baseball-Reference / Savant의 캐시를 선택 삭제하고 설정을 닫으면 재조회 |
-
-번역은 앱에 포함된 번역문을 사용하므로 별도 번역 서비스 연결 없이 동작합니다. 심화 비교 창까지 English/한국어/日本語 전환을 지원합니다. 선수 표시는 `config/player_names_seed.json`의 사용자 지정 EN/KO/JA 이름을 우선하고, 그 밖의 실제 라인업 선수는 MLB Korea/MLB Japan locale 페이지를 best-effort로 확인해 표시명 캐시에 저장합니다. 한국어 이름이 제공되지 않는 외국인 선수는 MLB Japan의 가타카나 표기를 한글 발음 표기로 변환해 영어 이름이 그대로 남는 경우를 줄입니다. 내부 통계 소스 식별은 계속 MLBAM ID와 영문 원본명을 유지합니다. 진행 중인 데이터 조회가 끝나야 캐시 삭제·위치 변경을 실행할 수 있습니다. 소스별 재조회 시 다른 소스는 기존 캐시 정책을 따르며, B-Ref의 접근 제한은 유지합니다.
-
-## 주요 기능
-
-- **자동 갱신:** 기본 30초로 경기와 라인업을 갱신합니다. Settings에서 경기·선수 갱신 간격을 각각 조절합니다.
-- **선수·팀 즐겨찾기:** 현재 선수와 현재 경기의 홈/원정팀을 로컬 즐겨찾기로 저장하고 다시 접근할 수 있습니다.
-- **즐겨찾기 경기 알림:** 즐겨찾기 팀 경기의 점수 또는 상태가 바뀌면 Windows 시스템 트레이 알림을 표시하고, 트레이를 사용할 수 없으면 상태바로 폴백합니다.
-- **Compare 지표 툴팁:** AVG, OPS, wRC+, fWAR, bWAR, OAA, ERA, FIP, xERA 등 주요 비교 지표 설명을 영어·한국어·일본어로 제공합니다.
-- **라이브 득점 플레이 상세:** Gameday Linescore 아래에 득점자 이름, 득점 방식(HR/2B/1B/SF/WP 등), 타점 수와 MLB play-by-play 설명을 표시합니다.
-- **선수명·팀명 현지화:** `config/player_names_seed.json`의 사용자 지정 표시명을 우선하고, 실제 경기 라인업의 나머지 선수도 MLB locale 자료를 활용해 한국어/일본어 표시를 시도합니다. 30개 MLB 팀 이름과 경기 목록의 짧은 팀 표기도 한국어/일본어로 현지화합니다. 선수 이름을 직접 수정하려면 `config/player_names_seed.json`을 편집합니다.
-- **심화 비교:** 메인 Compare 탭을 유지하면서 별도 `심화 비교 ↗ / Advanced Compare ↗ / 詳細比較 ↗` 창에서 2–4명을 비교합니다. 선수 열은 같은 폭으로 정렬하고, Statcast 백분위와 핵심 지표를 보여주며 출처·조건·상태는 하단 한 곳에 모읍니다.
-- **Accent Theme:** Dark/Light와 별개로 Classic Blue, Midnight Gold, Obsidian Purple, Magenta White, Emerald 강조색을 선택할 수 있습니다. 선택 탭·버튼·포커스·차트의 primary 색에 적용하고 성공/경고/오류 의미색은 유지합니다.
-- **선수 검색 보강:** 이름 앞부분뿐 아니라 성이나 이름 중간 문자열과 현지화 별칭으로도 선수를 찾을 수 있습니다. 예: `Kikuchi` → `Yusei Kikuchi`.
-- **선수 시즌 선택:** Player 화면의 선수 이름 옆에서 시즌을 선택할 수 있으며, 현재 시즌 기록이 없으면 선수의 가장 최근 MLB 시즌을 기본값으로 사용합니다.
-- **Platoon Splits:** 타자는 Running 아래, 투수는 Statcast 흐름 아래에서 좌/우 상대 AVG·OBP·SLG·OPS·wRC+를 확인할 수 있습니다.
-- **통합 선수 분석:** MLB 기본 기록에 FanGraphs, Baseball-Reference, Baseball Savant/Statcast 데이터를 결합합니다.
-- **Running 분석:** 타자 Player 화면의 Defense 아래에 Running 패널을 추가했습니다. Baseball Savant 공식 Sprint Speed를 `ft/s` 단위로 표시하고, FanGraphs의 SB·CS와 `SB / (SB + CS)` 도루 성공률을 함께 표시합니다.
-- **수비 OAA 소스 유지:** Defense의 OAA는 Baseball Savant 공식 OAA 리더보드 값만 사용합니다. v1.10.2의 별도 FanGraphs OAA 카드는 v1.11에서 제거했습니다.
-- **선수 비교:** `Compare` 탭에서 Player A / Player B를 각각 자동완성 검색해 타자끼리 또는 투수끼리 핵심 지표를 바로 비교합니다. 타자-투수 혼합 비교는 공통 지표만 보여 잘못된 역할별 지표 비교를 피합니다.
-- **FanGraphs 최신 시즌 반영:** 현재 시즌 fWAR/wRC+는 5분 캐시를 사용하고 선택 선수도 5분마다 자동 새로고침합니다.
-- **타자 WAR / wRC+ 기간 선택:** 타자 차트에서 Yearly / Monthly / Daily(최근 14경기)로 전환할 수 있습니다.
-- **투수 Statcast 기간 선택:** 투수 화면에서 Yearly / Monthly / Daily로 전환할 수 있습니다. Monthly는 해당 시즌의 가장 최근 실제 등판 월, Daily는 가장 최근 실제 등판일을 기준으로 Savant pitch-level 데이터를 다시 집계합니다.
-- **투수 기간별 연동:** 기간 변경 시 Statcast 카드뿐 아니라 Pitch Arsenal, Pitch Usage, Run Value, Whiff%, Velocity 차트도 같은 구간으로 함께 바뀝니다.
-- **타자·투수별 차트:** 타구 품질과 시즌 추이, 구종 특성을 시각화합니다.
-- **Light / Dark Theme:** 기존 남색 Dark Theme와 새로운 Light Theme를 Settings에서 전환할 수 있습니다. 사용자 선택을 저장하고, 저장값이 없을 때 운영체제 테마를 초기값으로 사용합니다.
-- **백그라운드 데이터 조회:** 외부 데이터를 불러오는 작업을 UI 스레드와 분리합니다.
-- **출처 표시:** 선수 화면에서 데이터 출처, 조회 시각과 소스별 상태를 확인할 수 있습니다.
-
-## 데이터 출처와 갱신
-
-| 출처 | 주요 데이터 | 갱신 방식 |
-| :--- | :--- | :--- |
-| MLB Stats API | 일정·점수·라인업·선수 기본 기록·순위·득점 play-by-play | 라이브 경기 데이터는 캐시 없이 요청 |
-| FanGraphs | fWAR, wRC+, FIP, xFIP, SB, CS, Platoon Splits 등 | 현 시즌 선수 결과 5분 캐시, 타자 WAR/wRC+ 연·월·일 추이 지원 |
-| Baseball-Reference | bWAR, 제공되는 경우 OPS+/ERA+ | 사용자가 가져온 공식 WAR 파일 우선 |
-| Baseball Savant / Statcast | 타구·구종·예상 성적·수비 지표·Sprint Speed | 지표별 정책 적용, 현 시즌 Savant 수비 15분 캐시, 투수 Yearly/Monthly/Daily 구간 지원 |
-
-과거 시즌 외부 통계는 기본 30일 캐시를 사용합니다. 첫 선수 조회는 시즌 데이터량에 따라 시간이 걸릴 수 있습니다. 사이트의 갱신 시점과 외부 요청 상태에 따라 일부 값은 늦게 반영되거나 `—`로 표시될 수 있습니다.
-
-### Baseball-Reference 파일 가져오기
-
-1. 앱 상단 **B-Ref 다운로드**로 공식 데이터 디렉터리를 엽니다.
-2. 공식 WAR ZIP 또는 TXT/CSV 파일을 다운로드합니다.
-3. **B-Ref 파일 가져오기**로 다운로드한 파일을 선택합니다.
-
-가져온 파일은 로컬에 저장되며 선수 조회에 우선 사용됩니다. 자동 요청에서 HTTP 403/429가 확인되면 반복 요청을 중단합니다. bWAR에는 B-Ref 값을 사용하며, 파일에 OPS+/ERA+가 없으면 해당 지표를 비워 둡니다.
-
-## 프로젝트 구조
-
-```text
-.
-├── main.py                 # 앱 진입점
-├── ui/                     # 경기·선수·비교·라인업·리그 화면
-├── controllers/            # 화면 이벤트와 데이터 요청 연결
-├── services/               # 외부 데이터 조회·정규화·집계
-├── models/                 # 경기·선수·순위 데이터 모델
-├── charts/                 # 타자·투수 차트
-├── workers/                # 백그라운드 작업
-├── database/               # SQLite 저장소와 스키마
-├── cache/                  # JSON·파일 캐시
-├── config/                 # 설정·로깅·테마
-├── tests/                  # 파싱·캐시·집계·외부 소스 회귀 테스트
-└── docs/                   # 상세 사용자 가이드와 파일 목록
-```
-
-화면과 데이터 서비스를 분리한 구조입니다. 향후 FastAPI + React 전환을 위한 계층 설명은 [ARCHITECTURE.md](ARCHITECTURE.md)에 있습니다.
-
-## 문서와 검증
-
-- [상세 사용자 가이드](docs/USER_GUIDE.md): 설치, 사용법, 캐시, B-Ref 가져오기, 문제 해결
-- [아키텍처](ARCHITECTURE.md): 데이터 흐름, 동시성, 계층별 역할
-- [변경 기록](CHANGELOG.md): 버전별 수정 내역
-- [v1.7 패치 노트](docs/PATCH_v1.7.md): 현재 버전 변경 및 검증
-- [시즌 레이스 가이드](docs/SEASON_RACE_V161_GUIDE_KO.md): 샘플 간격·사진·요청량 확인
-
-이전 버전의 변경 이력:
-
-- [v1.6 패치 노트](docs/PATCH_v1.6.md): 버튼 배치와 사용자 선수명
-- [v1.5.2 패치 노트](docs/PATCH_v1.5.2.md): 이름 및 기본 창 크기
-- [v1.5.1 패치 노트](docs/PATCH_v1.5.1.md): 시즌 레이스 도입
-- [v1.5 패치 노트](docs/PATCH_v1.5.md): 심화 비교, 전체 라인업/팀 현지화, Accent Theme
-- [v1.41 패치 노트](docs/PATCH_v1.41.md): 선수명 현지화 기반
-- [v1.30 패치 노트](docs/PATCH_v1.30.md): 보안·안정성·사용성 변경과 검증 결과
-- [v1.23 패치 노트](docs/PATCH_v1.23.md): Compare 확장, Sprint Speed, League Position
-- [v1.22 패치 노트](docs/PATCH_v1.22.md): Light/Dark Theme, 시스템 테마, 접근성 테마 토글
-- [v1.21 패치 노트](docs/PATCH_v1.21.md): 선수/팀 즐겨찾기, 경기 알림, Compare 지표 툴팁
-- [v1.2 패치 노트](docs/PATCH_v1.2.md): 검색 보강, 시즌 선택, Platoon Splits, 라이브 득점 상세
-- [v1.11 패치 노트](docs/PATCH_v1.11.md): Running과 FanGraphs OAA 롤백 변경 사항
-- [v1.10 패치 노트](docs/PATCH_v1.10.md): Compare와 투수 Statcast 기간 선택 변경 사항
-- [v1.0.6 패치 노트](docs/PATCH_v1.0.6.md): FanGraphs 최신 시즌·타자 연/월/일 추이 변경 사항
-- [원본 ZIP 전체 파일 목록](docs/FILE_LIST.md): 원본 패키지 파일 목록
-- [배포 준비 기록](docs/PUBLISHING.md): 원본 버전과 업로드 커밋 메시지 구분
-
-설치 후 기본 검증을 실행하려면:
-
-```powershell
 .\.venv\Scripts\python.exe -m compileall -q .
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
-현재 v1.7 검증은 [v1.7 패치노트](docs/PATCH_v1.7.md)를 참고하세요. 이전 v1.5의 심화 비교·현지화·Accent Theme 변경은 [v1.5 패치 노트](docs/PATCH_v1.5.md)에 정리했습니다. v1.41의 선수명 현지화 기반은 [v1.41 패치 노트](docs/PATCH_v1.41.md#검증)에서 확인할 수 있습니다. 이전 보안 강화 검증은 [v1.30 패치 노트](docs/PATCH_v1.30.md#설치와-검증)에서 확인할 수 있습니다.
+검증 환경과 제한은 해당 버전 패치노트를 확인하세요. Linux offscreen 테스트 통과가 Windows 실환경 검증을 대신하지는 않습니다.
 
-## 프로젝트 안내
-
-### 현재 제한사항
-
-- 실시간 외부 데이터 정확성은 FanGraphs/MLB/Savant 각 제공처의 실제 갱신 시점과 접근 정책에 영향을 받습니다.
-- B-Ref 자동 접근이 거절되는 환경에서는 공식 WAR 파일을 직접 가져와야 합니다. 파일에 없는 OPS+/ERA+는 표시되지 않습니다.
-- 투수 Monthly/Daily의 `xERA`는 Savant가 임의 날짜 구간용 공식 xERA leaderboard 값을 제공하지 않는 경우 `—`로 둘 수 있으며, 다른 기간 지표를 xERA로 가장하지 않습니다.
-- Sprint Speed는 Baseball Savant 리더보드에 해당 시즌 선수 행이 존재할 때 표시됩니다. 제공처가 값을 제공하지 않으면 `—`로 유지합니다.
-- Platoon wRC+는 제공처가 해당 split 값을 주지 않는 경우 `—`로 표시하며 임의 추정하지 않습니다.
-- 첫 선수 조회는 시즌 데이터 수집 때문에 지연될 수 있습니다. 모든 고급 지표가 경기와 동시에 갱신되는 것은 아닙니다.
-- 스크린샷은 이름 변경 전 화면입니다. 현재 이름으로 촬영한 추가 화면과 간편 설치 패키지는 향후 개선 항목입니다.
-
-문제를 제보할 때는 앱 버전, Windows/Python 버전, 재현 순서와 기대한 결과를 적어 주세요. 로그를 첨부한다면 개인 경로와 인증 정보가 포함되어 있는지 먼저 확인해 주세요.
-
-MLB, FanGraphs, Baseball-Reference 또는 Baseball Savant의 공식 클라이언트가 아닙니다. 외부 데이터 구조가 변경되면 연동 코드의 수정이 필요할 수 있습니다. 저장소에 별도 라이선스 파일은 포함되어 있지 않습니다.
+MLB, FanGraphs, Baseball-Reference, Baseball Savant의 공식 클라이언트가 아닙니다. 문제 제보 시 버전·재현 순서·기대 결과를 적고, 로그의 개인정보를 확인한 뒤 공유하세요.

@@ -2,7 +2,7 @@
 
 ## 1. Architectural goals
 
-The desktop application is organized so that PyQt6 is only a presentation layer. Business/data-access logic lives in reusable Python services and models, making a future FastAPI + React migration possible without rewriting the data adapters.
+The desktop application separates views, controller coordination, data services, and persistence. Existing extension installers also connect behavior at startup; inspect their call sites before changing shared classes.
 
 ```text
 PyQt6 Views
@@ -113,24 +113,6 @@ SQLite stores player-level normalized results. JSON/file cache is used for large
 ## 7. Run Value convention
 
 Pitch-level `delta_run_exp` represents run-expectancy movement from the batting side. The pitcher arsenal table stores `-sum(delta_run_exp)` so positive values indicate runs prevented in this application's pitcher-oriented view. If Baseball Savant changes the source field semantics, update `StatcastService.get_pitch_arsenal()`.
-
-## 8. FastAPI + React migration
-
-The migration path is intentionally thin:
-
-1. Retain `models/`, `services/`, `database/`, `cache/`, and `config/`.
-2. Replace `controllers/app_controller.py` with FastAPI route handlers or application services.
-3. Convert dataclasses to Pydantic response schemas or add a serializer layer.
-4. Expose endpoints such as:
-   - `GET /games?date=...`
-   - `GET /games/{game_pk}`
-   - `GET /players/search?q=...`
-   - `GET /players/{player_id}?season=...`
-   - `GET /standings?season=...`
-5. Use a WebSocket/SSE endpoint for the 30-second live refresh or a server-side polling scheduler.
-6. React replaces only `ui/`; chart endpoints can return JSON series rather than rendered Matplotlib figures.
-7. For multi-user deployment, move SQLite to PostgreSQL and replace the local JSON/file cache with Redis/object storage.
-
 
 ## v1.7 홈 연결
 
