@@ -51,6 +51,8 @@ def main() -> int:
     return app.exec()
 
 if __name__ == "__main__":
+    from multiprocessing import freeze_support
+    freeze_support()
     import logging
     import sqlite3
     try:

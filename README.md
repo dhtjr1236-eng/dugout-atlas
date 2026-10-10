@@ -1,9 +1,9 @@
-# ⚾ Dugout Atlas v1.7
+# ⚾ Dugout Atlas v1.8
 
 Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
-![Version](https://img.shields.io/badge/Version-v1.7-172B4D)
+![Version](https://img.shields.io/badge/Version-v1.8-172B4D)
 
 ## 설치와 실행
 
@@ -21,7 +21,7 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 | 홈 | 시즌 선택, 로컬 기록 보유 현황, 즐겨찾기와 분석 바로가기 |
 | 경기·라인업 | 일정·점수·플레이·등판 선수 확인, 선수 클릭으로 분석 이동 |
 | 선수 | 기본 기록과 FanGraphs·B-Ref·Statcast 지표, 차트와 즐겨찾기 |
-| 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 WAR 변화 탐색 |
+| 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 fWAR·OPS 변화 탐색 및 GIF/WebP 저장 |
 | 리그 | 순위와 팀 통계 조회 |
 | 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
 
@@ -30,6 +30,20 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 ![선수 분석 화면](docs/images/player-analysis-before-rename.png)
 
 *이름 변경 전 실제 실행 화면이며, 통계는 촬영 당시 값입니다.*
+
+## 시즌 레이스 기능 예시
+
+![시즌 레이스 기능 예시 — 예시 선수 A/B의 가상 OPS 데이터](docs/images/OPS_example.gif)
+
+**예시 선수 A/B의 가상 데이터**를 실제 레이스 저장 기능으로 만든 GIF입니다. 실제 선수 성적이 아닙니다.
+
+- 심화 비교 → Season Race에서 **OPS · MLB** 또는 **fWAR · FanGraphs**를 선택합니다.
+- OPS는 경기별 원시 기록을 합산해 계산합니다. 경기별 OPS의 단순 평균이 아닙니다.
+- **OPS 축 범위 직접 지정**을 체크하면 최솟값·최댓값을 정할 수 있습니다. 선택 기간의 최고·최저와 날짜도 표시합니다.
+- **움직이는 이미지 저장**에서 기간, GIF/WebP, 길이, FPS, 해상도와 반복 여부를 선택합니다. 저장은 백그라운드에서 진행하며 취소할 수 있습니다.
+- 표시 기간을 줄여도 OPS는 시즌 시작부터 해당 날짜까지 누적값입니다. 현재 정규시즌 타격 기록을 지원합니다.
+
+자세한 계산 방식과 제한: [OPS·애니메이션 사용법](docs/OPS_RACE_GUIDE_KO.md).
 
 ## 데이터와 설정
 
@@ -44,9 +58,9 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 
 - [사용자 가이드](docs/USER_GUIDE.md): 설치, 설정, 선수명, B-Ref, 문제 해결
 - [홈 사용법](docs/OFFSEASON_HOME_GUIDE_KO.md)
-- [Season Race 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md)
+- [Season Race 기본 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md) · [OPS·GIF/WebP 사용법](docs/OPS_RACE_GUIDE_KO.md)
 - [코드 구조](ARCHITECTURE.md)
-- [변경 기록](CHANGELOG.md) · [v1.7 패치노트](docs/PATCH_v1.7.md)
+- [변경 기록](CHANGELOG.md) · [v1.8 패치노트](docs/PATCH_v1.8.md)
 - [Windows 패키징 준비](docs/WINDOWS_PACKAGING_GUIDE_KO.md): 개발자용, 설치형 배포 검증 전
 
 과거 패치노트는 당시 변경 기록입니다. 현재 설치와 사용에는 위 가이드를 우선하세요.

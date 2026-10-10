@@ -56,6 +56,11 @@ class Point:
     war: float
     fetched_at: str
 
+    @property
+    def value(self) -> float:
+        """Metric-neutral value for shared race rendering; WAR cache stays unchanged."""
+        return self.war
+
 
 def season_axis(payload: dict, season: int, today: date | None = None) -> SeasonAxis:
     """Use the literal calendar portion of MLB gameDate; never localize timestamps.

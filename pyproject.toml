@@ -1,6 +1,6 @@
 [project]
 name = "dugout-atlas"
-version = "1.7"
+version = "1.8"
 description = "Windows MLB analytics desktop app with live gameday, player comparison, season race and an offseason home"
 requires-python = ">=3.12"
 

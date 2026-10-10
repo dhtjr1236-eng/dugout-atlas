@@ -119,3 +119,14 @@ Pitch-level `delta_run_exp` represents run-expectancy movement from the batting 
 `ui/home_view.py`는 홈 UI와 이동 신호를 담당합니다. `services/home_service.py`가 즐겨찾기와 선택 시즌의 SQLite 캐시 메타데이터를 읽으며 `controllers/app_controller.py`가 worker 실행 및 오래된 응답 제외를 처리합니다. 홈에서 선수 클릭은 MLBAM ID와 시즌을 전달합니다. 기존 화면 탭은 보존하며 새 홈은 마지막 탭으로 추가해 기존 인덱스 의존을 줄입니다.
 
 소스 실행의 데이터 위치와 QSettings는 기존 정책을 유지합니다. 패키지 리소스 경로 도우미와 frozen 준비 코드는 있으나 설치형 배포는 검증 전입니다.
+
+## v1.8 OPS·애니메이션 연결
+
+- `services/ops_race.py`: MLBAM ID 기반 경기 기록 검증, 원시 카운트 합산, 누적 OBP+SLG와 SQLite 캐시.
+- `services/race_presentation.py`: 직접 지정 축과 확보된 일별 기록의 기간 최고·최저 계산.
+- `ui/season_race_view.py`: 기존 fWAR/OPS 선택 및 비동기 조회·저장 연결.
+- `ui/race_export_dialog.py`: GIF/WebP 날짜·길이·FPS·해상도·반복 옵션.
+- `services/race_animation.py`: Qt 화면과 분리된 자식 프로세스 렌더링·압축, 진행률·취소, 성공 시 원자적 파일 교체. 추가 API 요청 없음.
+- `main.py`: Windows multiprocessing 진입 보호와 `freeze_support()`.
+
+OPS는 경기별 OPS 평균이 아니며, 표시 기간은 시즌 누적 계산 시작점을 바꾸지 않습니다. 기존 FanGraphs WAR 계산과 캐시 정책은 유지합니다.

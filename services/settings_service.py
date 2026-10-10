@@ -23,7 +23,8 @@ def clear_cache(db, source: str | None = None) -> int:
         for row in rows:
             name, role = row['source'], row['role']
             matches = source is None or (
-                source == 'FanGraphs' and (name.startswith('fangraphs') or (name == 'running_metrics_v1' and role != 'sprint_speed'))
+                source == 'MLB' and name == 'mlb_ops_game_log_v1'
+                or source == 'FanGraphs' and (name.startswith('fangraphs') or (name == 'running_metrics_v1' and role != 'sprint_speed'))
                 or source == 'Baseball-Reference' and name.startswith(('bref', 'baseball_reference'))
                 or source == 'Savant' and (name.startswith('statcast') or name == 'running_metrics_v1' and role == 'sprint_speed')
             )

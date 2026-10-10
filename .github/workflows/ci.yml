@@ -36,4 +36,4 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: python -m pytest -q
       - name: Package metadata smoke test
-        run: python -c "from config.settings import SETTINGS; import tomllib; metadata = tomllib.load(open('pyproject.toml', 'rb')); assert SETTINGS.app_version == metadata['project']['version'] == '1.7'"
+        run: python -c "from config.settings import SETTINGS; import tomllib; metadata = tomllib.load(open('pyproject.toml', 'rb')); assert SETTINGS.app_version == metadata['project']['version'] == '1.8'"

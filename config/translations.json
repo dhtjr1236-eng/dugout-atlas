@@ -1693,5 +1693,225 @@
     "en": "No favorites to display. Search for a player to get started.",
     "ko": "표시할 즐겨찾기가 없습니다. 선수 검색부터 시작해 보세요.",
     "ja": "お気に入りはありません。選手の検索から始めましょう。"
+  },
+  {
+    "en": "Race metric",
+    "ko": "레이스 지표",
+    "ja": "レース指標"
+  },
+  {
+    "en": "Regular season",
+    "ko": "정규시즌",
+    "ja": "レギュラーシーズン"
+  },
+  {
+    "en": "Network requests",
+    "ko": "네트워크 요청",
+    "ja": "ネットワークリクエスト"
+  },
+  {
+    "en": "Cached player logs",
+    "ko": "캐시 사용 선수",
+    "ja": "キャッシュ利用選手"
+  },
+  {
+    "en": "Sampling changes use local data.",
+    "ko": "간격·기간 변경은 저장된 기록으로 처리합니다.",
+    "ja": "間隔・期間の変更は保存済み記録で処理します。"
+  },
+  {
+    "en": "Last game",
+    "ko": "마지막 출전일",
+    "ja": "最終出場日"
+  },
+  {
+    "en": "OPS difference (A − B)",
+    "ko": "OPS 차이 (A − B)",
+    "ja": "OPS差 (A − B)"
+  },
+  {
+    "en": "Small sample: fewer than 50 PA.",
+    "ko": "50타석 미만: 적은 표본에 주의하세요.",
+    "ja": "50打席未満：少ない標本にご注意ください。"
+  },
+  {
+    "en": "Comparison unavailable",
+    "ko": "비교할 기록이 없습니다",
+    "ja": "比較できる記録がありません"
+  },
+  {
+    "en": "OPS requires two batting roles.",
+    "ko": "OPS는 두 선수 모두 타격 역할을 선택해야 합니다.",
+    "ja": "OPSは両選手とも打撃を選択してください。"
+  },
+  {
+    "en": "No OPS data for the selected range.",
+    "ko": "선택 기간에 계산 가능한 OPS가 없습니다.",
+    "ja": "選択期間に計算可能なOPSがありません。"
+  },
+  {
+    "en": "Checking completed MLB games…",
+    "ko": "완료된 MLB 경기 확인 중…",
+    "ja": "終了したMLB試合を確認中…"
+  },
+  {
+    "en": "Loading MLB batting game logs…",
+    "ko": "MLB 경기별 타격 기록 불러오는 중…",
+    "ja": "MLBの試合別打撃記録を取得中…"
+  },
+  {
+    "en": "Calculating cumulative OPS…",
+    "ko": "누적 OPS 계산 중…",
+    "ja": "累積OPSを計算中…"
+  },
+  {
+    "en": "Invalid MLB schedule.",
+    "ko": "MLB 일정 응답을 확인할 수 없습니다.",
+    "ja": "MLB日程の応答を確認できません。"
+  },
+  {
+    "en": "Invalid MLB game log.",
+    "ko": "MLB 경기 기록 응답이 올바르지 않습니다.",
+    "ja": "MLB試合記録の応答が不正です。"
+  },
+  {
+    "en": "Incomplete MLB game log; OPS was not calculated.",
+    "ko": "경기 기록 응답이 불완전해 OPS를 계산하지 않았습니다.",
+    "ja": "試合記録が不完全なためOPSを計算しませんでした。"
+  },
+  {
+    "en": "MLB player or season mismatch.",
+    "ko": "MLB 선수 ID 또는 시즌이 일치하지 않습니다.",
+    "ja": "MLB選手IDまたはシーズンが一致しません。"
+  },
+  {
+    "en": "Conflicting MLB game records.",
+    "ko": "같은 경기의 기록이 서로 달라 계산을 중단했습니다.",
+    "ja": "同じ試合の記録が矛盾するため計算を中止しました。"
+  },
+  {
+    "en": "Missing or invalid batting counts; OPS was not calculated.",
+    "ko": "필요한 타격 기록이 누락되거나 잘못되어 OPS를 계산하지 않았습니다.",
+    "ja": "必要な打撃記録が欠落または不正なためOPSを計算しませんでした。"
+  },
+  {
+    "en": "OPS uses completed regular-season games before today (UTC). Counts are summed before calculating OBP + SLG. Off-days retain cumulative values; missing counts are not estimated. Current corrected records, not historical snapshots.",
+    "ko": "OPS는 오늘(UTC) 이전의 완료된 정규시즌 경기로 계산합니다. 경기별 원시 기록을 합산해 출루율+장타율을 구합니다. 무출전일에는 누적값을 유지하며 누락값은 추정하지 않습니다. 현재 정정된 기록 기준이며 당시 발표값의 재현은 아닙니다.",
+    "ja": "OPSは今日(UTC)より前の終了したレギュラーシーズンの試合で計算します。試合別記録を合算して出塁率＋長打率を算出します。出場のない日は累積値を維持し、欠損値は推定しません。現在訂正済みの記録であり当時の公表値ではありません。"
+  },
+  {
+    "en": "Higher OPS: {name}",
+    "ko": "OPS 우위: {name}",
+    "ja": "OPS優位: {name}"
+  },
+  {
+    "en": "Equal OPS",
+    "ko": "OPS 동일",
+    "ja": "OPS同値"
+  },
+  {
+    "en": "Calculated dates",
+    "ko": "계산된 날짜 수",
+    "ja": "計算済み日付数"
+  },
+  {
+    "en": "Set OPS axis manually",
+    "ko": "OPS 축 범위 직접 지정",
+    "ja": "OPS軸の範囲を指定"
+  },
+  {
+    "en": "Minimum OPS",
+    "ko": "최솟값",
+    "ja": "最小値"
+  },
+  {
+    "en": "Maximum OPS",
+    "ko": "최댓값",
+    "ja": "最大値"
+  },
+  {
+    "en": "Period high / low (all daily records)",
+    "ko": "기간 내 최고 / 최저 (전체 일별 기록)",
+    "ja": "期間内の最高 / 最低（全日別記録）"
+  },
+  {
+    "en": "Outside axis",
+    "ko": "축 범위 밖",
+    "ja": "軸の範囲外"
+  },
+  {
+    "en": "Save animation",
+    "ko": "움직이는 이미지 저장",
+    "ja": "アニメーションを保存"
+  },
+  {
+    "en": "Repeat animation",
+    "ko": "반복 재생",
+    "ja": "繰り返し再生"
+  },
+  {
+    "en": "Start date",
+    "ko": "시작 날짜",
+    "ja": "開始日"
+  },
+  {
+    "en": "End date",
+    "ko": "종료 날짜",
+    "ja": "終了日"
+  },
+  {
+    "en": "Format",
+    "ko": "파일 형식",
+    "ja": "形式"
+  },
+  {
+    "en": "Duration (seconds)",
+    "ko": "재생 길이 (초)",
+    "ja": "再生時間（秒）"
+  },
+  {
+    "en": "Frames per second",
+    "ko": "초당 프레임",
+    "ja": "フレーム毎秒"
+  },
+  {
+    "en": "Resolution",
+    "ko": "해상도",
+    "ja": "解像度"
+  },
+  {
+    "en": "Exports loaded samples with a fixed axis. No extra API requests.",
+    "ko": "불러온 표본을 고정된 축으로 저장합니다. 추가 API 요청은 없습니다.",
+    "ja": "読み込み済みの標本を固定軸で保存します。追加のAPIリクエストはありません。"
+  },
+  {
+    "en": "High",
+    "ko": "최고",
+    "ja": "最高"
+  },
+  {
+    "en": "Low",
+    "ko": "최저",
+    "ja": "最低"
+  },
+  {
+    "en": "Rendering animation",
+    "ko": "프레임 생성 중",
+    "ja": "フレームを生成中"
+  },
+  {
+    "en": "Encoding animation",
+    "ko": "이미지 압축 중",
+    "ja": "画像を圧縮中"
+  },
+  {
+    "en": "Animation saved",
+    "ko": "애니메이션 저장 완료",
+    "ja": "アニメーション保存完了"
+  },
+  {
+    "en": "Animation save failed. Check folder permissions and available space.",
+    "ko": "저장하지 못했습니다. 폴더 권한과 남은 용량을 확인하세요.",
+    "ja": "保存できませんでした。フォルダー権限と空き容量を確認してください。"
   }
 ]
