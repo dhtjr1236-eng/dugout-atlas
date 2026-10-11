@@ -79,6 +79,11 @@ py -3.12 -m venv .venv
 
 MLB, FanGraphs, Baseball-Reference, Baseball Savant의 공식 클라이언트가 아닙니다. 문제 제보 시 버전·재현 순서·기대 결과를 적고, 로그의 개인정보를 확인한 뒤 공유하세요.
 
+
+
+
+
+## 프로그램 저작권
 Dugout Atlas Copyright (c) 2026 dhtjr1236-eng
 
 1. 본 소프트웨어 및 소스 코드의 저작권은 원작자에게 있습니다.
