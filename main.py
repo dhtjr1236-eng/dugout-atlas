@@ -63,3 +63,7 @@ if __name__ == "__main__":
         error_app = QApplication.instance() or QApplication(sys.argv)
         QMessageBox.critical(None, "Dugout Atlas", "사용자 데이터에 접근할 수 없습니다. 폴더 권한과 디스크 공간을 확인해 주세요.")
         raise SystemExit(1)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.
