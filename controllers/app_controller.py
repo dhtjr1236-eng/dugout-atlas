@@ -449,3 +449,7 @@ class AppController(QObject):
         last_line = trace.strip().splitlines()[-1] if trace.strip() else "Unknown error"
         self.window.set_busy(tr(last_line))
         self.window.show_error("Dugout Atlas", last_line)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.
