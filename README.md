@@ -2,13 +2,13 @@
 
 Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
 
-![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
-![Version](https://img.shields.io/badge/Version-v1.8-172B4D)
-![Windows 11](https://img.shields.io/badge/Windows%2011-0078D4?style=flat&logo=windows11&logoColor=white)<br>
-![FanGraphs](https://img.shields.io/badge/FanGraphs-006633?style=for-the-badge&logo=mlb&logoColor=white)
-![Baseball Reference](https://img.shields.io/badge/Baseball_Reference-A20C17?style=for-the-badge&logo=mlb&logoColor=white)
-![Baseball Savant](https://img.shields.io/badge/Baseball_Savant-002D62?style=for-the-badge&logo=mlb&logoColor=white)
-
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)](https://www.python.org/)
+[![Version](https://img.shields.io/badge/Version-v1.8-172B4D)](../../releases)
+[![Windows 11](https://img.shields.io/badge/Windows%2011-0078D4?style=flat&logo=windows11&logoColor=white)](https://www.microsoft.com/windows)
+<br>
+[![FanGraphs](https://img.shields.io/badge/FanGraphs-006633?style=for-the-badge&logo=mlb&logoColor=white)](https://www.fangraphs.com)
+[![Baseball Reference](https://img.shields.io/badge/Baseball_Reference-A20C17?style=for-the-badge&logo=mlb&logoColor=white)](https://www.baseball-reference.com)
+[![Baseball Savant](https://img.shields.io/badge/Baseball_Savant-002D62?style=for-the-badge&logo=mlb&logoColor=white)](https://baseballsavant.mlb.com)
 
 
 
