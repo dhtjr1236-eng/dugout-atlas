@@ -67,3 +67,7 @@ def test_ui_worker_keeps_events_responsive(view,tmp_path):
     assert output.exists()
     assert len(ticks)>3
     assert not w._workers
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -210,3 +210,7 @@ class ThemeManager:
             channel(a.blue(), b.blue()),
         )
         return color.name().upper()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

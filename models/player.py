@@ -33,3 +33,7 @@ class PlayerBundle:
     history: list[dict[str, Any]] = field(default_factory=list)
     velocity_history: list[dict[str, Any]] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

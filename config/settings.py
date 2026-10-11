@@ -37,3 +37,7 @@ SETTINGS = Settings()
 
 def ensure_runtime_dirs() -> None:
     for path in (CACHE_DIR, DATA_DIR, LOG_DIR): ensure_directory(path)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

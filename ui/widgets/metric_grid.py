@@ -44,3 +44,7 @@ class MetricGrid(QWidget):
             value_label.setObjectName("metricValue")
             self.layout.addWidget(name_label, row, col)
             self.layout.addWidget(value_label, row + 1, col)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

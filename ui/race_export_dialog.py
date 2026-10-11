@@ -31,3 +31,7 @@ class RaceExportDialog(QDialog):
 
     def options(self) -> AnimationOptions:
         return AnimationOptions(self.format.currentText(),self.seconds.value(),int(self.fps.currentText()),self.width.currentData(),self.loop.isChecked())
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

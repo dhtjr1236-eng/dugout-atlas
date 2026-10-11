@@ -94,3 +94,7 @@ def test_catcher_still_queries_oaa_leaderboard_instead_of_skipping(
 
     assert oaa_requested is True
     assert result["OAA"] == 0.625
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

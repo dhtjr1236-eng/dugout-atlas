@@ -160,3 +160,7 @@ def test_invalid_source_cannot_clear_cache(tmp_path):
     with pytest.raises(ValueError):
         settings_service.clear_cache(db, '../../data')
     assert db.get_player_stats(1, 'fangraphs_v6', 2026, 'batter', 1)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

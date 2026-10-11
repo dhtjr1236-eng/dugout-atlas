@@ -94,3 +94,7 @@ def whiff_by_pitch(pitches: list[dict[str, Any]]) -> Figure:
     else:
         ax.text(0.5, 0.5, "No Whiff% data", ha="center", va="center", transform=ax.transAxes, color=chart_colors()["text"])
     return fig
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

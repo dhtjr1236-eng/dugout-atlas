@@ -71,3 +71,7 @@ def test_database_creates_parent(tmp_path):
     db = SQLiteManager(target)
     with db.connection() as connection:
         assert connection.execute('SELECT 1').fetchone()[0] == 1
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

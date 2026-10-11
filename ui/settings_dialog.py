@@ -245,3 +245,7 @@ def open_settings(window, controller):
         if dialog.needs_refresh:
             controller._refresh_requested()
         dialog.deleteLater()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

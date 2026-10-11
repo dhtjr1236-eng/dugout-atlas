@@ -318,3 +318,7 @@ class BRefLocalStore:
             os.replace(temp_path, destination)
         finally:
             temp_path.unlink(missing_ok=True)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

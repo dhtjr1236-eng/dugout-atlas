@@ -60,3 +60,7 @@ def test_name_loading_does_not_create_override_parent(tmp_path, monkeypatch):
     localizer = PlayerNameLocalizer(cache_path=tmp_path / 'missing.json')
     assert localizer.players
     assert not (tmp_path / 'unused').exists()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -59,3 +59,7 @@ def test_oaa_uses_true_oaa_not_runs_prevented_and_all_positions(tmp_path, monkey
     assert result["Fielding Run Value"] == 7
     assert result["Arm Value"] == 2
     assert calls[0][1]["pos"] == ""
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

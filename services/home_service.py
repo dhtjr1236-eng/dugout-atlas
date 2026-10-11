@@ -42,3 +42,7 @@ def load_home_snapshot(db: SQLiteManager, season: int, favorites_path: Path | No
             MAX(updated_at) AS updated FROM player_stats WHERE season=?''', (season,)).fetchone()
     return HomeSnapshot(season, tuple(rows), summary['players'], summary['sources'],
                         summary['records'], summary['updated'] or '')
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

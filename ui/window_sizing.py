@@ -23,3 +23,7 @@ def compact_main_window(window, width, height):
     else:
         size = (round(width * .9), round(height * .9))
     window.resize(*size)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

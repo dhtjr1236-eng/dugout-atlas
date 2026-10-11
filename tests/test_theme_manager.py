@@ -68,3 +68,7 @@ def test_toggle_persists_and_updates_accessibility(tmp_path: Path, monkeypatch) 
     assert str(manager.settings.value(THEME_STORAGE_KEY)) == "light"
     assert button.text() == "Dark"
     assert "Dark Theme" in button.accessibleName()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

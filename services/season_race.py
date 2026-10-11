@@ -347,3 +347,7 @@ def demo_points(axis: SeasonAxis) -> list[dict[str, Point]]:
     days = [axis.dates[0], june, sept, axis.dates[-1]]
     return [{d: Point(d, war, 'DEMO') for d, war in zip(days, values)}
             for values in ([0.0, 1.8, 1.1, 0.9], [0.0, 1.2, 3.1, 2.8])]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -135,3 +135,7 @@ def sync_get_text(url: str, *, params: dict[str, Any] | None = None,
                     break
                 time.sleep(_delay(attempt, exc))
     raise HttpError(str(last_error or "Unknown HTTP error"), status=getattr(last_error, "status", None))
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

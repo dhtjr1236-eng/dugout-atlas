@@ -46,3 +46,7 @@ def test_localized_aliases_resolve_to_english_identity(tmp_path: Path) -> None:
 def test_extract_locale_titles() -> None:
     assert extract_mlb_locale_player_name('<meta property="og:title" content="이정후 통계 | MLB.com">', "ko") == "이정후"
     assert extract_mlb_locale_player_name('<meta property="og:title" content="山本 由伸 統計 | MLB.com">', "ja") == "山本 由伸"
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

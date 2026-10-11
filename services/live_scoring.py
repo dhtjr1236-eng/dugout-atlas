@@ -168,3 +168,7 @@ def install_live_scoring_support() -> None:
     GameView.__init__ = init_with_scoring  # type: ignore[method-assign]
     GameView.set_game = set_game_with_scoring  # type: ignore[method-assign]
     GameView._live_scoring_patch_installed = True  # type: ignore[attr-defined]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

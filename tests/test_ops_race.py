@@ -169,3 +169,7 @@ def test_postponed_and_resumed_schedule_entries_are_not_counted_twice():
     axis, games = completed_schedule(data, 2025, date(2025, 4, 4))
     assert games == {1: '2025-04-01', 2: '2025-04-02', 3: '2025-04-03'}
     assert cumulative_ops([fixture_row()], axis, games, 'now')[axis.end].pa == 5
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

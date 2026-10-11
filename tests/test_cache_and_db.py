@@ -26,3 +26,7 @@ def test_sqlite_pitch_stats_round_trip(tmp_path: Path) -> None:
     rows = [{"pitch_type": "Four-Seam Fastball", "Usage %": 55.2}]
     db.set_pitch_stats(123, 2026, rows)
     assert db.get_pitch_stats(123, 2026, 30) == rows
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

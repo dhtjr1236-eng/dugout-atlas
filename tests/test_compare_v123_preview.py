@@ -14,3 +14,7 @@ def test_sprint_speed_has_unit():
 
 def test_mixed_role_contract_is_unchanged():
     assert CompareView._labels_for(_bundle(False),_bundle(True))==["fWAR","bWAR","BB%","K%","xBA","xSLG","xwOBA"]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

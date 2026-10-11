@@ -190,3 +190,7 @@ def test_fictional_fixture_not_real_players_or_cache():
     assert a[real_axis().dates[-1]].war==.9
     assert peak(b).war==3.1 and peak(b).day[5:7]=='09'
     assert {p.fetched_at for p in a.values()}=={'DEMO'}
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -135,3 +135,7 @@ def war_history(history: list[dict[str, Any]], period_label: str = "Yearly") -> 
 
 def wrc_history(history: list[dict[str, Any]], period_label: str = "Yearly") -> Figure:
     return _plot_trend(history, "wRC+", "wRC+ Trend", period_label)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

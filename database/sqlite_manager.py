@@ -214,3 +214,7 @@ class SQLiteManager:
         with self.connection() as connection:
             connection.execute("DELETE FROM player_stats WHERE updated_at < ?", (cutoff,))
             connection.execute("DELETE FROM pitch_stats WHERE updated_at < ?", (cutoff,))
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

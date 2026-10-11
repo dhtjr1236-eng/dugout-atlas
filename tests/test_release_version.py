@@ -17,3 +17,7 @@ def test_current_release_version_is_consistent():
     assert f'# ⚾ Dugout Atlas v{version}' in readme
     assert f'Version-v{version}-' in readme
     assert (root / f'docs/PATCH_v{version}.md').is_file()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

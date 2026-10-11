@@ -618,3 +618,7 @@ class StatcastService:
                 if not matches.empty:
                     return matches.iloc[0]
         return None
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

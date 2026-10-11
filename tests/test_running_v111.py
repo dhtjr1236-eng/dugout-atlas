@@ -78,3 +78,7 @@ def test_running_metrics_contains_four_requested_values() -> None:
     assert metrics[2][:2] == ("CS", 3)
     assert metrics[3][0] == "SB Success %"
     assert metrics[3][2] is True
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

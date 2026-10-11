@@ -244,3 +244,7 @@ class AdvancedCompareWindow(QMainWindow):
             slot.box.setTitle(tr(f"Player {chr(65+i)}")); slot.edit.setPlaceholderText(tr("Search player (e.g. Judge)"))
             if slot.bundle is None:slot.status.setText(tr("No player selected"))
         self._render()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

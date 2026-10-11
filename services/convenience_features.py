@@ -361,3 +361,7 @@ def install_convenience_features() -> None:
     MainWindow.show_player = show_player_with_favorite  # type: ignore[method-assign]
     CompareView._render = compare_render_with_tooltips  # type: ignore[method-assign]
     MainWindow._convenience_features_installed = True  # type: ignore[attr-defined]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -74,3 +74,7 @@ def install_compare_league_position():
             self._run(league_task,league_success,on_error=lambda m: LOGGER.warning("League Position unavailable: %s",m.splitlines()[-1] if m else "unknown"))
         self._run(task,success)
     AppController.__init__=new_init; AppController.load_compare_player=load; AppController._compare_league_position_installed=True
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

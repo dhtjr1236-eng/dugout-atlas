@@ -446,3 +446,7 @@ def test_bref_single_txt_import_is_classified_as_batting(tmp_path: Path) -> None
     assert result.batting_rows == 1
     assert result.pitching_rows == 0
     assert float(store.load(False).iloc[0]["WAR"]) == 4.0
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

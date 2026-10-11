@@ -88,3 +88,7 @@ def logs_dir() -> Path:
 
 def exports_dir() -> Path:
     return ensure_directory(data_path("exports"))
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

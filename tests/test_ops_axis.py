@@ -62,3 +62,7 @@ def test_extrema_ties_empty_and_axis_validation():
     assert period_extrema([], '2025-04-01', '2025-04-03') is None
     for pair in [(1,1),(2,1),(-1,1),(0,6),(math.nan,1),(0,math.inf)]:
         with pytest.raises(ValueError): validate_limits(*pair)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

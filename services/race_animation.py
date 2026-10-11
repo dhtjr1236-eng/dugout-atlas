@@ -184,3 +184,7 @@ def export_animation(snapshot: RaceSnapshot, options: AnimationOptions, destinat
             process.join()
         receiver.close(); sender.close()
         Path(temporary).unlink(missing_ok=True)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

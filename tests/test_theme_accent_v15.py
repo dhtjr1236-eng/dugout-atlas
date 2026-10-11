@@ -7,3 +7,7 @@ def test_gold_accent_preserves_semantic_colors() -> None:
     assert gold["--color-primary"] == "#D6B36A"
     assert gold["--color-success"] == base["--color-success"]
     assert gold["--color-danger"] == base["--color-danger"]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -684,3 +684,7 @@ def install_player_enhancements() -> None:
     AppController.load_pitcher_statcast_period = load_pitcher_period_for_selected_season  # type: ignore[method-assign]
 
     PlayerService._player_enhancements_installed = True  # type: ignore[attr-defined]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

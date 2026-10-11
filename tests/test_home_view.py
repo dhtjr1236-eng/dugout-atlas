@@ -148,3 +148,7 @@ def test_large_font_narrow_home_scrolls_vertically(app, language, font_size, sty
             view.close()
         set_language(previous_language)
         app.setStyle(previous_style)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -107,3 +107,7 @@ def chart_colors() -> dict[str, str]:
         "border": tokens["--color-border-strong"],
         "primary": tokens["--color-primary"],
     }
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

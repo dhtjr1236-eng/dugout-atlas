@@ -39,3 +39,7 @@ class CharacterRenderer:
                                  color='white', fontsize=10, weight='bold'))
             self._vectors[key] = area
         return self._vectors[key]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

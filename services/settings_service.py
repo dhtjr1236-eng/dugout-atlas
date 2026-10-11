@@ -117,3 +117,7 @@ def diagnostics(db, preferences: dict) -> dict:
 
 def export_diagnostics(path: str, db, preferences: dict) -> None:
     Path(path).write_text(json.dumps(diagnostics(db, preferences), ensure_ascii=False, indent=2), encoding='utf-8')
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

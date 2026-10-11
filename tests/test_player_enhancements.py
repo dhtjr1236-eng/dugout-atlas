@@ -45,3 +45,7 @@ def test_mlb_slash_line_only_fills_missing_fangraphs_values() -> None:
     assert merged["SLG"] == 0.450
     assert merged["OPS"] == 0.780
     assert merged["wRC+"] == 110
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

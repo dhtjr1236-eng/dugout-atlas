@@ -478,3 +478,7 @@ def install_player_name_localization() -> None:
         LOGGER.exception("player-name language refresh hook failed")
 
     PlayerService._player_name_localization_installed = True  # type: ignore[attr-defined]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -21,3 +21,7 @@ def validate_limits(low: float, high: float) -> tuple[float, float]:
     if not all(math.isfinite(v) for v in (low, high)) or not 0 <= low < high <= 5:
         raise ValueError('OPS limits must satisfy 0 <= minimum < maximum <= 5.')
     return low, high
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -121,3 +121,7 @@ def test_parse_live_game_and_lineup() -> None:
     # Play-by-play supplements a partial boxscore pitchers array.
     assert [p.name for p in detail.home_pitchers] == ["Home Starter", "Home Reliever"]
     assert detail.home_pitchers[1].game_stats["strikeOuts"] == 2
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

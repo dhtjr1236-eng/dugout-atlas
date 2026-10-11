@@ -83,3 +83,7 @@ def _isolated_preferences(tmp_path, monkeypatch):
     from PyQt6.QtCore import QSettings
     from config import preferences
     monkeypatch.setattr(preferences, "store", lambda: QSettings(str(tmp_path / "preferences.ini"), QSettings.Format.IniFormat))
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

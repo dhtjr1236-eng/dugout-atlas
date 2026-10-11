@@ -225,3 +225,7 @@ class OpsRaceService:
         RaceService.check(cancel)
         emit({'kind': 'ops_status', 'text': 'Calculating cumulative OPS…'})
         return OpsResult(axis, tuple(players), tuple(series), requests, hits)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

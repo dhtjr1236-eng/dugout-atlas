@@ -28,3 +28,7 @@ class LeagueService:
 
     async def team_stats(self, team_id: int, season: int) -> dict[str, Any]:
         return await self.mlb_api.get_team_season_stats(team_id, season)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

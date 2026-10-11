@@ -14,3 +14,7 @@ class StandingRow:
     division_rank: str = ""
     league_rank: str = ""
     wild_card_rank: str = ""
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

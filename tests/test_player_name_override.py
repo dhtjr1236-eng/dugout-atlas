@@ -29,3 +29,7 @@ def test_override_wins_over_seed_and_cache(tmp_path):
 def test_invalid_override_falls_back(tmp_path, caplog, payload):
     assert localizer(tmp_path, payload).display_name(1, 'Test Player', 'ko') == '기본'
     assert 'override' in caplog.text
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -555,3 +555,7 @@ class PlayerView(QWidget):
             return float(value)
         except (TypeError, ValueError):
             return 0.0
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

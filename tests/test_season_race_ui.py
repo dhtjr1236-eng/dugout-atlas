@@ -153,3 +153,7 @@ def test_cancel_discards_queued_worker_result(view,monkeypatch,app):
     view.cancel();release.set()
     loop=QEventLoop();QTimer.singleShot(150,loop.quit);loop.exec()
     assert not accepted and not view._workers
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -34,3 +34,7 @@ def save_preferences(values: dict) -> None:
         import logging
         logging.getLogger(__name__).error('Cannot save application preferences')
         raise OSError('Could not save settings')
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

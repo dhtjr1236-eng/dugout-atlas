@@ -232,3 +232,7 @@ class GameView(QWidget):
     def _emit_pitcher(self) -> None:
         if self._pitcher_id:
             self.player_selected.emit(self._pitcher_id)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

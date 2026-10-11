@@ -332,3 +332,7 @@ class MainWindow(QMainWindow):
                 return
             advanced.close()
         super().closeEvent(event)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

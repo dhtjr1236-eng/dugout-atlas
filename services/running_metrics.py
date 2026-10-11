@@ -264,3 +264,7 @@ def install_running_support() -> None:
     PlayerView._show_batter = show_batter_with_running  # type: ignore[method-assign]
     PlayerView._show_pitcher = show_pitcher_without_running  # type: ignore[method-assign]
     PlayerService._running_patch_installed = True  # type: ignore[attr-defined]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

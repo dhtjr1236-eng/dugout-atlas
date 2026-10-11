@@ -231,3 +231,7 @@ class HomeView(QScrollArea):
             item = QListWidgetItem(tr('No favorites to display. Search for a player to get started.'))
             item.setFlags(Qt.ItemFlag.NoItemFlags)
             self.favorites.addItem(item)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

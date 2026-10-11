@@ -80,3 +80,7 @@ def test_controller_discards_same_player_stale_season(app):
     assert not shown and controller._player_busy
     callbacks[1][0](new)
     assert shown==[new] and not controller._player_busy
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

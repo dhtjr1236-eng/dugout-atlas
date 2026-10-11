@@ -7,3 +7,7 @@ def test_percentile_uses_population_distribution():
 def test_percentile_handles_missing_inputs():
     assert percentile(None,[1,2]) is None
     assert percentile(1,[]) is None
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -34,3 +34,7 @@ class SvgLogoLabel(QLabel):
         renderer.render(painter)
         painter.end()
         self.setPixmap(pixmap)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

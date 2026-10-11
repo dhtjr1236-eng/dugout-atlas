@@ -64,3 +64,7 @@ def apply_team_ref(team, language:str|None=None)->None:
     original=str(getattr(team,"name","") or "")
     team.name=localized_team_name(getattr(team,"id",0),original,language)
     team.abbreviation=localized_team_name(getattr(team,"id",0),original,language,short=True)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -20,3 +20,7 @@ def source_ttl_days(season: int, *, savant: bool = False) -> float:
         else SETTINGS.current_season_cache_ttl_hours
     )
     return float(hours) / 24.0
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

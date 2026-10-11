@@ -70,3 +70,7 @@ def test_download_runs_off_gui_thread(monkeypatch):
             break
     assert threads==[False] and not view._image_workers
     view.close()
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

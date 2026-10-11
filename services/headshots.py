@@ -48,3 +48,7 @@ async def load_headshot(mlbam_id: int, cache: HeadshotCache | None = None) -> np
     except Exception:
         logging.getLogger(__name__).warning("Headshot unavailable; using vector marker")
         return None
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

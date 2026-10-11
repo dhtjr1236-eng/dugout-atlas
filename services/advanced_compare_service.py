@@ -113,3 +113,7 @@ class AdvancedCompareService:
             for item in payload.get("_sources",[]) if isinstance(payload.get("_sources"),list) else []:
                 if isinstance(item,dict) and item.get("name"): names.append(str(item["name"]))
         return list(dict.fromkeys(names))
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

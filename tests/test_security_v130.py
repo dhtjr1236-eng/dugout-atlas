@@ -43,3 +43,7 @@ def test_bref_metadata_keeps_only_basename(tmp_path) -> None:
     assert result.source_file == source.name
     assert store.metadata()["last_source_file"] == source.name
     assert str(tmp_path) not in store.meta_path.read_text(encoding="utf-8")
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

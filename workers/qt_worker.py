@@ -25,3 +25,7 @@ class TaskThread(QThread):
             self.succeeded.emit(result)
         except Exception:
             self.failed.emit(traceback.format_exc())
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

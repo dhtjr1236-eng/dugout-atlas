@@ -63,3 +63,7 @@ def test_non_rbi_run_is_kept_when_runner_scores() -> None:
     assert rows[0]["play"] == "WP"
     assert rows[0]["rbi"] == 0
     assert rows[0]["scorers"] == "Fast Runner"
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.

@@ -89,3 +89,7 @@ def test_new_selection_clears_local_ops_result(view):
     w._ops_loaded(result())
     w.set_players([PlayerBundle(PlayerProfile(99, 'New')), PlayerBundle(PlayerProfile(100, 'Other'))], 2024)
     assert w._ops_result is None and w.points == [{}, {}]
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.
