@@ -68,3 +68,7 @@ class GameDetail:
     home_errors: int | None = None
     linescore: list[dict[str, Any]] = field(default_factory=list)
     raw: dict[str, Any] = field(default_factory=dict)
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.
