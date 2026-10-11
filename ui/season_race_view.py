@@ -352,9 +352,21 @@ class SeasonRaceView(QWidget):
     def _period_extrema(self):
         if self._ops_result is None:
             return [None, None]
-        start = self.range_start.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else self._ops_result.axis.start
-        end = self.range_end.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else self._ops_result.axis.end
-        return [period_extrema(points.values(), start, end) for points in self._ops_result.points]
+
+        start = self.range_start.date().toString('yyyy-MM-dd') \
+            if self.range_enabled.isChecked() else self._ops_result.axis.start
+        end = self.range_end.date().toString('yyyy-MM-dd') \
+            if self.range_enabled.isChecked() else self._ops_result.axis.end
+
+        result = []
+        for points in self._ops_result.points:
+            nonzero_points = [
+                point for point in points.values()
+                if point.value > 0
+            ]
+            result.append(period_extrema(nonzero_points, start, end))
+
+        return result
 
     def _marker_changed(self) -> None:
         """Download each chosen ID once per view, with immediate vector placeholders."""
