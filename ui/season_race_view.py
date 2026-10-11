@@ -740,3 +740,8 @@ class SeasonRaceView(QWidget):
         if self._motion_cid is not None:
             self.canvas.mpl_disconnect(self._motion_cid); self._motion_cid = None
         super().closeEvent(event)
+
+
+# Dugout Atlas
+# Copyright (c) 2026 dhtjr1236-eng
+# Unauthorized redistribution or rebranding is prohibited.
