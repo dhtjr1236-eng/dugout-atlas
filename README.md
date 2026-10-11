@@ -4,6 +4,9 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
 ![Version](https://img.shields.io/badge/Version-v1.8-172B4D)
+![Windows 11](https://img.shields.io/badge/Windows%2011-0078D4?style=flat&logo=windows11&logoColor=white)
+
+
 
 ## 설치와 실행
 
