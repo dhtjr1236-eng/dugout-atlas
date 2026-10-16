@@ -5,7 +5,7 @@ from PyInstaller.utils.hooks import collect_all
 root = Path(SPECPATH).resolve().parents[1]
 datas = [(str(root / name), str(Path(name).parent)) for name in (
     'config/translations.json', 'config/theme.qss', 'config/dark.qss',
-    'config/player_names_seed.json', 'config/theme_tokens.py', 'database/schema.sql',
+    'config/brand_logo.png', 'config/player_names_seed.json', 'config/theme_tokens.py', 'database/schema.sql',
     'docs/WINDOWS_PACKAGING_GUIDE_KO.md',
 )]
 binaries, hiddenimports = [], []

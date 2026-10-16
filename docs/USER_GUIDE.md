@@ -1,6 +1,6 @@
 # Dugout Atlas 사용자 가이드
 
-대상: v1.8 / Windows 11 / Python 3.12 이상. 과거 변경 내역은 [CHANGELOG](../CHANGELOG.md)에서 확인합니다.
+대상: v1.81 / Windows 11 / Python 3.12 이상. 과거 변경 내역은 [CHANGELOG](../CHANGELOG.md)에서 확인합니다.
 
 ## 설치·실행·업데이트
 

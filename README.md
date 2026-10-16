@@ -1,9 +1,9 @@
-# ⚾ Dugout Atlas v1.8
+# ⚾ Dugout Atlas v1.81
 
 Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-v1.8-172B4D)](../../releases)
+[![Version](https://img.shields.io/badge/Version-v1.81-172B4D)](../../releases)
 [![Windows 11](https://img.shields.io/badge/Windows%2011-0078D4?style=flat&logo=windows11&logoColor=white)](https://www.microsoft.com/windows)
 <br>
 [![FanGraphs](https://img.shields.io/badge/FanGraphs-006633?style=for-the-badge&logo=mlb&logoColor=white)](https://www.fangraphs.com)
@@ -29,7 +29,7 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 | --- | --- |
 | 홈 | 시즌 선택, 로컬 기록 보유 현황, 즐겨찾기와 분석 바로가기 |
 | 경기·라인업 | 일정·점수·플레이·등판 선수 확인, 선수 클릭으로 분석 이동 |
-| 선수 | 기본 기록과 FanGraphs·B-Ref·Statcast 지표, 차트와 즐겨찾기 |
+| 선수 | 기본 기록과 FanGraphs·B-Ref·Statcast 지표, Pitch Profile·Matchup·Change, 차트와 즐겨찾기 |
 | 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 fWAR·OPS 변화 탐색 및 GIF/WebP 저장 |
 | 리그 | 순위와 팀 통계 조회 |
 | 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
@@ -39,6 +39,16 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 ![선수 분석 화면](docs/images/player-analysis-before-rename.png)
 
 *이름 변경 전 실제 실행 화면이며, 통계는 촬영 당시 값입니다.*
+
+## 투수 분석 (v1.81)
+
+투수 페이지의 **투수 분석**에서 Profile·Matchup·Change를 확인합니다.
+
+- **Profile**: 구종별 구속·회전수의 분포와 중앙값·중앙 50%·표본 수를 봅니다.
+- **Matchup**: 타자 손잡이·카운트별 사용률, 헛스윙/스윙 수와 Whiff%를 봅니다.
+- **Change**: 시즌·기준일을 선택해 같은 구종의 이전/이후 구속·회전수를 비교하고 일별/주별 변화를 봅니다. 기준일 당일은 이후에 포함합니다.
+
+Change는 원시 캐시가 없으면 자동 조회하지 않습니다. 표시된 범위를 확인하고 조회 허용을 체크하면 해당 투수·시즌을 조회합니다. IVB/HB는 미검증으로 제외하며 관측 차이의 원인을 판단하지 않습니다. [v1.81 변경 내역과 제한](docs/PATCH_v1.81.md)을 확인하세요.
 
 ## 시즌 레이스 기능 예시
 
@@ -69,7 +79,7 @@ Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보
 - [홈 사용법](docs/OFFSEASON_HOME_GUIDE_KO.md)
 - [Season Race 기본 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md) · [OPS·GIF/WebP 사용법](docs/OPS_RACE_GUIDE_KO.md)
 - [코드 구조](ARCHITECTURE.md)
-- [변경 기록](CHANGELOG.md) · [v1.8 패치노트](docs/PATCH_v1.8.md)
+- [변경 기록](CHANGELOG.md) · [v1.81 패치노트](docs/PATCH_v1.81.md)
 - [Windows 패키징 준비](docs/WINDOWS_PACKAGING_GUIDE_KO.md): 개발자용, 설치형 배포 검증 전
 
 과거 패치노트는 당시 변경 기록입니다. 현재 설치와 사용에는 위 가이드를 우선하세요.

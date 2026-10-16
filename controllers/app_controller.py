@@ -66,6 +66,8 @@ class AppController(QObject):
         self.window.refresh_requested.connect(self._refresh_requested)
         from ui.settings_dialog import open_settings
         self.window.settings_requested.connect(lambda: open_settings(self.window, self))
+        self.window.player_view.pitch_analysis_requested.connect(self.load_pitch_analysis)
+        self.window.player_view.pitch_analysis.change.requested.connect(self.load_pitch_change)
         self.window.player_view.trend_period_changed.connect(self.load_player_trend)
         self.window.player_view.pitcher_statcast_period_changed.connect(
             self.load_pitcher_statcast_period
@@ -274,6 +276,7 @@ class AppController(QObject):
             self.window.show_player(bundle)
             self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name}"))
             if bundle.profile.is_pitcher:
+                self.window.player_view.pitch_analysis.change.reset(season)
                 period = self.window.player_view.current_pitcher_statcast_period
                 if period != "yearly":
                     self.load_pitcher_statcast_period(period)
@@ -343,6 +346,56 @@ class AppController(QObject):
             run_pending()
 
         self._run(task, success, on_error=failure)
+
+    def load_pitch_change(self) -> None:
+        """Run bounded raw-data reuse and aggregation off the GUI thread."""
+        bundle = self.window.player_view.current_bundle
+        if bundle is None or not bundle.profile.is_pitcher or bundle.profile.id != self.selected_player_id:
+            return
+        view = self.window.player_view.pitch_analysis.change
+        player_id = bundle.profile.id
+        key = view.key()
+        season, cutoff, cadence, _revision = key
+        page_season = self.season
+        generation = getattr(self, '_player_generation', 0)
+        request = getattr(self, '_change_request', 0) + 1
+        self._change_request = request
+        allow_download = view.download.isChecked()
+        view.loading()
+        def current():
+            return (self.selected_player_id == player_id and self.season == page_season
+                    and getattr(self, '_player_generation', 0) == generation
+                    and self._change_request == request and view.key() == key)
+        def success(payload):
+            if current():
+                view.set_result(payload)
+        def failure(_message):
+            LOGGER.warning('Pitch Change query failed for player %s season %s', player_id, season)
+            if current():
+                view.failed()
+        self._run(lambda: self.players.get_pitch_change(player_id, season, cutoff, cadence, allow_download),
+                  success, on_error=failure)
+
+    def load_pitch_analysis(self) -> None:
+        """Lazy summary request; discard late results after player/season changes."""
+        bundle = self.window.player_view.current_bundle
+        if bundle is None or not bundle.profile.is_pitcher or bundle.profile.id != self.selected_player_id:
+            return
+        player_id, season = bundle.profile.id, self.season
+        generation = getattr(self, '_player_generation', 0)
+        view = self.window.player_view.pitch_analysis
+        view.loading()
+        def current():
+            return (self.selected_player_id == player_id and self.season == season
+                    and getattr(self, '_player_generation', 0) == generation)
+        def success(payload):
+            if current():
+                view.set_result(payload)
+        def failure(_message):
+            LOGGER.warning('Pitch analysis failed for player %s season %s', player_id, season)
+            if current():
+                view.failed()
+        self._run(lambda: self.players.get_pitch_analysis(player_id, season), success, on_error=failure)
 
     def load_pitcher_statcast_period(self, period: str) -> None:
         bundle = self.window.player_view.current_bundle

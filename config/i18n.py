@@ -83,6 +83,11 @@ def translate_widgets(root) -> None:
                     item.setText(tr(item.text()))
                     item.setToolTip(tr(item.toolTip()))
         del blocker
+    # Refresh derived presentation text after ordinary widget translation completes.
+    for widget in [root, *root.findChildren(QWidget)]:
+        refresh = getattr(widget, 'refresh_presentation', None)
+        if callable(refresh):
+            refresh()
 
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng

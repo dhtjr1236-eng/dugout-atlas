@@ -1,6 +1,6 @@
 # OPS 시즌 레이스·애니메이션 사용 가이드
 
-대상: Dugout Atlas v1.8 / Windows 11 / Python 3.12 이상.
+대상: Dugout Atlas v1.81 / Windows 11 / Python 3.12 이상.
 
 ## 추가된 기능
 

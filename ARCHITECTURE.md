@@ -130,3 +130,7 @@ Pitch-level `delta_run_exp` represents run-expectancy movement from the batting 
 - `main.py`: Windows multiprocessing 진입 보호와 `freeze_support()`.
 
 OPS는 경기별 OPS 평균이 아니며, 표시 기간은 시즌 누적 계산 시작점을 바꾸지 않습니다. 기존 FanGraphs WAR 계산과 캐시 정책은 유지합니다.
+
+## v1.81 투수 분석 연결
+
+`PitchAnalysisView`는 Profile·Matchup 집계, `PitchChangeView`는 기준일 전후 집계를 표시합니다. `AppController`가 기존 worker에서 `PlayerService`를 호출하며 `StatcastService.pitcher_frame`의 두 항목 메모리 캐시를 공유합니다. 계산은 `services/pitch_analysis.py`, `services/pitch_change.py`에 있고 UI/PlayerBundle에는 raw DataFrame을 넣지 않습니다. Change는 기본 cache-only이며 명시적 허용 시 기존 시즌 조회를 사용합니다. DB schema/TTL을 바꾸지 않고 IVB/HB는 미검증으로 제외합니다.

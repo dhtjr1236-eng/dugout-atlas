@@ -31,9 +31,11 @@ from charts.batter_charts import (
 from charts.pitcher_charts import pitch_usage, run_value, velocity_history, whiff_by_pitch
 from models.player import PlayerBundle
 from ui.widgets.metric_grid import MetricGrid
+from ui.pitch_analysis_view import PitchAnalysisView
 
 
 class PlayerView(QWidget):
+    pitch_analysis_requested = pyqtSignal()
     trend_period_changed = pyqtSignal(str)
     pitcher_statcast_period_changed = pyqtSignal(str)
 
@@ -135,6 +137,14 @@ class PlayerView(QWidget):
         self.chart_tabs.setMinimumHeight(430)
         self.layout.addWidget(self.chart_tabs)
 
+        self.pitch_analysis_box = QGroupBox(tr("Pitch analysis · 1.81"))
+        analysis_layout = QVBoxLayout(self.pitch_analysis_box)
+        self.pitch_analysis = PitchAnalysisView()
+        self.pitch_analysis.requested.connect(self.pitch_analysis_requested.emit)
+        analysis_layout.addWidget(self.pitch_analysis)
+        self.layout.addWidget(self.pitch_analysis_box)
+        self.pitch_analysis_box.hide()
+
         self.source_box = QGroupBox(tr("Data Sources"))
         source_layout = QVBoxLayout(self.source_box)
         self.source_label = QLabel(tr(""))
@@ -187,6 +197,8 @@ class PlayerView(QWidget):
 
         self._bundle = bundle
         profile = bundle.profile
+        self.pitch_analysis.reset()
+        self.pitch_analysis_box.setVisible(profile.is_pitcher)
         self.name_label.setText(tr(profile.full_name))
         hand = f"Bats: {profile.bats or '—'}  |  Throws: {profile.throws or '—'}"
         self.profile_label.setText(

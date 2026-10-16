@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import importlib
 import logging
+import threading
+import time
+from collections import OrderedDict
 from datetime import UTC, date, datetime
 from io import StringIO
 from typing import Any
@@ -53,6 +56,29 @@ class StatcastService:
     def __init__(self, db: SQLiteManager) -> None:
         self.db = db
         self.json_cache = JsonCache()
+        self._pitch_frames = OrderedDict()
+        self._pitch_lock = threading.Lock()
+
+    def pitcher_frame(self, player_id: int, season: int, *, allow_download: bool = True) -> pd.DataFrame:
+        """Bounded in-process reuse; no persistent raw cache or schema changes."""
+        start, end = self.season_dates(season)
+        key = (int(player_id), int(season), start, end)
+        ttl = source_ttl_days(season, savant=True) * 86400
+        with self._pitch_lock:
+            cached = self._pitch_frames.get(key)
+            if cached and time.monotonic() - cached[0] < ttl:
+                self._pitch_frames.move_to_end(key)
+                return cached[1].copy()
+            if not allow_download:
+                raise LookupError("Raw pitch data is not in the active memory cache")
+            frame = self._pybaseball().statcast_pitcher(start, end, int(player_id))
+            if frame is None:
+                frame = pd.DataFrame()
+            self._pitch_frames[key] = (time.monotonic(), frame.copy())
+            self._pitch_frames.move_to_end(key)
+            while len(self._pitch_frames) > 2:
+                self._pitch_frames.popitem(last=False)
+            return frame.copy()
 
     @staticmethod
     def _pybaseball() -> Any:
@@ -245,7 +271,7 @@ class StatcastService:
 
         pb = self._pybaseball()
         start, end = self.season_dates(season)
-        frame = pb.statcast_pitcher(start, end, int(player_id))
+        frame = self.pitcher_frame(player_id, season)
         result = self._aggregate_pitcher(frame)
 
         try:
@@ -336,7 +362,7 @@ class StatcastService:
             return cached
         pb = self._pybaseball()
         start, end = self.season_dates(season)
-        frame = pb.statcast_pitcher(start, end, int(player_id))
+        frame = self.pitcher_frame(player_id, season)
         if frame is None or frame.empty or "pitch_type" not in frame.columns:
             return []
 
@@ -372,7 +398,7 @@ class StatcastService:
 
         pb = self._pybaseball()
         start, end = self.season_dates(season)
-        frame = pb.statcast_pitcher(start, end, int(player_id))
+        frame = self.pitcher_frame(player_id, season)
         if frame is None or frame.empty or "release_speed" not in frame.columns:
             return []
 

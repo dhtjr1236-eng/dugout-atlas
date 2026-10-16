@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from config.i18n import tr
+from config.paths import resource_path
 
 from PyQt6.QtCore import QDate, QUrl, QStringListModel, QTimer, Qt, pyqtSignal
-from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtGui import QDesktopServices, QPixmap
 from PyQt6.QtWidgets import (
     QCompleter,
     QDateEdit,
@@ -57,9 +58,27 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
 
         top = QHBoxLayout()
-        title = QLabel(tr(SETTINGS.app_name))
-        title.setObjectName("title")
-        top.addWidget(title)
+        self.brand_logo = QLabel()
+        self.brand_logo.setAccessibleName(SETTINGS.app_name)
+        self.brand_logo.setToolTip(SETTINGS.app_name)
+        self.brand_logo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        original = QPixmap(str(resource_path("config", "brand_logo.png")))
+        if original.isNull():
+            self.brand_logo.setText(SETTINGS.app_name)
+            self.brand_logo.setObjectName("title")
+        else:
+            # Display the wordmark region; the supplied square PNG stays unchanged.
+            wordmark = original.copy(100, 430, 1056, 380)
+            pixmap = wordmark.scaled(360, 130, Qt.AspectRatioMode.KeepAspectRatio,
+                                    Qt.TransformationMode.SmoothTransformation)
+            pixmap.setDevicePixelRatio(2.0)
+            self.brand_logo.setPixmap(pixmap)
+            self.brand_logo.setFixedSize(192, 76)
+            self.brand_logo.setStyleSheet(
+                "background-color: #F7F9FC; border: 1px solid #D9E1EC; "
+                "border-radius: 10px; padding: 5px;"
+            )
+        top.addWidget(self.brand_logo)
         top.addStretch()
         self.search = QLineEdit()
         self.search.setPlaceholderText(tr("Search player (e.g. Judge)"))

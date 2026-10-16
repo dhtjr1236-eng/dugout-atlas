@@ -150,6 +150,25 @@ class PlayerService:
             player_id, full_name, season, pitcher, period
         )
 
+    def get_pitch_change(self, player_id: int, season: int, cutoff: str,
+                         cadence: str, allow_download: bool = False) -> dict[str, Any]:
+        """Reuse the same season frame; never implicitly backfill missing raw history."""
+        from services.pitch_change import analyze_change
+        start, end = self.statcast.season_dates(season)
+        try:
+            frame = self.statcast.pitcher_frame(player_id, season, allow_download=allow_download)
+        except LookupError:
+            return dict(status='cache_miss', player_id=player_id, season=season,
+                        cutoff=cutoff, cadence=cadence, pitches=[], start=start, end=end)
+        result = analyze_change(frame, player_id, season, cutoff, cadence)
+        result.update(start=start, end=end, source='Baseball Savant / pybaseball')
+        return result
+
+    def get_pitch_analysis(self, player_id: int, season: int) -> dict[str, Any]:
+        """On-demand analysis: only summaries leave the service boundary."""
+        from services.pitch_analysis import analyze_pitches
+        return analyze_pitches(self.statcast.pitcher_frame(player_id, season), player_id, season)
+
     def get_pitcher_statcast_period(
         self, player_id: int, season: int, period: str
     ) -> dict[str, Any]:
@@ -185,7 +204,8 @@ class PlayerService:
 
         pb = self.statcast._pybaseball()
         start, end = self.statcast.season_dates(season)
-        frame = pb.statcast_pitcher(start, end, int(player_id))
+        frame = (self.statcast.pitcher_frame(player_id, season) if hasattr(self.statcast, "pitcher_frame")
+                 else pb.statcast_pitcher(start, end, int(player_id)))
         if frame is None or frame.empty:
             return {
                 "period": period,

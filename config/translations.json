@@ -1913,5 +1913,415 @@
     "en": "Animation save failed. Check folder permissions and available space.",
     "ko": "저장하지 못했습니다. 폴더 권한과 남은 용량을 확인하세요.",
     "ja": "保存できませんでした。フォルダー権限と空き容量を確認してください。"
+  },
+  {
+    "en": "Load pitcher analysis",
+    "ko": "투수 분석 불러오기",
+    "ja": "投手分析を読み込む"
+  },
+  {
+    "en": "Pitch analysis · 1.81beta",
+    "ko": "투수 분석 · 1.81beta",
+    "ja": "投手分析 · 1.81beta"
+  },
+  {
+    "en": "Not loaded",
+    "ko": "불러오기 전",
+    "ja": "未読込"
+  },
+  {
+    "en": "Pitch Profile",
+    "ko": "구종 분포",
+    "ja": "球種分布"
+  },
+  {
+    "en": "Matchup",
+    "ko": "상황별 분석",
+    "ja": "状況別分析"
+  },
+  {
+    "en": "Change",
+    "ko": "변화",
+    "ja": "変化"
+  },
+  {
+    "en": "Velocity distribution (mph)",
+    "ko": "구속 분포 (mph)",
+    "ja": "球速分布 (mph)"
+  },
+  {
+    "en": "Spin distribution (rpm)",
+    "ko": "회전수 분포 (rpm)",
+    "ja": "回転数分布 (rpm)"
+  },
+  {
+    "en": "Batter handedness",
+    "ko": "타자 손잡이",
+    "ja": "打者の左右"
+  },
+  {
+    "en": "Balls-strikes",
+    "ko": "볼-스트라이크",
+    "ja": "ボール・ストライク"
+  },
+  {
+    "en": "Change: excluded in this beta. No app-managed persistent raw cache; additional historical downloads are not performed.",
+    "ko": "Change: 이번 베타에서 제외했습니다. 앱 관리 원시 영구 캐시가 없어 과거 기록을 추가 다운로드하지 않습니다.",
+    "ja": "Change: このベータでは対象外です。アプリ管理の永続的な元データキャッシュがなく、過去データの追加取得は行いません。"
+  },
+  {
+    "en": "Loading pitcher analysis…",
+    "ko": "투수 분석을 불러오는 중…",
+    "ja": "投手分析を読込中…"
+  },
+  {
+    "en": "Analysis failed; existing player data remains available.",
+    "ko": "분석 실패. 기존 선수 데이터는 계속 볼 수 있습니다.",
+    "ja": "分析失敗。既存の選手データは引き続き表示できます。"
+  },
+  {
+    "en": "Partial success / small sample",
+    "ko": "부분 성공 / 표본 부족",
+    "ja": "一部成功 / 標本不足"
+  },
+  {
+    "en": "Unverified",
+    "ko": "미검증",
+    "ja": "未検証"
+  },
+  {
+    "en": "Regular-season pitches only",
+    "ko": "정규시즌 투구만",
+    "ja": "レギュラーシーズンの投球のみ"
+  },
+  {
+    "en": "Unclassified",
+    "ko": "구종 미분류",
+    "ja": "球種未分類"
+  },
+  {
+    "en": "Valid N",
+    "ko": "유효 N",
+    "ja": "有効 N"
+  },
+  {
+    "en": "Total N",
+    "ko": "전체 N",
+    "ja": "全体 N"
+  },
+  {
+    "en": "Missing",
+    "ko": "결측",
+    "ja": "欠損"
+  },
+  {
+    "en": "Median",
+    "ko": "중앙값",
+    "ja": "中央値"
+  },
+  {
+    "en": "IQR",
+    "ko": "사분위 범위",
+    "ja": "四分位範囲"
+  },
+  {
+    "en": "SD",
+    "ko": "표준편차",
+    "ja": "標準偏差"
+  },
+  {
+    "en": "Sample",
+    "ko": "표본",
+    "ja": "標本"
+  },
+  {
+    "en": "Small sample",
+    "ko": "표본 부족",
+    "ja": "標本不足"
+  },
+  {
+    "en": "Unverified / no valid distribution",
+    "ko": "미검증 / 유효 분포 없음",
+    "ja": "未検証 / 有効な分布なし"
+  },
+  {
+    "en": "Box: Q1–Q3; whiskers: P10–P90",
+    "ko": "상자: Q1–Q3 / 수염: P10–P90",
+    "ja": "箱: Q1–Q3 / ひげ: P10–P90"
+  },
+  {
+    "en": "Valid context",
+    "ko": "유효 상황",
+    "ja": "有効な状況"
+  },
+  {
+    "en": "Usage denominator: classified pitches in context; Whiff denominator: swings. Below 30: small sample.",
+    "ko": "사용률 분모: 해당 상황의 구종 확인 투구 / Whiff 분모: 스윙. 30개 미만은 표본 부족.",
+    "ja": "使用率の分母: 状況内の球種確認済み投球 / Whiffの分母: スイング。30未満は標本不足。"
+  },
+  {
+    "en": "Context",
+    "ko": "상황",
+    "ja": "状況"
+  },
+  {
+    "en": "Context N",
+    "ko": "상황 N",
+    "ja": "状況 N"
+  },
+  {
+    "en": "Swings",
+    "ko": "스윙",
+    "ja": "スイング"
+  },
+  {
+    "en": "Whiffs",
+    "ko": "헛스윙",
+    "ja": "空振り"
+  },
+  {
+    "en": "Outcome N",
+    "ko": "결과 확인 N",
+    "ja": "結果確認 N"
+  },
+  {
+    "en": "Pitches",
+    "ko": "투구 수",
+    "ja": "投球数"
+  },
+  {
+    "en": "Pitch analysis · 1.81 beta2",
+    "ko": "투수 분석 · 1.81 beta2",
+    "ja": "投手分析 · 1.81 beta2"
+  },
+  {
+    "en": "Show details",
+    "ko": "상세 보기",
+    "ja": "詳細を表示"
+  },
+  {
+    "en": "Distribution details",
+    "ko": "분포 상세",
+    "ja": "分布の詳細"
+  },
+  {
+    "en": "Center line (Md): median. Box: central 50% (Q1–Q3). Width of that interval: IQR.",
+    "ko": "가운데 선(Md)은 중앙값, 상자는 가운데 50% 구간(Q1–Q3)입니다. 이 구간의 폭이 IQR입니다.",
+    "ja": "中央の線(Md)は中央値、箱は中央50%の範囲(Q1–Q3)です。この範囲の幅がIQRです。"
+  },
+  {
+    "en": "Median: the middle value when valid pitches are ordered.",
+    "ko": "중앙값: 유효한 투구 값을 순서대로 놓았을 때 가운데 값입니다.",
+    "ja": "中央値: 有効な投球の値を並べたときの中央の値です。"
+  },
+  {
+    "en": "IQR: Q3 minus Q1; the width of the central 50%.",
+    "ko": "IQR: Q3에서 Q1을 뺀 값으로, 가운데 50% 구간의 폭입니다.",
+    "ja": "IQR: Q3からQ1を引いた値で、中央50%の範囲の幅です。"
+  },
+  {
+    "en": "SD: spread around the mean; unavailable with fewer than two valid pitches.",
+    "ko": "표준편차(SD): 평균 주변에 값이 얼마나 퍼져 있는지를 나타냅니다. 유효 투구가 2개 미만이면 계산하지 않습니다.",
+    "ja": "標準偏差(SD): 平均の周囲に値がどれだけ散らばっているかを表します。有効な投球が2未満なら計算しません。"
+  },
+  {
+    "en": "P10: the 10th percentile of valid observations.",
+    "ko": "P10: 유효한 관측값을 정렬했을 때 10% 지점의 값입니다.",
+    "ja": "P10: 有効な観測値を並べたときの10%の位置の値です。"
+  },
+  {
+    "en": "P90: the 90th percentile of valid observations.",
+    "ko": "P90: 유효한 관측값을 정렬했을 때 90% 지점의 값입니다.",
+    "ja": "P90: 有効な観測値を並べたときの90%の位置の値です。"
+  },
+  {
+    "en": "Valid N: pitches with a usable value for this metric.",
+    "ko": "유효 N: 이 지표에 사용할 수 있는 값이 있는 투구 수입니다.",
+    "ja": "有効N: この指標に利用できる値がある投球数です。"
+  },
+  {
+    "en": "Missing: excluded or unusable values; never filled with zero.",
+    "ko": "결측: 값이 없거나 사용할 수 없어 제외한 수입니다. 0으로 채우지 않습니다.",
+    "ja": "欠損: 値がない、または利用できず除外した数です。0で補いません。"
+  },
+  {
+    "en": "Whiskers show P10–P90, not minima and maxima. SD describes spread, not quality.",
+    "ko": "수염은 최솟값·최댓값이 아니라 P10–P90입니다. 표준편차는 퍼짐을 설명하며 좋고 나쁨을 평가하지 않습니다.",
+    "ja": "ひげは最小値・最大値ではなくP10–P90です。標準偏差は散らばりを表し、良し悪しを評価しません。"
+  },
+  {
+    "en": "Partial success / interpret with caution",
+    "ko": "부분 성공 / 해석 주의",
+    "ja": "一部成功 / 解釈に注意"
+  },
+  {
+    "en": "Central 50%",
+    "ko": "중앙 50% 구간",
+    "ja": "中央50%の範囲"
+  },
+  {
+    "en": "Interpret with caution",
+    "ko": "해석 주의",
+    "ja": "解釈に注意"
+  },
+  {
+    "en": "Observed sample",
+    "ko": "관측 표본",
+    "ja": "観測標本"
+  },
+  {
+    "en": "Usage: share of classified pitches in this context. Whiff: misses divided by swings. L/R means left/right batter; balls-strikes shows the recorded count.",
+    "ko": "사용률은 해당 상황의 구종 확인 투구 중 비중입니다. Whiff는 헛스윙 수를 스윙 수로 나눈 비율입니다. L/R은 좌타자/우타자, 볼-스트라이크는 기록된 카운트입니다.",
+    "ja": "使用率は、その状況の球種確認済み投球に占める割合です。Whiffは空振り数をスイング数で割った割合です。L/Rは左打者/右打者、ボール・ストライクは記録されたカウントです。"
+  },
+  {
+    "en": "Usage numerator/denominator",
+    "ko": "사용률 분자/분모",
+    "ja": "使用率の分子/分母"
+  },
+  {
+    "en": "Whiffs / swings · Whiff %",
+    "ko": "헛스윙 / 스윙 · Whiff %",
+    "ja": "空振り / スイング · Whiff %"
+  },
+  {
+    "en": "Usage denominator: classified pitches in this context.",
+    "ko": "사용률 분모: 해당 상황에서 구종을 확인한 투구 수입니다.",
+    "ja": "使用率の分母: その状況で球種を確認した投球数です。"
+  },
+  {
+    "en": "Whiff denominator: swings, not all pitches.",
+    "ko": "Whiff 분모: 전체 투구 수가 아니라 스윙 수입니다.",
+    "ja": "Whiffの分母: 全投球数ではなくスイング数です。"
+  },
+  {
+    "en": "Not calculated",
+    "ko": "미계산",
+    "ja": "未計算"
+  },
+  {
+    "en": "Velocity: release speed in mph.",
+    "ko": "구속: 공을 놓을 때의 속도이며 단위는 mph입니다.",
+    "ja": "球速: リリース時の速度で、単位はmphです。"
+  },
+  {
+    "en": "Spin: rotations per minute (rpm).",
+    "ko": "회전수: 1분당 회전 횟수이며 단위는 rpm입니다.",
+    "ja": "回転数: 1分あたりの回転数で、単位はrpmです。"
+  },
+  {
+    "en": "Cutoff date",
+    "ko": "기준일",
+    "ja": "基準日"
+  },
+  {
+    "en": "Weekly (Monday start)",
+    "ko": "주별 (월요일 시작)",
+    "ja": "週別（月曜開始）"
+  },
+  {
+    "en": "Time interval",
+    "ko": "시계열 간격",
+    "ja": "時系列の間隔"
+  },
+  {
+    "en": "Allow one season query if raw cache is unavailable",
+    "ko": "원시 캐시가 없으면 선택 시즌 1회 조회 허용",
+    "ja": "生データのキャッシュがない場合、選択シーズンの取得を許可"
+  },
+  {
+    "en": "Analyze Change",
+    "ko": "Change 분석하기",
+    "ja": "Change を分析"
+  },
+  {
+    "en": "Cache first. If permitted: estimated 1 request for this pitcher and season. Raw data stays in memory only (up to 2 entries); no permanent storage.",
+    "ko": "캐시 우선 사용. 조회 허용 시 이 투수·시즌에 예상 1회 요청합니다. 원시 데이터는 메모리에만 최대 2건 보관하며 영구 저장하지 않습니다.",
+    "ja": "キャッシュを優先。許可した場合、この投手・シーズンに推定1回のリクエスト。生データはメモリ内に最大2件のみ保持し、永続保存しません。"
+  },
+  {
+    "en": "Before: date < cutoff. After: date >= cutoff. Current season ends at today.",
+    "ko": "이전: 기준일 미만. 이후: 기준일 당일 포함. 진행 중인 시즌은 오늘까지 조회합니다.",
+    "ja": "前：基準日未満。後：基準日当日を含む。進行中のシーズンは今日まで取得します。"
+  },
+  {
+    "en": "Raw cache unavailable. Check the query permission above and analyze again to fetch this season.",
+    "ko": "사용 가능한 원시 캐시가 없습니다. 위 조회 허용을 체크한 뒤 다시 분석하면 해당 시즌을 조회합니다.",
+    "ja": "利用可能な生データのキャッシュがありません。上の取得許可を選び、再分析すると該当シーズンを取得します。"
+  },
+  {
+    "en": "Difference = after minus before. Median is the middle value; IQR is the central 50% width. Valid N < 30: interpret with caution. Missing and invalid values are not zero.",
+    "ko": "차이 = 이후 − 이전. 중앙값은 가운데 값, IQR은 중앙 50%의 폭입니다. 유효 N이 30 미만이면 해석에 주의하세요. 결측·무효값을 0으로 채우지 않습니다.",
+    "ja": "差 = 後 − 前。中央値は中央の値、IQRは中央50%の幅です。有効Nが30未満なら解釈に注意。欠測・無効値は0で補完しません。"
+  },
+  {
+    "en": "IVB / HB unavailable: fields, units and direction have not been verified. No conversion or handedness flip is applied.",
+    "ko": "IVB / HB 사용 불가: 필드·단위·방향 미검증. 자동 변환이나 좌우투 부호 반전을 하지 않습니다.",
+    "ja": "IVB / HBは利用不可：フィールド・単位・方向は未検証。自動変換や左右投げによる符号反転は行いません。"
+  },
+  {
+    "en": "Weekly points pool pitches Monday–Sunday, not daily averages. A week can cross the cutoff; before/after cards still split by exact date. Observed differences do not explain causes.",
+    "ko": "주별 값은 월~일의 투구를 모아 계산합니다. 한 주가 기준일을 걸칠 수 있지만 전후 비교는 정확한 날짜로 나눕니다. 관측된 차이는 원인을 설명하지 않습니다.",
+    "ja": "週別値は月〜日の投球をまとめて計算します。週が基準日をまたぐ場合も前後比較は正確な日付で分割。観測された差は原因を説明しません。"
+  },
+  {
+    "en": "Observed range",
+    "ko": "관측 날짜 범위",
+    "ja": "観測日の範囲"
+  },
+  {
+    "en": "Raw / regular / classified / unclassified / excluded rows",
+    "ko": "원본 / 정규시즌 / 구종 분류 / 미분류 / 제외 행 수",
+    "ja": "元データ / レギュラーシーズン / 球種分類済み / 未分類 / 除外行数"
+  },
+  {
+    "en": "Before",
+    "ko": "이전",
+    "ja": "前"
+  },
+  {
+    "en": "After",
+    "ko": "이후",
+    "ja": "後"
+  },
+  {
+    "en": "After minus before",
+    "ko": "이후 − 이전",
+    "ja": "後 − 前"
+  },
+  {
+    "en": "Unavailable",
+    "ko": "사용 불가",
+    "ja": "利用不可"
+  },
+  {
+    "en": "Excluded",
+    "ko": "제외",
+    "ja": "除外"
+  },
+  {
+    "en": "release_speed",
+    "ko": "릴리스 구속",
+    "ja": "リリース球速"
+  },
+  {
+    "en": "release_spin_rate",
+    "ko": "회전수",
+    "ja": "回転数"
+  },
+  {
+    "en": "Date",
+    "ko": "날짜",
+    "ja": "日付"
+  },
+  {
+    "en": "Pitch analysis · 1.81 beta3",
+    "ko": "투수 분석 · 1.81 beta3",
+    "ja": "投手分析 · 1.81 beta3"
+  },
+  {
+    "en": "Pitch analysis · 1.81",
+    "ko": "투수 분석 · 1.81",
+    "ja": "投手分析 · 1.81"
   }
 ]
