@@ -59,6 +59,8 @@ Change는 원시 캐시가 없으면 자동 조회하지 않습니다. 표시된
 
 ![시즌 레이스 기능 예시2 — 실제선수 shohei ohtani, jazz chisholm jr의 2026정규시즌 OPS 데이터](docs/images/season-race.png)
 
+**실제선수데이터를 바탕으로**한 png 파일입니다. light mode를 사용하였습니다.
+
 - 심화 비교 → Season Race에서 **OPS · MLB** 또는 **fWAR · FanGraphs**를 선택합니다.
 - OPS는 경기별 원시 기록을 합산해 계산합니다. 경기별 OPS의 단순 평균이 아닙니다.
 - **OPS 축 범위 직접 지정**을 체크하면 최솟값·최댓값을 정할 수 있습니다. 선택 기간의 최고·최저와 날짜도 표시합니다.
