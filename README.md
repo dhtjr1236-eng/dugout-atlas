@@ -36,7 +36,9 @@ Enjoy live Major League Baseball games and seamlessly switch to in-depth player 
 | 리그 | 순위와 팀 통계 조회 |
 | 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
 
+
 홈의 숫자는 **내 앱에 저장된 캐시 현황**입니다. MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 선수 이름을 클릭할 때는 MLBAM ID로 연결합니다. 한국어·영어·일본어와 밝은/어두운 테마를 지원합니다.
+
 ---
 
 ## 🇺🇸 English
