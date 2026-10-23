@@ -37,6 +37,56 @@ Enjoy live Major League Baseball games and seamlessly switch to in-depth player 
 | 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
 
 홈의 숫자는 **내 앱에 저장된 캐시 현황**입니다. MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 선수 이름을 클릭할 때는 MLBAM ID로 연결합니다. 한국어·영어·일본어와 밝은/어두운 테마를 지원합니다.
+---
+
+## 🇺🇸 English
+
+### Installation & Execution
+1. Install Python 3.12 or higher and select **Add python.exe to PATH**.  
+2. Download the [source ZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) and extract it.  
+3. Run `install.bat`.  
+4. After installation, run `run.bat`.  
+
+Currently, the distribution is provided as Python source code. An installable EXE is not yet available. Before updating, close the app and back up both the program folder and any separately configured data folder. Do not reapply patches for older versions on top of the latest source.  
+
+### Key Features
+| Screen | Purpose |
+| --- | --- |
+| Home | Season selection, local record status, favorites, and quick access to analysis |
+| Game/Lineup | View schedule, scores, plays, and pitchers; click a player to jump to analysis |
+| Player | Basic stats plus FanGraphs, B-Ref, Statcast metrics; Pitch Profile, Matchup, Change; charts and favorites |
+| Compare/Advanced Compare | Compare player metrics, explore cumulative fWAR/OPS changes with Season Race, save as GIF/WebP |
+| League | Check standings and team statistics |
+| Settings | Language, theme, font size, refresh interval, data location, cache management |
+
+Numbers shown on the Home screen indicate **cached data stored in the app**, not MLB-wide records or current season stats. Player names link via MLBAM ID. Supports Korean, English, Japanese, and both light/dark themes.  
+
+---
+
+## 🇯🇵 日本語
+
+### インストールと実行
+1. Python 3.12以上をインストールし、**Add python.exe to PATH** を選択してください。  
+2. [ソースZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) をダウンロードして解凍します。  
+3. `install.bat` を実行します。  
+4. インストール完了後、`run.bat` を実行します。  
+
+現在の配布形態は Python ソースです。インストーラ形式の EXE はまだ提供されていません。アップデート前にはアプリを終了し、プログラムフォルダと別途設定したデータフォルダをバックアップしてください。旧バージョン用パッチを最新ソースに再適用しないでください。  
+
+### 主な機能
+| 画面 | 用途 |
+| --- | --- |
+| ホーム | シーズン選択、ローカル記録の保持状況、 お気に入りや分析へのショートカット |
+| 試合・ラインアップ | 日程・スコア・プレイ・登板選手の確認、選手クリックで分析へ移動 |
+| 選手 | 基本記録、FanGraphs・B-Ref・Statcast 指標、Pitch Profile・Matchup・Change、チャートやお気に入り |
+| 比較・詳細比較 | 選手ごとの指標比較、Season Raceで累積 fWAR・OPS の変化を探索、GIF/WebP 保存 |
+| リーグ | 順位やチーム統計の確認 |
+| 設定 | 言語・テーマ・文字サイズ・更新間隔・データ保存場所・キャッシュ管理 |
+
+ホーム画面の数字は **アプリに保存されたキャッシュ状況** を示すものであり、MLB全体の記録や最新シーズン成績を意味するものではありません。選手名クリック時は MLBAM ID によってリンクされます。韓国語・英語・日本語に対応し、ライト/ダークテーマをサポートしています。  
+
+---
+
 
 ![선수 분석 화면](docs/images/player-analysis-before-rename.png)
 
