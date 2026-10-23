@@ -1,6 +1,8 @@
 # ⚾ Dugout Atlas v1.81
 
-Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
+Windows 11용 MLB(Major League Baseball) 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
+Enjoy live Major League Baseball games and seamlessly switch to in-depth player analysis. During the off-season, explore your favorite players and revisit past seasons—all from the comfort of your desktop.
+メジャーリーグベースボールの試合を観戦しながら、すぐに選手分析へ切り替えられます。オフシーズンには、お気に入りの選手や過去のシーズンを自宅のデスクトップから簡単に探索できます。
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)](https://www.python.org/)
 [![Version](https://img.shields.io/badge/Version-v1.81-172B4D)](../../releases)
