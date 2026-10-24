@@ -1,5 +1,20 @@
 [
   {
+    "en": "Live Scoreboard",
+    "ko": "실시간 스코어보드",
+    "ja": "リアルタイムスコアボード"
+  },
+  {
+    "en": "wOBA / fWAR",
+    "ko": "wOBA / fWAR",
+    "ja": "wOBA / fWAR"
+  },
+  {
+    "en": "Avg EV Allowed",
+    "ko": "평균 타구속도 허용",
+    "ja": "平均打球速度（被打）"
+  },
+  {
     "en": "Settings",
     "ko": "설정",
     "ja": "設定"
@@ -2318,10 +2333,6 @@
     "en": "Pitch analysis · 1.81 beta3",
     "ko": "투수 분석 · 1.81 beta3",
     "ja": "投手分析 · 1.81 beta3"
-  },
-  {
-    "en": "Pitch analysis · 1.81",
-    "ko": "투수 분석 · 1.81",
-    "ja": "投手分析 · 1.81"
   }
 ]
+
