@@ -1,4 +1,3 @@
+from .smooth_spline_chart import ModernSplineChart
 
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
+__all__ = ["ModernSplineChart"]
