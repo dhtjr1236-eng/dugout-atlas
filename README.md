@@ -1,20 +1,9 @@
-# ⚾ Dugout Atlas v1.81
+# ⚾ Dugout Atlas v1.82
 
-Windows 11용 MLB(Major League Baseball) 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
-Enjoy live Major League Baseball games and seamlessly switch to in-depth player analysis. During the off-season, explore your favorite players and revisit past seasons—all from the comfort of your desktop.
-メジャーリーグベースボールの試合を観戦しながら、すぐに選手分析へ切り替えられます。オフシーズンには、お気に入りの選手や過去のシーズンを自宅のデスクトップから簡単に探索できます。
+Windows 11용 MLB 경기·선수 분석 데스크톱 앱입니다. 경기를 보다가 선수 분석으로 이동하고, 비시즌에는 홈에서 관심 선수와 과거 시즌을 탐색할 수 있습니다.
 
-[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)](https://www.python.org/)
-[![Version](https://img.shields.io/badge/Version-v1.81-172B4D)](../../releases)
-[![Windows 11](https://img.shields.io/badge/Windows%2011-0078D4?style=flat&logo=windows11&logoColor=white)](https://www.microsoft.com/windows)
-<br>
-[![FanGraphs](https://img.shields.io/badge/FanGraphs-006633?style=for-the-badge&logo=mlb&logoColor=white)](https://www.fangraphs.com)
-[![Baseball Reference](https://img.shields.io/badge/Baseball_Reference-A20C17?style=for-the-badge&logo=mlb&logoColor=white)](https://www.baseball-reference.com)
-[![Baseball Savant](https://img.shields.io/badge/Baseball_Savant-002D62?style=for-the-badge&logo=mlb&logoColor=white)](https://baseballsavant.mlb.com)
-
-
-
-
+![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB)
+![Version](https://img.shields.io/badge/Version-v1.82-172B4D)
 
 ## 설치와 실행
 
@@ -29,99 +18,18 @@ Enjoy live Major League Baseball games and seamlessly switch to in-depth player 
 
 | 화면 | 용도 |
 | --- | --- |
-| 홈 | 시즌 선택, 로컬 기록 보유 현황, 즐겨찾기와 분석 바로가기 |
+| 홈 | 시즌 선택, 로컬 기록 보유 현황, 즐겨찾기와 분석 바로가기, 선택 경기 점수·주자 상황 |
 | 경기·라인업 | 일정·점수·플레이·등판 선수 확인, 선수 클릭으로 분석 이동 |
-| 선수 | 기본 기록과 FanGraphs·B-Ref·Statcast 지표, Pitch Profile·Matchup·Change, 차트와 즐겨찾기 |
-| 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 fWAR·OPS 변화 탐색 및 GIF/WebP 저장 |
+| 선수 | 요약 스탯 카드, FanGraphs·B-Ref·Statcast 지표와 추이 차트, 즐겨찾기 |
+| 비교·심화 비교 | 선수별 지표 비교, Season Race로 누적 WAR 변화 탐색 |
 | 리그 | 순위와 팀 통계 조회 |
 | 설정 | 언어·테마·글자 크기·갱신 간격·데이터 위치·캐시 관리 |
 
-
-홈의 숫자는 **내 앱에 저장된 캐시 현황**입니다. MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 선수 이름을 클릭할 때는 MLBAM ID로 연결합니다. 한국어·영어·일본어와 밝은/어두운 테마를 지원합니다.
-
----
-
-## 🇺🇸 English
-
-### Installation & Execution
-1. Install Python 3.12 or higher and select **Add python.exe to PATH**.  
-2. Download the [source ZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) and extract it.  
-3. Run `install.bat`.  
-4. After installation, run `run.bat`.  
-
-Currently, the distribution is provided as Python source code. An installable EXE is not yet available. Before updating, close the app and back up both the program folder and any separately configured data folder. Do not reapply patches for older versions on top of the latest source.  
-
-### Key Features
-| Screen | Purpose |
-| --- | --- |
-| Home | Season selection, local record status, favorites, and quick access to analysis |
-| Game/Lineup | View schedule, scores, plays, and pitchers; click a player to jump to analysis |
-| Player | Basic stats plus FanGraphs, B-Ref, Statcast metrics; Pitch Profile, Matchup, Change; charts and favorites |
-| Compare/Advanced Compare | Compare player metrics, explore cumulative fWAR/OPS changes with Season Race, save as GIF/WebP |
-| League | Check standings and team statistics |
-| Settings | Language, theme, font size, refresh interval, data location, cache management |
-
-Numbers shown on the Home screen indicate **cached data stored in the app**, not MLB-wide records or current season stats. Player names link via MLBAM ID. Supports Korean, English, Japanese, and both light/dark themes.  
-
----
-
-## 🇯🇵 日本語
-
-### インストールと実行
-1. Python 3.12以上をインストールし、**Add python.exe to PATH** を選択してください。  
-2. [ソースZIP](https://github.com/dhtjr1236-eng/dugout-atlas/archive/refs/heads/main.zip) をダウンロードして解凍します。  
-3. `install.bat` を実行します。  
-4. インストール完了後、`run.bat` を実行します。  
-
-現在の配布形態は Python ソースです。インストーラ形式の EXE はまだ提供されていません。アップデート前にはアプリを終了し、プログラムフォルダと別途設定したデータフォルダをバックアップしてください。旧バージョン用パッチを最新ソースに再適用しないでください。  
-
-### 主な機能
-| 画面 | 用途 |
-| --- | --- |
-| ホーム | シーズン選択、ローカル記録の保持状況、 お気に入りや分析へのショートカット |
-| 試合・ラインアップ | 日程・スコア・プレイ・登板選手の確認、選手クリックで分析へ移動 |
-| 選手 | 基本記録、FanGraphs・B-Ref・Statcast 指標、Pitch Profile・Matchup・Change、チャートやお気に入り |
-| 比較・詳細比較 | 選手ごとの指標比較、Season Raceで累積 fWAR・OPS の変化を探索、GIF/WebP 保存 |
-| リーグ | 順位やチーム統計の確認 |
-| 設定 | 言語・テーマ・文字サイズ・更新間隔・データ保存場所・キャッシュ管理 |
-
-ホーム画面の数字は **アプリに保存されたキャッシュ状況** を示すものであり、MLB全体の記録や最新シーズン成績を意味するものではありません。選手名クリック時は MLBAM ID によってリンクされます。韓国語・英語・日本語に対応し、ライト/ダークテーマをサポートしています。  
-
----
-
+홈의 라이브 스코어보드는 선택된 경기 상세를 표시하며, 홈의 기록 수는 **내 앱에 저장된 캐시 현황**입니다. MLB 전체 기록이나 최신 시즌 성적을 뜻하지 않습니다. 선수 이름을 클릭할 때는 MLBAM ID로 연결합니다. 한국어·영어·일본어와 밝은/어두운 테마를 지원합니다.
 
 ![선수 분석 화면](docs/images/player-analysis-before-rename.png)
 
 *이름 변경 전 실제 실행 화면이며, 통계는 촬영 당시 값입니다.*
-
-## 투수 분석 (v1.81)
-
-투수 페이지의 **투수 분석**에서 Profile·Matchup·Change를 확인합니다.
-
-- **Profile**: 구종별 구속·회전수의 분포와 중앙값·중앙 50%·표본 수를 봅니다.
-- **Matchup**: 타자 손잡이·카운트별 사용률, 헛스윙/스윙 수와 Whiff%를 봅니다.
-- **Change**: 시즌·기준일을 선택해 같은 구종의 이전/이후 구속·회전수를 비교하고 일별/주별 변화를 봅니다. 기준일 당일은 이후에 포함합니다.
-
-Change는 원시 캐시가 없으면 자동 조회하지 않습니다. 표시된 범위를 확인하고 조회 허용을 체크하면 해당 투수·시즌을 조회합니다. IVB/HB는 미검증으로 제외하며 관측 차이의 원인을 판단하지 않습니다. [v1.81 변경 내역과 제한](docs/PATCH_v1.81.md)을 확인하세요.
-
-## 시즌 레이스 기능 예시
-
-![시즌 레이스 기능 예시 — 예시 선수 A/B의 가상 OPS 데이터](docs/images/OPS_example.gif)
-
-
-**예시 선수 A/B의 가상 데이터**를 실제 레이스 저장 기능으로 만든 GIF입니다. 실제 선수 성적이 아닙니다.
-
-![시즌 레이스 기능 예시2 — 실제선수 shohei ohtani, jazz chisholm jr의 2026정규시즌 OPS 데이터](docs/images/season-race.png)
-
-**실제선수데이터를 바탕으로**한 png 파일입니다. light mode를 사용하였습니다.
-
-- 심화 비교 → Season Race에서 **OPS · MLB** 또는 **fWAR · FanGraphs**를 선택합니다.
-- OPS는 경기별 원시 기록을 합산해 계산합니다. 경기별 OPS의 단순 평균이 아닙니다.
-- **OPS 축 범위 직접 지정**을 체크하면 최솟값·최댓값을 정할 수 있습니다. 선택 기간의 최고·최저와 날짜도 표시합니다.
-- **움직이는 이미지 저장**에서 기간, GIF/WebP, 길이, FPS, 해상도와 반복 여부를 선택합니다. 저장은 백그라운드에서 진행하며 취소할 수 있습니다.
-- 표시 기간을 줄여도 OPS는 시즌 시작부터 해당 날짜까지 누적값입니다. 현재 정규시즌 타격 기록을 지원합니다.
-
-자세한 계산 방식과 제한: [OPS·애니메이션 사용법](docs/OPS_RACE_GUIDE_KO.md).
 
 ## 데이터와 설정
 
@@ -136,9 +44,9 @@ Change는 원시 캐시가 없으면 자동 조회하지 않습니다. 표시된
 
 - [사용자 가이드](docs/USER_GUIDE.md): 설치, 설정, 선수명, B-Ref, 문제 해결
 - [홈 사용법](docs/OFFSEASON_HOME_GUIDE_KO.md)
-- [Season Race 기본 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md) · [OPS·GIF/WebP 사용법](docs/OPS_RACE_GUIDE_KO.md)
+- [Season Race 사용법](docs/SEASON_RACE_V161_GUIDE_KO.md)
 - [코드 구조](ARCHITECTURE.md)
-- [변경 기록](CHANGELOG.md) · [v1.81 패치노트](docs/PATCH_v1.81.md)
+- [변경 기록](CHANGELOG.md) · [v1.82 패치노트](docs/PATCH_v1.82.md)
 - [Windows 패키징 준비](docs/WINDOWS_PACKAGING_GUIDE_KO.md): 개발자용, 설치형 배포 검증 전
 
 과거 패치노트는 당시 변경 기록입니다. 현재 설치와 사용에는 위 가이드를 우선하세요.
@@ -157,18 +65,3 @@ py -3.12 -m venv .venv
 
 MLB, FanGraphs, Baseball-Reference, Baseball Savant의 공식 클라이언트가 아닙니다. 문제 제보 시 버전·재현 순서·기대 결과를 적고, 로그의 개인정보를 확인한 뒤 공유하세요.
 
-
-
-
-
-## 프로그램 저작권
-Dugout Atlas Copyright (c) 2026 dhtjr1236-eng
-
-1. 본 소프트웨어 및 소스 코드의 저작권은 원작자에게 있습니다.
-2. 개인적인 학습·비상업적 사용은 허용됩니다.
-3. 원작자의 사전 서면 동의 없이 다음 행위를 금지합니다.
-   - 소스 코드 또는 이를 수정한 버전의 재배포
-   - 프로젝트명, 로고, README, 저작자 표시를 변경하거나 제거한 재배포
-   - 상업적 판매, 유료 배포, SaaS 형태의 제공
-4. 재배포를 허용받은 경우에도 원저작자 표시와 본 라이선스 전문을 유지해야 합니다.
-5. 본 소프트웨어는 어떠한 보증도 제공하지 않습니다.
