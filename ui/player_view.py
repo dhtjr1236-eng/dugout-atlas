@@ -3,6 +3,7 @@ from __future__ import annotations
 from config.i18n import tr, tr_list
 
 import html
+import math
 from typing import Any
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
@@ -10,6 +11,7 @@ from matplotlib.figure import Figure
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
@@ -25,12 +27,12 @@ from charts.batter_charts import (
     barrel_percentage,
     exit_velocity_distribution,
     hard_hit_percentage,
-    war_history,
-    wrc_history,
 )
 from charts.pitcher_charts import pitch_usage, run_value, velocity_history, whiff_by_pitch
+from charts.smooth_spline_chart import ModernSplineChart
 from models.player import PlayerBundle
-from ui.widgets.metric_grid import MetricGrid
+from ui.components import StatCard
+from ui.widgets.metric_grid import MetricGrid, format_value
 from ui.pitch_analysis_view import PitchAnalysisView
 
 
@@ -69,7 +71,21 @@ class PlayerView(QWidget):
         self.layout.addWidget(self.name_label)
         self.layout.addWidget(self.profile_label)
 
+        self.summary_grid = QGridLayout()
+        self.summary_grid.setSpacing(12)
+        self.summary_cards = [
+            StatCard(tr("OPS"), "—", "", ""),
+            StatCard(tr("wOBA / fWAR"), "—", "", ""),
+            StatCard(tr("Exit Velocity"), "—", "", ""),
+            StatCard(tr("Hard Hit %"), "—", "", ""),
+        ]
+        for column, card in enumerate(self.summary_cards):
+            self.summary_grid.addWidget(card, 0, column)
+            self.summary_grid.setColumnStretch(column, 1)
+        self.layout.addLayout(self.summary_grid)
+
         self.basic_box, self.basic_grid = self._metric_box("Basic Stats")
+        self.basic_box.hide()
         self.advanced_box, self.advanced_grid = self._metric_box(
             "FanGraphs / Baseball Reference"
         )
@@ -137,7 +153,7 @@ class PlayerView(QWidget):
         self.chart_tabs.setMinimumHeight(430)
         self.layout.addWidget(self.chart_tabs)
 
-        self.pitch_analysis_box = QGroupBox(tr("Pitch analysis · 1.81"))
+        self.pitch_analysis_box = QGroupBox(tr("Pitch analysis · 1.81 beta3"))
         analysis_layout = QVBoxLayout(self.pitch_analysis_box)
         self.pitch_analysis = PitchAnalysisView()
         self.pitch_analysis.requested.connect(self.pitch_analysis_requested.emit)
@@ -337,6 +353,7 @@ class PlayerView(QWidget):
         defense = bundle.defense
         self.pitch_box.hide()
         self.defense_box.show()
+        self._update_summary_cards(bundle)
 
         self.basic_grid.set_metrics(
             [
@@ -389,18 +406,81 @@ class PlayerView(QWidget):
 
     def _render_batter_charts(self, bundle: PlayerBundle) -> None:
         sc = bundle.statcast
-        period_label = self.PERIOD_LABELS.get(
-            self.current_trend_period, self.current_trend_period
-        )
+        war_chart = self._trend_chart("WAR")
+        wrc_chart = self._trend_chart("wRC+")
         self._set_charts(
             [
                 ("Exit Velocity", exit_velocity_distribution(sc)),
                 ("Barrel %", barrel_percentage(sc)),
                 ("Hard Hit %", hard_hit_percentage(sc)),
-                ("WAR", war_history(self._trend_rows, period_label)),
-                ("wRC+", wrc_history(self._trend_rows, period_label)),
+                ("WAR", war_chart),
+                ("wRC+", wrc_chart),
             ]
         )
+
+    def _trend_chart(self, metric: str) -> ModernSplineChart:
+        chart = ModernSplineChart()
+
+        rows: list[tuple[str, float]] = []
+        for row in self._trend_rows:
+            value = row.get(metric)
+            if value is None:
+                continue
+            try:
+                number = float(value)
+            except (TypeError, ValueError):
+                continue
+            if math.isfinite(number):
+                rows.append((str(row.get("Period") or len(rows) + 1), number))
+
+        chart.plot_trend(range(len(rows)), [value for _, value in rows], label=metric)
+        chart.ax.set_title(tr(f"{metric} Trend"))
+        chart.ax.set_ylabel(tr(metric))
+        chart.ax.set_xlabel(tr("Period"))
+        if metric == "wRC+":
+            chart.ax.axhline(100, linestyle="--", linewidth=1, color="#64748B")
+        if rows:
+            chart.ax.set_xticks(range(len(rows)), [label for label, _ in rows])
+            chart.ax.tick_params(axis="x", rotation=45 if len(rows) > 8 else 0)
+        chart.draw_idle()
+        return chart
+
+    def _update_summary_cards(self, bundle: PlayerBundle) -> None:
+        basic, fg, sc = bundle.basic, bundle.fangraphs, bundle.statcast
+        is_pitcher = bundle.profile.is_pitcher
+        if is_pitcher:
+            era = basic.get("era") if basic.get("era") is not None else fg.get("ERA")
+            values = (
+                (tr("ERA"), era, "", ""),
+                (tr("fWAR"), fg.get("fWAR"), "", tr(f"bWAR {format_value(bundle.bref.get('bWAR'))}")),
+                (tr("Avg EV Allowed"), sc.get("Average Exit Velocity Allowed"), tr("mph"), ""),
+                (tr("Whiff %"), sc.get("Whiff %"), "", ""),
+            )
+            percent_indexes = {3}
+        else:
+            ops = basic.get("ops") if basic.get("ops") is not None else fg.get("OPS")
+            values = (
+                (tr("OPS"), ops, "", ""),
+                (tr("wOBA / fWAR"), fg.get("wOBA"), "", tr(f"fWAR {format_value(fg.get('fWAR'))}")),
+                (tr("Exit Velocity"), sc.get("Average Exit Velocity"), tr("mph"), ""),
+                (tr("Hard Hit %"), sc.get("Hard Hit %"), "", ""),
+            )
+            percent_indexes = {3}
+
+        for index, (title, value, unit, subtext) in enumerate(values):
+            display_value = format_value(value, percent=index in percent_indexes)
+            display_unit = unit if value is not None else ""
+            if index == 2 and value is not None:
+                try:
+                    display_value = f"{float(value):.1f}"
+                except (TypeError, ValueError):
+                    pass
+            if index == 0 and is_pitcher and value is not None:
+                try:
+                    display_value = f"{float(value):.2f}"
+                except (TypeError, ValueError):
+                    pass
+            self.summary_cards[index].set_values(title, display_value, display_unit, subtext)
 
     def _show_pitcher(
         self, bundle: PlayerBundle, period_payload: dict[str, Any] | None = None
@@ -425,6 +505,7 @@ class PlayerView(QWidget):
         )
         self.defense_box.hide()
         self.pitch_box.show()
+        self._update_summary_cards(bundle)
         batters_faced = self._number(basic.get("battersFaced"))
         strikeouts = self._number(basic.get("strikeOuts"))
         walks = self._number(basic.get("baseOnBalls"))
@@ -495,18 +576,22 @@ class PlayerView(QWidget):
                 self.pitch_table.setItem(row_index, col, QTableWidgetItem(tr(text)))
         self.pitch_table.resizeColumnsToContents()
 
-    def _set_charts(self, charts: list[tuple[str, Figure]]) -> None:
+    def _set_charts(self, charts: list[tuple[str, Figure | QWidget]]) -> None:
         while self.chart_tabs.count():
             widget = self.chart_tabs.widget(0)
             self.chart_tabs.removeTab(0)
             widget.deleteLater()
         for title, figure in charts:
-            canvas = FigureCanvasQTAgg(figure)
-            canvas.setMinimumHeight(360)
             holder = QWidget()
             holder.setMinimumHeight(390)
             layout = QVBoxLayout(holder)
-            layout.addWidget(canvas)
+            if isinstance(figure, Figure):
+                canvas = FigureCanvasQTAgg(figure)
+                canvas.setMinimumHeight(360)
+                layout.addWidget(canvas)
+            else:
+                figure.setMinimumHeight(360)
+                layout.addWidget(figure)
             self.chart_tabs.addTab(holder, tr(title))
 
     def _show_sources(self, bundle: PlayerBundle) -> None:
@@ -571,3 +656,4 @@ class PlayerView(QWidget):
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng
 # Unauthorized redistribution or rebranding is prohibited.
+
