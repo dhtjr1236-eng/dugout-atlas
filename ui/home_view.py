@@ -5,7 +5,9 @@ from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtWidgets import (QWidget, QScrollArea, QVBoxLayout, QHBoxLayout,
     QGridLayout, QLabel, QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem, QSizePolicy)
 from config.i18n import tr
+from models.game import GameDetail
 from services.home_service import HomeSnapshot
+from ui.components import BaseballDiamondWidget
 
 
 class HomeActionButton(QPushButton):
@@ -58,6 +60,7 @@ class HomeView(QScrollArea):
         self._schedule_state = 'unknown'
         self._schedule_date = ''
         self._game_count = 0
+        self._game_detail: GameDetail | None = None
         self._columns = 0
         body = QWidget()
         body.setMinimumWidth(0)
@@ -94,6 +97,28 @@ class HomeView(QScrollArea):
         self.schedule.setWordWrap(True)
         self.schedule.setObjectName('homeNotice')
         root.addWidget(self.schedule)
+        self.scoreboard = QFrame()
+        self.scoreboard.setObjectName('panel')
+        scoreboard_layout = QHBoxLayout(self.scoreboard)
+        scoreboard_details = QVBoxLayout()
+        self.scoreboard_heading = QLabel()
+        self.scoreboard_heading.setObjectName('homeSection')
+        self.scoreboard_matchup = QLabel('—')
+        self.scoreboard_matchup.setObjectName('title')
+        self.scoreboard_status = QLabel('—')
+        self.scoreboard_status.setObjectName('subtitle')
+        scoreboard_details.addWidget(self.scoreboard_heading)
+        scoreboard_details.addWidget(self.scoreboard_matchup)
+        scoreboard_details.addWidget(self.scoreboard_status)
+        scoreboard_layout.addLayout(scoreboard_details, 1)
+        self.scoreboard_score = QLabel('—')
+        self.scoreboard_score.setObjectName('title')
+        self.scoreboard_score.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        scoreboard_layout.addWidget(self.scoreboard_score)
+        self.baseball_diamond = BaseballDiamondWidget()
+        scoreboard_layout.addWidget(self.baseball_diamond)
+        root.addWidget(self.scoreboard)
+        self.scoreboard.hide()
         self.inventory = QFrame()
         self.inventory.setObjectName('panel')
         self.inventory.setProperty('homeCard', True)
@@ -189,6 +214,26 @@ class HomeView(QScrollArea):
         self._schedule_state, self._schedule_date, self._game_count = state, date_text, count
         self._render()
 
+    def set_game_detail(self, detail: GameDetail | None) -> None:
+        self._game_detail = detail
+        if detail is None:
+            self.scoreboard.hide()
+            self.baseball_diamond.update_runners(False, False, False)
+            return
+        self.scoreboard_heading.setText(tr('Live Scoreboard'))
+        away = detail.away.abbreviation or detail.away.name
+        home = detail.home.abbreviation or detail.home.name
+        self.scoreboard_matchup.setText(f'{tr(away)}  vs  {tr(home)}')
+        away_score = detail.away.score if detail.away.score is not None else 0
+        home_score = detail.home.score if detail.home.score is not None else 0
+        self.scoreboard_score.setText(f'{away_score}  –  {home_score}')
+        inning = f'{detail.inning_state} {detail.inning}'.strip() if detail.inning else ''
+        self.scoreboard_status.setText(' · '.join(filter(None, (tr(detail.status), tr(inning)))))
+        self.baseball_diamond.update_runners(
+            detail.on_first, detail.on_second, detail.on_third
+        )
+        self.scoreboard.show()
+
     def retranslate(self) -> None:
         self.title.setText(tr('A home for every part of the season'))
         self.subtitle.setText(tr('No game today? Revisit a season, follow a favorite, or start a comparison.'))
@@ -196,6 +241,7 @@ class HomeView(QScrollArea):
         self.refresh.setText(tr('Refresh local overview'))
         self.inventory_title.setText(tr('LOCAL LIBRARY · selected season'))
         self.favorite_heading.setText(tr('Your favorite players'))
+        self.scoreboard_heading.setText(tr('Live Scoreboard'))
         self.favorite_hint.setText(tr('Click a player to open this season. Add favorites from a player profile.'))
         self.footer.setText(tr('Overview uses local records only. Opening an analysis may request fresh data. Missing statistics remain missing.'))
         for card in self.cards:
@@ -206,6 +252,8 @@ class HomeView(QScrollArea):
                 if detail is not None:
                     label.setText(tr(detail))
         self._render()
+        if self._game_detail is not None:
+            self.set_game_detail(self._game_detail)
 
     def _render(self) -> None:
         texts = {'unknown': 'Schedule has not been checked.', 'loading': 'Checking the selected date…',
@@ -232,6 +280,3 @@ class HomeView(QScrollArea):
             item.setFlags(Qt.ItemFlag.NoItemFlags)
             self.favorites.addItem(item)
 
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
