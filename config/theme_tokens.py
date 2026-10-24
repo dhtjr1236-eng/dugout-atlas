@@ -6,17 +6,17 @@ ThemeName = Literal["light", "dark"]
 AccentName = Literal["blue", "gold", "purple", "magenta", "emerald"]
 
 DARK_TOKENS: dict[str, str] = {
-    "--color-bg": "#0B1220",
-    "--color-surface": "#111827",
+    "--color-bg": "#0B1120",
+    "--color-surface": "#162032",
     "--color-surface-muted": "#0F172A",
     "--color-surface-selected": "#1C2B42",
-    "--color-text": "#E5E7EB",
+    "--color-text": "#F8FAFC",
     "--color-text-muted": "#CBD5E1",
     "--color-text-subtle": "#94A3B8",
-    "--color-border": "#263244",
+    "--color-border": "#1E293B",
     "--color-border-strong": "#334155",
-    "--color-primary": "#3B82F6",
-    "--color-primary-hover": "#60A5FA",
+    "--color-primary": "#38BDF8",
+    "--color-primary-hover": "#7DD3FC",
     "--color-primary-soft": "#1E3A5F",
     "--color-success": "#22C55E",
     "--color-warning": "#F59E0B",
@@ -45,7 +45,7 @@ LIGHT_TOKENS: dict[str, str] = {
 
 ACCENT_OVERRIDES: dict[str, dict[str, dict[str, str]]] = {
     "blue": {
-        "dark": {"--color-primary":"#3B82F6","--color-primary-hover":"#60A5FA","--color-primary-soft":"#1E3A5F","--color-surface-selected":"#1C2B42"},
+        "dark": {"--color-primary":"#38BDF8","--color-primary-hover":"#7DD3FC","--color-primary-soft":"#0C4A6E","--color-surface-selected":"#1C2B42"},
         "light": {"--color-primary":"#2563EB","--color-primary-hover":"#1D4ED8","--color-primary-soft":"#DBEAFE","--color-surface-selected":"#EFF6FF"},
     },
     "gold": {
@@ -108,6 +108,3 @@ def chart_colors() -> dict[str, str]:
         "primary": tokens["--color-primary"],
     }
 
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
