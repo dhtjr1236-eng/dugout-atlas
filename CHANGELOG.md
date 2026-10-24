@@ -1,22 +1,3 @@
-## 1.81 — 투수 분포·Matchup·Change와 로고 (2026-10-16)
-
-- Profile/Matchup의 구종별 분포·상황별 사용률·Whiff%와 세 언어 도움말을 통합합니다.
-- 기준일 전후 구속·회전수 비교, 일/주 시계열, 표본·결측·제외 정보를 제공합니다.
-- Change는 캐시 우선 및 명시적 시즌 조회 허용을 사용하며 DB migration·영구 raw 저장을 추가하지 않습니다.
-- IVB/HB는 미검증으로 제외합니다. 기존 Arsenal·구속 이력·OPS 기능을 유지합니다.
-- 이미지 헤더 로고와 앱·패키지·CI·현재 안내 버전 1.81을 반영합니다.
-- 상세: [v1.81 패치노트](docs/PATCH_v1.81.md).
-
-## 1.8 — OPS 시즌 레이스와 애니메이션 저장 (2026-10-11)
-
-- MLBAM ID로 경기별 원시 기록을 합산하는 정규시즌 타격 OPS 레이스를 추가합니다.
-- OPS 축 직접 지정, 범위 밖 실제 값, 선택 기간 전체 일별 기록 기준 최고·최저와 날짜를 표시합니다.
-- GIF/WebP 저장에 기간·6~12초·5/10fps·640/960 해상도·반복 설정, 비동기 진행률과 취소를 제공합니다.
-- 실패·취소 시 기존 파일을 보존하고, 저장을 위해 추가 API를 요청하지 않습니다.
-- README에 예시 선수 A/B의 가상 데이터로 만든 기존 OPS GIF를 포함합니다.
-- 앱·패키지·HTTP·README·CI·현재 가이드 버전을 1.8로 맞춥니다. 기존 데이터와 설정을 초기화하지 않습니다.
-- 상세: [v1.8 패치노트](docs/PATCH_v1.8.md), [OPS·애니메이션 사용법](docs/OPS_RACE_GUIDE_KO.md).
-
 ## 1.7 유지보수 — 문서·캐시 관리 정리 (2026-10-06)
 
 - 원본 ZIP 파일 목록, 초기 업로드 설명, 수동 소스 체크섬을 제거합니다. 소스 이력은 Git에서 확인합니다.
@@ -236,3 +217,12 @@
 - Decoupled pitcher Velocity chart from FanGraphs history.
 - Velocity now uses monthly Statcast velocity for the primary FF/SI/FC fastball.
 - Added regression tests for all fixes above.
+## 1.82 — 통합 컴포넌트·테마 개선 (2026-10-24)
+
+- 선수 화면에 `StatCard` 4개와 `ModernSplineChart` 기반 WAR / wRC+ 추이 표시를 통합했습니다.
+- 기간 선택값은 기존 백엔드 계약인 `yearly`, `monthly`, `daily`를 유지하고 비동기 controller / Signal 흐름을 보존했습니다.
+- 홈 경기 스코어보드와 베이스 주자 상태를 선택 경기 상세와 연결했습니다.
+- 라이트·다크 테마에서 카드, 내부 라벨, 차트, 베이스 다이아몬드가 공통 테마 토큰과 QSS를 사용하도록 정리했습니다.
+- 영어·한국어·일본어 UI 문자열과 관련 회귀 테스트를 확인했습니다.
+
+
