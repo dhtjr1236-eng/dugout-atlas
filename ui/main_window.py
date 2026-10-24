@@ -236,6 +236,7 @@ class MainWindow(QMainWindow):
     def set_game_detail(self, detail: GameDetail) -> None:
         self.game_view.set_game(detail)
         self.lineup_view.set_game(detail)
+        self.home_view.set_game_detail(detail)
 
     def update_search_results(self, rows: list[dict[str, object]]) -> None:
         self._search_map = {}
@@ -355,3 +356,4 @@ class MainWindow(QMainWindow):
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng
 # Unauthorized redistribution or rebranding is prohibited.
+
