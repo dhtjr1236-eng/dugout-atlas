@@ -2333,6 +2333,40 @@
     "en": "Pitch analysis · 1.81 beta3",
     "ko": "투수 분석 · 1.81 beta3",
     "ja": "投手分析 · 1.81 beta3"
+  },
+  {
+    "en": "Season in review · favorite players",
+    "ko": "시즌 돌아보기 · 즐겨찾기 선수",
+    "ja": "シーズン振り返り · お気に入り選手"
+  },
+  {
+    "en": "Compare saved regular-season records with the previous year. Postseason statistics are excluded. Δ means change, not improvement.",
+    "ko": "저장된 정규시즌 기록을 전년과 비교합니다. 포스트시즌 기록은 제외됩니다. Δ는 증감이며 성적 향상을 뜻하지 않습니다.",
+    "ja": "保存済みのレギュラーシーズン成績を前年と比較します。ポストシーズン成績は含みません。Δは増減であり、改善を意味しません。"
+  },
+  {
+    "en": "Regular season · saved FanGraphs statistics",
+    "ko": "정규시즌 · 저장된 FanGraphs 기록",
+    "ja": "レギュラーシーズン · 保存済みFanGraphs成績"
+  },
+  {
+    "en": "Saved at (UTC)",
+    "ko": "저장 시각 (UTC)",
+    "ja": "保存日時 (UTC)"
+  },
+  {
+    "en": "Missing records: open player analysis for each season, then refresh this overview.",
+    "ko": "기록이 없으면 선수 분석에서 각 시즌을 조회한 뒤 홈을 새로고침하세요.",
+    "ja": "記録がない場合は選手分析で各シーズンを開き、ホームを更新してください。"
+  },
+  {
+    "en": "Open player analysis",
+    "ko": "선수 분석 열기",
+    "ja": "選手分析を開く"
+  },
+  {
+    "en": "Add favorite players and open their season analysis to build your review.",
+    "ko": "즐겨찾기 선수를 추가하고 시즌 분석을 조회하면 돌아보기가 표시됩니다.",
+    "ja": "お気に入り選手を追加し、シーズン分析を開くと振り返りが表示されます。"
   }
 ]
-
