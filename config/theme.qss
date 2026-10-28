@@ -17,6 +17,10 @@ QGroupBox {
     padding-top: 12px;
     font-weight: 600;
 }
+QFrame[seasonRecap="true"] QLabel {
+    background-color: transparent;
+    border: none;
+}
 QPushButton {
     background-color: {{--color-surface-muted}};
     color: {{--color-text}};
@@ -192,4 +196,3 @@ QLabel#homeSection { font-size: 13pt; font-weight: 700; }
 QLabel#homeNotice { background: {{--color-primary-soft}}; border-radius: 7px; padding: 12px; }
 
 QFrame[homeCard="true"] QLabel { background: transparent; }
-
