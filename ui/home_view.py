@@ -8,6 +8,7 @@ from config.i18n import tr
 from models.game import GameDetail
 from services.home_service import HomeSnapshot
 from ui.components import BaseballDiamondWidget
+from ui.season_recap import SeasonRecapCard, format_saved_time
 
 
 class HomeActionButton(QPushButton):
@@ -152,6 +153,19 @@ class HomeView(QScrollArea):
             layout.addWidget(button); layout.addWidget(label)
             self.cards.append(card); self.buttons[key] = button
         root.addLayout(self.grid)
+        self.recap_heading = QLabel()
+        self.recap_heading.setObjectName('homeSection')
+        self.recap_heading.setWordWrap(True)
+        self.recap_heading.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        root.addWidget(self.recap_heading)
+        self.recap_hint = QLabel()
+        self.recap_hint.setWordWrap(True)
+        self.recap_hint.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        root.addWidget(self.recap_hint)
+        self.recap_layout = QVBoxLayout()
+        root.addLayout(self.recap_layout)
+        self.recap_cards = []
+        self._recap_key = None
         self.favorite_heading = QLabel()
         self.favorite_heading.setWordWrap(True)
         self.favorite_heading.setObjectName('homeSection')
@@ -235,6 +249,8 @@ class HomeView(QScrollArea):
         self.scoreboard.show()
 
     def retranslate(self) -> None:
+        self.recap_heading.setText(tr('Season in review · favorite players'))
+        self.recap_hint.setText(tr('Compare saved regular-season records with the previous year. Postseason statistics are excluded. Δ means change, not improvement.'))
         self.title.setText(tr('A home for every part of the season'))
         self.subtitle.setText(tr('No game today? Revisit a season, follow a favorite, or start a comparison.'))
         self.season_label.setText(tr('Season to explore'))
@@ -262,13 +278,14 @@ class HomeView(QScrollArea):
                  'error': 'Schedule unavailable. Check your connection; local browsing is still available.'}
         self.schedule.setText((self._schedule_date + '  ·  ' if self._schedule_date else '') + tr(texts[self._schedule_state]))
         snapshot = self._snapshot
+        self._render_recaps()
         self.counts.setText(tr('Players') + f'  {snapshot.player_count if snapshot else "—"}     /     ' +
                             tr('Sources') + f'  {snapshot.source_count if snapshot else "—"}     /     ' +
                             tr('Cached records') + f'  {snapshot.record_count if snapshot else "—"}')
         if self._state == 'loading': message = tr('Reading your local library…')
         elif self._state == 'error': message = tr('Could not read local data. Previous results are retained. Try refreshing.')
         elif self._state == 'empty': message = tr('No cached statistics for this season yet. Open a player or standings to begin.')
-        else: message = tr('Last cache write (UTC)') + ': ' + (snapshot.updated_at if snapshot else '—')
+        else: message = tr('Last cache write (UTC)') + ': ' + format_saved_time(snapshot.updated_at if snapshot else '')
         self.state.setText(message)
         self.favorites.clear()
         for row in snapshot.favorites if snapshot else ():
@@ -280,3 +297,28 @@ class HomeView(QScrollArea):
             item.setFlags(Qt.ItemFlag.NoItemFlags)
             self.favorites.addItem(item)
 
+    def _render_recaps(self) -> None:
+        key = (id(self._snapshot), tr('Season in review · favorite players'), self._state)
+        if key == self._recap_key:
+            return
+        self._recap_key = key
+        while self.recap_layout.count():
+            widget = self.recap_layout.takeAt(0).widget()
+            if widget is not None:
+                widget.hide()
+                widget.deleteLater()
+        self.recap_cards = []
+        snapshot = self._snapshot
+        if snapshot is None or not snapshot.recaps:
+            message = ('Reading your local library…' if self._state == 'loading' else
+                       'Add favorite players and open their season analysis to build your review.')
+            notice = QLabel(tr(message))
+            notice.setWordWrap(True)
+            self.recap_layout.addWidget(notice)
+            return
+        for recap in snapshot.recaps:
+            card = SeasonRecapCard(recap, snapshot.season, open_button=HomeActionButton())
+            card.requested.connect(self.player_selected.emit)
+            card.setEnabled(self._state != 'loading')
+            self.recap_cards.append(card)
+            self.recap_layout.addWidget(card)
