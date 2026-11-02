@@ -2368,5 +2368,10 @@
     "en": "Add favorite players and open their season analysis to build your review.",
     "ko": "즐겨찾기 선수를 추가하고 시즌 분석을 조회하면 돌아보기가 표시됩니다.",
     "ja": "お気に入り選手を追加し、シーズン分析を開くと振り返りが表示されます。"
+  },
+  {
+    "en": "Season Race requires the same season for Player A and Player B.",
+    "ko": "시즌 레이스는 선수 A와 선수 B의 시즌이 같아야 합니다.",
+    "ja": "シーズンレースには選手Aと選手Bのシーズンが一致している必要があります。"
   }
 ]
