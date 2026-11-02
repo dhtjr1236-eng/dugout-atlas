@@ -278,7 +278,7 @@ class MainWindow(QMainWindow):
             window = AdvancedCompareWindow(controller.players, controller.season, self)
             self._advanced_compare_window = window
         else:
-            window.season.setValue(controller.season)
+            window.default_season = controller.season
             try:
                 window.retranslate()
             except Exception:
@@ -356,4 +356,3 @@ class MainWindow(QMainWindow):
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng
 # Unauthorized redistribution or rebranding is prohibited.
-
