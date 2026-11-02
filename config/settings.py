@@ -22,14 +22,14 @@ THEME_QSS_PATH = resource_path("config", "theme.qss")
 @dataclass(frozen=True, slots=True)
 class Settings:
     app_name: str = "Dugout Atlas"
-    app_version: str = "1.82"
+    app_version: str = "1.83"
     refresh_seconds: int = 30
     cache_ttl_days: int = 30
     current_season_cache_ttl_hours: int = 1
     current_savant_ttl_hours: float = 0.25
     request_timeout_seconds: int = 20
     request_retries: int = 3
-    user_agent: str = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152 Safari/537.36 Dugout-Atlas/1.82")
+    user_agent: str = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152 Safari/537.36 Dugout-Atlas/1.83")
     mlb_api_base: str = "https://statsapi.mlb.com/api"
     mlb_logo_base: str = "https://www.mlbstatic.com/team-logos"
 
@@ -37,4 +37,3 @@ SETTINGS = Settings()
 
 def ensure_runtime_dirs() -> None:
     for path in (CACHE_DIR, DATA_DIR, LOG_DIR): ensure_directory(path)
-
