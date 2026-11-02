@@ -1,10 +1,9 @@
 [project]
 name = "dugout-atlas"
-version = "1.82"
+version = "1.83"
 description = "Windows MLB analytics desktop app with live gameday, player comparison, season race and an offseason home"
 requires-python = ">=3.12"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
-
