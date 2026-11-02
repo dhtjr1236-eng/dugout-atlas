@@ -24,12 +24,15 @@ class Slot:
     completer:QCompleter
     status:QLabel
     mapping:dict[str,int]
+    season:QSpinBox
+    player_id:int | None = None
     bundle:Any=None
 
 class AdvancedCompareWindow(QMainWindow):
     def __init__(self,player_service,season:int,parent=None)->None:
         super().__init__(parent)
         self.service=AdvancedCompareService(player_service)
+        self.default_season=season
         self._threads:set[TaskThread]=set()
         self.slots:list[Slot]=[]
         self._load_versions = [0, 0, 0, 0]
@@ -44,8 +47,6 @@ class AdvancedCompareWindow(QMainWindow):
         self.subtitle.setObjectName("subtitle")
         titlecol=QVBoxLayout(); titlecol.addWidget(self.title); titlecol.addWidget(self.subtitle)
         top.addLayout(titlecol); top.addStretch()
-        self.season_label=QLabel(tr("Season")); top.addWidget(self.season_label)
-        self.season=QSpinBox(); self.season.setRange(2002,2100); self.season.setValue(season); top.addWidget(self.season)
         self.add_button=QPushButton(tr("+ Add Player")); self.add_button.clicked.connect(self._add_slot); top.addWidget(self.add_button)
         root.addLayout(top)
 
@@ -67,6 +68,7 @@ class AdvancedCompareWindow(QMainWindow):
         self.race = SeasonRaceView(player_service, self)
         self.race.season = season
         self.tabs.addTab(self.race, tr("Season Race"))
+        self.race_notice=QLabel(); self.race_notice.setWordWrap(True); root.addWidget(self.race_notice)
         root.addWidget(self.tabs, 1)
         self.tabs.currentChanged.connect(lambda index: self.race.cancel() if index != 1 else None)
         self.export_button = QPushButton(tr("Save current still"))
@@ -78,7 +80,6 @@ class AdvancedCompareWindow(QMainWindow):
 
         self._add_slot(); self._add_slot()
         self._render()
-        self.season.valueChanged.connect(lambda _v:self._reload_selected())
         from ui.window_sizing import compact_main_window
         compact_main_window(self, 1500, 900)
 
@@ -94,11 +95,13 @@ class AdvancedCompareWindow(QMainWindow):
         index=len(self.slots)
         box=QGroupBox(tr(f"Player {chr(65+index)}")); layout=QVBoxLayout(box)
         edit=QLineEdit(); edit.setPlaceholderText(tr("Search player (e.g. Judge)"))
+        season=QSpinBox(); season.setRange(2002,2100); season.setValue(self.default_season); season.setAccessibleName(tr("Season"))
         model=QStringListModel(self); comp=QCompleter(model,self); comp.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive); edit.setCompleter(comp)
         status=QLabel(tr("No player selected")); status.setObjectName("subtitle")
-        layout.addWidget(edit); layout.addWidget(status); self.slot_row.addWidget(box,1)
-        slot=Slot(box,edit,model,comp,status,{})
+        layout.addWidget(edit); layout.addWidget(season); layout.addWidget(status); self.slot_row.addWidget(box,1)
+        slot=Slot(box,edit,model,comp,status,{},season)
         self.slots.append(slot)
+        season.valueChanged.connect(lambda _value,idx=index:self._season_changed(idx))
         timer=QTimer(edit); timer.setSingleShot(True); timer.setInterval(300)
         edit.textChanged.connect(lambda _t,timer=timer:timer.start())
         timer.timeout.connect(lambda idx=index:self._search(idx))
@@ -128,12 +131,14 @@ class AdvancedCompareWindow(QMainWindow):
     def _load_slot(self,index:int,player_id:int)->None:
         self.race.cancel()
         slot = self.slots[index]
+        slot.player_id = player_id
         slot.bundle = None
         slot.status.setText(tr("Loading…"))
         self._load_versions[index] += 1
         version = self._load_versions[index]
-        season = self.season.value()
+        season = slot.season.value()
         self._sync_race()
+        self._render()
         self._run(lambda:self.service.load(player_id,season),
                   lambda bundle:self._loaded(index,bundle,version,season),
                   lambda message:self._load_failed(index,version,message))
@@ -144,7 +149,7 @@ class AdvancedCompareWindow(QMainWindow):
             self.slots[index].status.setToolTip(message)
 
     def _loaded(self,index:int,bundle:Any,version=None,season=None)->None:
-        if version is not None and (version != self._load_versions[index] or season != self.season.value()):
+        if version is not None and (version != self._load_versions[index] or season != self.slots[index].season.value()):
             return
         slot=self.slots[index]; slot.bundle=bundle
         slot.status.setText(localized_player_name(bundle.profile.id,bundle.profile.full_name))
@@ -153,10 +158,25 @@ class AdvancedCompareWindow(QMainWindow):
 
     def _sync_race(self):
         selected = [s.bundle for s in self.slots[:2]]
-        self.race.set_players(selected if len(selected)==2 and all(selected) else [], self.season.value())
+        same = len(self.slots) >= 2 and self.slots[0].season.value() == self.slots[1].season.value()
+        if not same:
+            self.race.cancel()
+            if self.tabs.currentIndex() == 1: self.tabs.setCurrentIndex(0)
+        self.tabs.setTabEnabled(1, same)
+        self.race_notice.setText('' if same else tr('Season Race requires the same season for Player A and Player B.'))
+        self.race.set_players(selected if same and len(selected)==2 and all(selected) else [], self.slots[0].season.value())
+
+    def _season_changed(self, index:int)->None:
+        slot=self.slots[index]
+        if slot.player_id is not None:
+            self._load_slot(index, slot.player_id)
+        else:
+            self._load_versions[index] += 1
+            self._sync_race()
+            self._render()
 
     def _reload_selected(self)->None:
-        selected = [(i,s.bundle.profile.id) for i,s in enumerate(self.slots) if s.bundle is not None]
+        selected = [(i,s.player_id) for i,s in enumerate(self.slots) if s.player_id is not None]
         # Invalidate all old requests, including requests with no loaded bundle yet.
         self._load_versions = [v+1 for v in self._load_versions]
         for slot in self.slots: slot.bundle = None
@@ -187,7 +207,7 @@ class AdvancedCompareWindow(QMainWindow):
     def _setup_table(self,table:QTableWidget,players:list[Any],first_header:str)->None:
         table.clear()
         table.setColumnCount(1+len(players))
-        table.setHorizontalHeaderLabels([first_header]+[localized_player_name(p.profile.id,p.profile.full_name) for p in players])
+        table.setHorizontalHeaderLabels([first_header]+[f'{localized_player_name(s.bundle.profile.id,s.bundle.profile.full_name)} ({s.season.value()})' for s in self.slots if s.bundle is not None])
         h=table.horizontalHeader(); h.setSectionResizeMode(0,QHeaderView.ResizeMode.ResizeToContents)
         for c in range(1,table.columnCount()):h.setSectionResizeMode(c,QHeaderView.ResizeMode.Stretch)
         table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -208,7 +228,7 @@ class AdvancedCompareWindow(QMainWindow):
             self.core_table.setItem(r,0,QTableWidgetItem(metric))
             for c,mapping in enumerate(metric_maps,1):self.core_table.setItem(r,c,QTableWidgetItem(self._format(mapping.get(metric))))
 
-        percentiles=[self.service.statcast_percentiles(p,self.season.value()) for p in players]
+        percentiles=[self.service.statcast_percentiles(s.bundle,s.season.value()) for s in self.slots if s.bundle is not None]
         pmetrics=[]
         for mapping in percentiles:
             for key in mapping:
@@ -227,7 +247,7 @@ class AdvancedCompareWindow(QMainWindow):
         sources=list(dict.fromkeys(sources))
         self.footer_group.setVisible(True)
         self.footer.setText(
-            f"{tr('Season')}: {self.season.value()} · {tr('Players')}: {len(players)}\n"
+            f"{tr('Season')}: " + ', '.join(f'{chr(65+i)}: {s.season.value()}' for i,s in enumerate(self.slots) if s.bundle is not None) + f" · {tr('Players')}: {len(players)}\n"
             + f"{tr('Sources')}: {', '.join(sources) if sources else 'MLB / FanGraphs / Baseball-Reference / Baseball Savant'}\n"
             + tr("Status: only provider-returned values are shown; unavailable metrics remain blank.")
         )
@@ -237,14 +257,12 @@ class AdvancedCompareWindow(QMainWindow):
         self.export_button.setText(tr("Save current still")); self.race.retranslate()
         self.setWindowTitle(tr("Advanced Compare")); self.title.setText(tr("Advanced Compare"))
         self.subtitle.setText(tr("Compare 2–4 players in a separate window. The existing Compare tab and main window remain unchanged."))
-        self.season_label.setText(tr("Season")); self.add_button.setText(tr("+ Add Player"))
+        self.add_button.setText(tr("+ Add Player"))
         self.core_group.setTitle(tr("A. Basic Comparison")); self.stat_group.setTitle(tr("B. Statcast Percentile Comparison"))
         self.footer_group.setTitle(tr("Data Range / Sources / Status"))
         for i,slot in enumerate(self.slots):
             slot.box.setTitle(tr(f"Player {chr(65+i)}")); slot.edit.setPlaceholderText(tr("Search player (e.g. Judge)"))
+            slot.season.setAccessibleName(tr('Season'))
             if slot.bundle is None:slot.status.setText(tr("No player selected"))
         self._render()
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
+        self._sync_race()
