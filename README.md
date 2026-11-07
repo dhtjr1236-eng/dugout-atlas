@@ -3,9 +3,9 @@
 **MLB 선수의 기록을 살펴보고 시즌의 흐름을 비교하세요.**  
 Explore player statistics and compare seasons in one desktop app.
 
-**[Windows 배포 파일 / Windows releases](https://github.com/dhtjr1236-eng/dugout-atlas/releases)**
+<a href="https://github.com/dhtjr1236-eng/dugout-atlas/releases/download/v1.9/DugoutAtlas-v1.9-Setup.exe"><img src="docs/images/download-windows.svg" width="320" alt="Download Dugout Atlas for Windows"></a> <a href="docs/MACOS_STATUS.md"><img src="docs/images/download-macos.svg" width="320" alt="macOS coming soon"></a>
 
-v1.9 설치본 업로드 준비 중 / v1.9 installer upload pending. · **macOS — 준비 중 / Coming later**  
+[릴리스 및 변경 내역 / Release notes](https://github.com/dhtjr1236-eng/dugout-atlas/releases/tag/v1.9)  
 Windows x64 · Python 설치 불필요 / No Python installation required
 
 [한국어](#한국어) · [English](#english) · [이전 버전 / Previous releases](https://github.com/dhtjr1236-eng/dugout-atlas/releases)
