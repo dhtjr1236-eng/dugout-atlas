@@ -346,13 +346,7 @@ class PlayerView(QWidget):
             self.trend_season.setCurrentIndex(self.trend_season.findData(target_season))
             self.trend_season.blockSignals(False)
             self.trend_season.setVisible(True)
-            if selected_period == "yearly" and self.current_trend_season is not None:
-                self._trend_rows = [
-                    {"Period": str(row.get("Season")), **row}
-                    for row in bundle.history
-                    if row.get("Season") is not None and int(row.get("Season")) == self.current_trend_season
-                ]
-            elif not existing_trend:
+            if not existing_trend:
                 self._trend_rows = [
                     {"Period": str(row.get("Season")), **row}
                     for row in bundle.history
