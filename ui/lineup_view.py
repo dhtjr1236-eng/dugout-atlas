@@ -106,7 +106,3 @@ class LineupView(QWidget):
             ("K", stats.get("strikeOuts")),
         ]
         return "  ".join(f"{label} {value}" for label, value in fields if value is not None)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -8,7 +8,7 @@ from typing import Any
 
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import QEvent, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
     QGridLayout,
@@ -16,6 +16,7 @@ from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QScrollArea,
+    QSizePolicy,
     QTabWidget,
     QTableWidget,
     QTableWidgetItem,
@@ -31,7 +32,8 @@ from charts.batter_charts import (
 from charts.pitcher_charts import pitch_usage, run_value, velocity_history, whiff_by_pitch
 from charts.smooth_spline_chart import ModernSplineChart
 from models.player import PlayerBundle
-from ui.components import StatCard
+from ui.components import StatCard, HudPanel
+from ui.components.profile_portrait import ProfilePortrait
 from ui.widgets.metric_grid import MetricGrid, format_value
 from ui.pitch_analysis_view import PitchAnalysisView
 
@@ -39,11 +41,12 @@ from ui.pitch_analysis_view import PitchAnalysisView
 class PlayerView(QWidget):
     pitch_analysis_requested = pyqtSignal()
     trend_period_changed = pyqtSignal(str)
+    trend_season_changed = pyqtSignal(int)
     pitcher_statcast_period_changed = pyqtSignal(str)
 
     PERIOD_LABELS = {
         "yearly": "Yearly · last 6 seasons",
-        "monthly": "Monthly · current season",
+        "monthly": "Monthly · selected season",
         "daily": "Daily · recent 14 games",
     }
     PITCHER_STATCAST_LABELS = {
@@ -60,6 +63,8 @@ class PlayerView(QWidget):
 
         root = QVBoxLayout(self)
         scroll = QScrollArea()
+        self.scroll = scroll
+        scroll.viewport().installEventFilter(self)
         scroll.setWidgetResizable(True)
         self.content = QWidget()
         self.layout = QVBoxLayout(self.content)
@@ -68,10 +73,34 @@ class PlayerView(QWidget):
         self.name_label.setObjectName("title")
         self.profile_label = QLabel(tr("Search by name or click a lineup player."))
         self.profile_label.setObjectName("subtitle")
-        self.layout.addWidget(self.name_label)
-        self.layout.addWidget(self.profile_label)
+        self.name_label.setWordWrap(True)
+        self.name_label.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Preferred)
+        self.profile_label.setWordWrap(True)
+        self.hero = HudPanel()
+        self.hero_grid = QGridLayout(self.hero)
+        self.hero_grid.setContentsMargins(22, 22, 22, 22)
+        self.hero_grid.setSpacing(20)
+        self.identity = QWidget()
+        self.identity.setObjectName('hudContent')
+        identity_row = QHBoxLayout(self.identity)
+        identity_row.setContentsMargins(0, 0, 0, 0)
+        self.portrait = ProfilePortrait()
+        identity_row.addWidget(self.portrait)
+        self.identity_layout = QVBoxLayout()
+        self.profile_heading = QLabel(tr('01 / PLAYER PROFILE'))
+        self.profile_heading.setObjectName('hudEyebrow')
+        self.identity_layout.addWidget(self.profile_heading)
+        self.identity_layout.addWidget(self.name_label)
+        self.identity_layout.addWidget(self.profile_label)
+        identity_row.addLayout(self.identity_layout, 1)
+        self.hero_grid.addWidget(self.identity, 0, 0)
+        self.layout.addWidget(self.hero)
 
         self.summary_grid = QGridLayout()
+        self.summary_container = QWidget()
+        self.summary_container.setObjectName('hudContent')
+        self.summary_container.setLayout(self.summary_grid)
+        self.summary_grid.setContentsMargins(0, 0, 0, 0)
         self.summary_grid.setSpacing(12)
         self.summary_cards = [
             StatCard(tr("OPS"), "—", "", ""),
@@ -80,9 +109,12 @@ class PlayerView(QWidget):
             StatCard(tr("Hard Hit %"), "—", "", ""),
         ]
         for column, card in enumerate(self.summary_cards):
-            self.summary_grid.addWidget(card, 0, column)
-            self.summary_grid.setColumnStretch(column, 1)
-        self.layout.addLayout(self.summary_grid)
+            self.summary_grid.addWidget(card, column // 2, column % 2)
+        self.hero_grid.addWidget(self.summary_container, 0, 1)
+        self.hero_grid.setColumnStretch(0, 1)
+        self.hero_grid.setColumnStretch(1, 1)
+        self._summary_columns = 2
+        self._hero_stacked = False
 
         self.basic_box, self.basic_grid = self._metric_box("Basic Stats")
         self.basic_box.hide()
@@ -142,7 +174,12 @@ class PlayerView(QWidget):
             tr("Yearly: six seasons · Monthly: current season · "
             "Daily: exact FanGraphs date-range values for the recent 14 games")
         )
+        self.trend_season = QComboBox()
+        self.trend_season.setObjectName("trendSeason")
+        self.trend_season.setToolTip(tr("Select season for WAR / wRC+ trend"))
         trend_layout.addWidget(self.trend_period)
+        trend_layout.addWidget(QLabel(tr("Season:")))
+        trend_layout.addWidget(self.trend_season)
         self.trend_status = QLabel(tr(self.PERIOD_LABELS["yearly"]))
         self.trend_status.setObjectName("subtitle")
         trend_layout.addWidget(self.trend_status)
@@ -151,7 +188,18 @@ class PlayerView(QWidget):
 
         self.chart_tabs = QTabWidget()
         self.chart_tabs.setMinimumHeight(430)
-        self.layout.addWidget(self.chart_tabs)
+        self.analysis_panel = HudPanel()
+        analysis_panel_layout = QVBoxLayout(self.analysis_panel)
+        analysis_panel_layout.setContentsMargins(22, 22, 22, 22)
+        self.analysis_heading = QLabel(tr('02 / PLAYER ANALYSIS'))
+        self.analysis_heading.setObjectName('hudEyebrow')
+        analysis_panel_layout.addWidget(self.analysis_heading)
+        self.layout.removeWidget(self.trend_controls)
+        self.layout.removeWidget(self.pitcher_statcast_controls)
+        analysis_panel_layout.addWidget(self.trend_controls)
+        analysis_panel_layout.addWidget(self.pitcher_statcast_controls)
+        analysis_panel_layout.addWidget(self.chart_tabs)
+        self.layout.insertWidget(1, self.analysis_panel)
 
         self.pitch_analysis_box = QGroupBox(tr("Pitch analysis · 1.81 beta3"))
         analysis_layout = QVBoxLayout(self.pitch_analysis_box)
@@ -183,6 +231,7 @@ class PlayerView(QWidget):
         self.pitcher_statcast_controls.hide()
 
         self.trend_period.currentIndexChanged.connect(self._on_trend_period_changed)
+        self.trend_season.currentIndexChanged.connect(self._on_trend_season_changed)
         self.pitcher_statcast_period.currentIndexChanged.connect(
             self._on_pitcher_statcast_period_changed
         )
@@ -195,7 +244,38 @@ class PlayerView(QWidget):
         self.layout.addWidget(box)
         return box, grid
 
+    def resizeEvent(self, event) -> None:
+        super().resizeEvent(event)
+        if hasattr(self, 'summary_container'):
+            self._reflow_profile(self.scroll.viewport().width())
+
+    def eventFilter(self, watched, event):
+        if (hasattr(self, 'summary_container') and watched is self.scroll.viewport()
+                and event.type() == QEvent.Type.Resize):
+            self._reflow_profile(event.size().width())
+        return super().eventFilter(watched, event)
+
+    def _reflow_profile(self, available) -> None:
+        if not hasattr(self, 'summary_container'):
+            return
+        required = max(250, max(card.value_label.fontMetrics().horizontalAdvance('000.0') +
+                               card.unit_label.fontMetrics().horizontalAdvance('mph') + 60
+                               for card in self.summary_cards))
+        stacked = available < required * 2 + 540
+        if stacked != self._hero_stacked:
+            self._hero_stacked = stacked
+            self.hero_grid.addWidget(self.summary_container, 1 if stacked else 0, 0 if stacked else 1)
+            self.hero_grid.setColumnStretch(1, 0 if stacked else 1)
+        columns = 1 if stacked and available < required * 2 + 90 else 2
+        if columns != self._summary_columns:
+            self._summary_columns = columns
+            for index, card in enumerate(self.summary_cards):
+                self.summary_grid.addWidget(card, index // columns, index % columns)
+            for column in range(2):
+                self.summary_grid.setColumnStretch(column, 1 if column < columns else 0)
+
     def set_loading(self, player_id: int) -> None:
+        self.portrait.clear_photo()
         self.name_label.setText(tr(f"Loading player {player_id}…"))
         self.profile_label.setText(
             tr("Collecting MLB, FanGraphs, Baseball Reference and Statcast data.")
@@ -213,6 +293,7 @@ class PlayerView(QWidget):
 
         self._bundle = bundle
         profile = bundle.profile
+        self.portrait.set_profile(profile)
         self.pitch_analysis.reset()
         self.pitch_analysis_box.setVisible(profile.is_pitcher)
         self.name_label.setText(tr(profile.full_name))
@@ -253,7 +334,25 @@ class PlayerView(QWidget):
             index = self.trend_period.findData(selected_period)
             self.trend_period.setCurrentIndex(max(index, 0))
             self.trend_period.blockSignals(False)
-            if selected_period == "yearly" or not existing_trend:
+            years = sorted({int(row["Season"]) for row in bundle.history if row.get("Season") is not None})
+            if not years:
+                years = [int(row["Season"]) for row in bundle.history if str(row.get("Season", "")).isdigit()]
+            self.trend_season.blockSignals(True)
+            prior_season = self.trend_season.currentData()
+            self.trend_season.clear()
+            for year in years:
+                self.trend_season.addItem(str(year), year)
+            target_season = prior_season if prior_season in years else (years[0] if years else None)
+            self.trend_season.setCurrentIndex(self.trend_season.findData(target_season))
+            self.trend_season.blockSignals(False)
+            self.trend_season.setVisible(True)
+            if selected_period == "yearly" and self.current_trend_season is not None:
+                self._trend_rows = [
+                    {"Period": str(row.get("Season")), **row}
+                    for row in bundle.history
+                    if row.get("Season") is not None and int(row.get("Season")) == self.current_trend_season
+                ]
+            elif not existing_trend:
                 self._trend_rows = [
                     {"Period": str(row.get("Season")), **row}
                     for row in bundle.history
@@ -280,6 +379,11 @@ class PlayerView(QWidget):
         return str(self.trend_period.currentData() or "yearly")
 
     @property
+    def current_trend_season(self) -> int | None:
+        value = self.trend_season.currentData()
+        return int(value) if value is not None else None
+
+    @property
     def current_pitcher_statcast_period(self) -> str:
         return str(self.pitcher_statcast_period.currentData() or "yearly")
 
@@ -293,6 +397,12 @@ class PlayerView(QWidget):
         if self.current_trend_period != period or self._bundle is None:
             return
         self._trend_rows = rows
+        if period == "monthly":
+            season = next((row.get("Season") for row in rows if row.get("Season") is not None), None)
+            if season is not None:
+                self.trend_status.setText(tr(f"Monthly · {season}"))
+            else:
+                self.trend_status.setText(tr("No monthly data for selected season"))
         self.trend_status.setText(tr(self.PERIOD_LABELS.get(period, period)))
         if not self._bundle.profile.is_pitcher:
             self._render_batter_charts(self._bundle)
@@ -321,17 +431,17 @@ class PlayerView(QWidget):
         if self._bundle is None or self._bundle.profile.is_pitcher:
             return
         period = self.current_trend_period
+        self.trend_season.setVisible(True)
         if period == "yearly":
-            self._trend_rows = [
-                {"Period": str(row.get("Season")), **row}
-                for row in self._bundle.history
-                if row.get("Season") is not None
-            ]
-            self.trend_status.setText(tr(self.PERIOD_LABELS[period]))
-            self._render_batter_charts(self._bundle)
+            self.set_trend_loading(period)
+            self.trend_period_changed.emit(period)
             return
         self.set_trend_loading(period)
         self.trend_period_changed.emit(period)
+
+    def _on_trend_season_changed(self) -> None:
+        if self.current_trend_season is not None:
+            self.trend_season_changed.emit(self.current_trend_season)
 
     def _on_pitcher_statcast_period_changed(self) -> None:
         if self._bundle is None or not self._bundle.profile.is_pitcher:
@@ -442,6 +552,7 @@ class PlayerView(QWidget):
         if rows:
             chart.ax.set_xticks(range(len(rows)), [label for label, _ in rows])
             chart.ax.tick_params(axis="x", rotation=45 if len(rows) > 8 else 0)
+        chart.fig.tight_layout(pad=1.8)
         chart.draw_idle()
         return chart
 
@@ -656,4 +767,3 @@ class PlayerView(QWidget):
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng
 # Unauthorized redistribution or rebranding is prohibited.
-

@@ -140,6 +140,23 @@ def test_service_requests_are_bounded_and_cached(tmp_path, monkeypatch):
         service.load([players[0], RacePlayer(20, 'B', 'pit')], 2025, threading.Event(), lambda m: None)
 
 
+def test_three_player_ops_load_is_bounded_and_cached(tmp_path, monkeypatch):
+    service = OpsRaceService(SQLiteManager(tmp_path/'ops-three.db'))
+    calls = []
+    def fetch(url, params, cancel):
+        calls.append(url)
+        if url.endswith('schedule'):
+            return schedule()
+        pid = int(url.split('/people/')[1].split('/')[0])
+        return payload([fixture_row(player=pid)])
+    monkeypatch.setattr(service, '_get', fetch)
+    players = [RacePlayer(pid, str(pid), 'bat') for pid in (10, 20, 30)]
+    first = service.load(players, 2025, threading.Event(), lambda m: None)
+    assert len(first.points) == 3 and first.requests == len(calls) == 4
+    second = service.load(players, 2025, threading.Event(), lambda m: None)
+    assert second.requests == 0 and second.cache_hits == 3
+
+
 def test_invalid_response_not_saved(tmp_path, monkeypatch):
     db = SQLiteManager(tmp_path/'ops.db'); service = OpsRaceService(db)
     monkeypatch.setattr(service, '_get', lambda url, *args: schedule() if url.endswith('schedule')
@@ -169,7 +186,3 @@ def test_postponed_and_resumed_schedule_entries_are_not_counted_twice():
     axis, games = completed_schedule(data, 2025, date(2025, 4, 4))
     assert games == {1: '2025-04-01', 2: '2025-04-02', 3: '2025-04-03'}
     assert cumulative_ops([fixture_row()], axis, games, 'now')[axis.end].pa == 5
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

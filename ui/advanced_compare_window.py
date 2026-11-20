@@ -1,20 +1,25 @@
 from __future__ import annotations
 
-from config.paths import exports_dir
-
+import csv
 from dataclasses import dataclass
+from io import StringIO
+from pathlib import Path
 from typing import Any
-from PyQt6.QtCore import QTimer, Qt, QStringListModel
+from PyQt6.QtCore import QIODevice, QSaveFile, QTimer, Qt, QStringListModel
 from PyQt6.QtWidgets import (
-    QCompleter,QGroupBox,QHBoxLayout,QHeaderView,QLabel,QLineEdit,QMainWindow,
+    QCompleter,QGroupBox,QGridLayout,QHBoxLayout,QHeaderView,QLabel,QLineEdit,QMainWindow,
     QPushButton,QScrollArea,QSpinBox,QTableWidget,QTableWidgetItem,QVBoxLayout,QWidget,QTabWidget,QFileDialog,QMessageBox
 )
 
 from config.i18n import tr
+from config.paths import exports_dir
 from services.advanced_compare_service import AdvancedCompareService
 from services.player_name_localization import localized_player_name
 from workers.qt_worker import TaskThread
 from ui.season_race_view import SeasonRaceView
+from ui.components.comparison_visuals import (
+    ComparisonBarDelegate, PercentileRadar, finite_number, VALUE_ROLE, RANGE_ROLE, COLOR_ROLE,
+)
 
 @dataclass
 class Slot:
@@ -27,6 +32,7 @@ class Slot:
     season:QSpinBox
     player_id:int | None = None
     bundle:Any=None
+    clear_button:QPushButton | None = None
 
 class AdvancedCompareWindow(QMainWindow):
     def __init__(self,player_service,season:int,parent=None)->None:
@@ -45,12 +51,13 @@ class AdvancedCompareWindow(QMainWindow):
         self.title=QLabel(tr("Advanced Compare")); self.title.setObjectName("title")
         self.subtitle=QLabel(tr("Compare 2–4 players in a separate window. The existing Compare tab and main window remain unchanged."))
         self.subtitle.setObjectName("subtitle")
+        self.subtitle.setWordWrap(True)
         titlecol=QVBoxLayout(); titlecol.addWidget(self.title); titlecol.addWidget(self.subtitle)
         top.addLayout(titlecol); top.addStretch()
         self.add_button=QPushButton(tr("+ Add Player")); self.add_button.clicked.connect(self._add_slot); top.addWidget(self.add_button)
         root.addLayout(top)
 
-        self.slot_row=QHBoxLayout(); root.addLayout(self.slot_row)
+        self.slot_row=QGridLayout(); root.addLayout(self.slot_row)
         self.message=QLabel(tr("Select 2 players to display the advanced comparison report.")); self.message.setObjectName("subtitle")
         root.addWidget(self.message)
 
@@ -60,6 +67,29 @@ class AdvancedCompareWindow(QMainWindow):
         self.core_table=QTableWidget(0,1); core_layout.addWidget(self.core_table); self.report.addWidget(self.core_group)
         self.stat_group=QGroupBox(tr("B. Statcast Percentile Comparison")); stat_layout=QVBoxLayout(self.stat_group)
         self.stat_table=QTableWidget(0,1); stat_layout.addWidget(self.stat_table); self.report.addWidget(self.stat_group)
+        for table in (self.core_table, self.stat_table):
+            table.setItemDelegate(ComparisonBarDelegate(table))
+            table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+            table.verticalHeader().setVisible(False)
+        self.bar_notice = QLabel(tr('Bars compare values within each metric, not overall ability.'))
+        self.bar_notice.setWordWrap(True)
+        core_layout.insertWidget(0, self.bar_notice)
+        self.percentile_notice = QLabel(tr('Percentiles use each player’s selected season.'))
+        self.percentile_notice.setWordWrap(True)
+        stat_layout.insertWidget(0, self.percentile_notice)
+        self.radar_group = QGroupBox(tr('Season-specific percentile radar'))
+        radar_layout = QVBoxLayout(self.radar_group)
+        self.radar = PercentileRadar()
+        radar_layout.addWidget(self.radar)
+        self.report.removeWidget(self.core_group)
+        self.report.removeWidget(self.stat_group)
+        self.comparison_grid = QGridLayout()
+        self.comparison_grid.addWidget(self.core_group, 0, 0, 2, 1)
+        self.comparison_grid.addWidget(self.radar_group, 0, 1)
+        self.comparison_grid.addWidget(self.stat_group, 1, 1)
+        self.comparison_grid.setColumnStretch(0, 1)
+        self.comparison_grid.setColumnStretch(1, 1)
+        self.report.addLayout(self.comparison_grid)
         self.footer_group=QGroupBox(tr("Data Range / Sources / Status")); foot=QVBoxLayout(self.footer_group)
         self.footer=QLabel(""); self.footer.setWordWrap(True); foot.addWidget(self.footer); self.report.addWidget(self.footer_group)
         self.report.addStretch(); scroll.setWidget(content)
@@ -73,7 +103,13 @@ class AdvancedCompareWindow(QMainWindow):
         self.tabs.currentChanged.connect(lambda index: self.race.cancel() if index != 1 else None)
         self.export_button = QPushButton(tr("Save current still"))
         self.export_button.clicked.connect(self._export_current)
-        root.addWidget(self.export_button)
+        self.csv_button = QPushButton(tr('Save comparison CSV'))
+        self.csv_button.clicked.connect(self._export_csv)
+        self.tabs.currentChanged.connect(self._update_csv_button)
+        export_row = QHBoxLayout()
+        export_row.addWidget(self.export_button, 1)
+        export_row.addWidget(self.csv_button)
+        root.addLayout(export_row)
         manager = getattr(parent, "theme_manager", None)
         if manager is not None:
             manager.add_listener(self.race._draw)
@@ -98,8 +134,11 @@ class AdvancedCompareWindow(QMainWindow):
         season=QSpinBox(); season.setRange(2002,2100); season.setValue(self.default_season); season.setAccessibleName(tr("Season"))
         model=QStringListModel(self); comp=QCompleter(model,self); comp.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive); edit.setCompleter(comp)
         status=QLabel(tr("No player selected")); status.setObjectName("subtitle")
-        layout.addWidget(edit); layout.addWidget(season); layout.addWidget(status); self.slot_row.addWidget(box,1)
+        layout.addWidget(edit); layout.addWidget(season); layout.addWidget(status); self.slot_row.addWidget(box,0,index)
         slot=Slot(box,edit,model,comp,status,{},season)
+        slot.clear_button = QPushButton(tr('Clear player'))
+        slot.clear_button.clicked.connect(lambda _checked=False, idx=index: self._clear_slot(idx))
+        layout.addWidget(slot.clear_button)
         self.slots.append(slot)
         season.valueChanged.connect(lambda _value,idx=index:self._season_changed(idx))
         timer=QTimer(edit); timer.setSingleShot(True); timer.setInterval(300)
@@ -107,6 +146,31 @@ class AdvancedCompareWindow(QMainWindow):
         timer.timeout.connect(lambda idx=index:self._search(idx))
         comp.activated[str].connect(lambda label,idx=index:self._select(idx,label))
         self.add_button.setEnabled(len(self.slots)<4)
+        self._reflow()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if hasattr(self, 'comparison_grid'):
+            self._reflow()
+
+    def _reflow(self):
+        columns = 1 if self.width() < 700 else 2 if self.width() < 1150 else 4
+        key = columns, len(self.slots), self.width() < 1000
+        if getattr(self, '_reflow_key', None) == key:
+            return
+        self._reflow_key = key
+        for i, slot in enumerate(self.slots):
+            self.slot_row.addWidget(slot.box, i // columns, i % columns)
+        if self.width() < 1000:
+            self.comparison_grid.addWidget(self.core_group, 0, 0)
+            self.comparison_grid.addWidget(self.radar_group, 1, 0)
+            self.comparison_grid.addWidget(self.stat_group, 2, 0)
+            self.comparison_grid.setColumnStretch(1, 0)
+        else:
+            self.comparison_grid.addWidget(self.core_group, 0, 0, 2, 1)
+            self.comparison_grid.addWidget(self.radar_group, 0, 1)
+            self.comparison_grid.addWidget(self.stat_group, 1, 1)
+            self.comparison_grid.setColumnStretch(1, 1)
 
     def _search(self,index:int)->None:
         text=self.slots[index].edit.text().strip()
@@ -129,15 +193,18 @@ class AdvancedCompareWindow(QMainWindow):
         self._load_slot(index, player_id)
 
     def _load_slot(self,index:int,player_id:int)->None:
-        self.race.cancel()
+        if index < 3:
+            self.race.cancel()
         slot = self.slots[index]
         slot.player_id = player_id
         slot.bundle = None
         slot.status.setText(tr("Loading…"))
+        slot.status.setToolTip('')
         self._load_versions[index] += 1
         version = self._load_versions[index]
         season = slot.season.value()
-        self._sync_race()
+        if index < 3:
+            self._sync_race()
         self._render()
         self._run(lambda:self.service.load(player_id,season),
                   lambda bundle:self._loaded(index,bundle,version,season),
@@ -148,23 +215,41 @@ class AdvancedCompareWindow(QMainWindow):
             self.slots[index].status.setText(tr("Failed"))
             self.slots[index].status.setToolTip(message)
 
+    def _clear_slot(self, index:int)->None:
+        slot = self.slots[index]
+        self._load_versions[index] += 1
+        slot.player_id = None
+        slot.bundle = None
+        slot.edit.clear()
+        slot.mapping.clear()
+        slot.model.setStringList([])
+        slot.status.setText(tr('No player selected'))
+        slot.status.setToolTip('')
+        if index < 3:
+            self._sync_race()
+        self._render()
+
     def _loaded(self,index:int,bundle:Any,version=None,season=None)->None:
         if version is not None and (version != self._load_versions[index] or season != self.slots[index].season.value()):
             return
         slot=self.slots[index]; slot.bundle=bundle
         slot.status.setText(localized_player_name(bundle.profile.id,bundle.profile.full_name))
-        self._sync_race()
+        if index < 3:
+            self._sync_race()
         self._render()
 
     def _sync_race(self):
-        selected = [s.bundle for s in self.slots[:2]]
-        same = len(self.slots) >= 2 and self.slots[0].season.value() == self.slots[1].season.value()
+        race_slots = self.slots[:3]
+        selected = [s.bundle for s in race_slots if s.player_id is not None]
+        active = [s for s in race_slots if s.player_id is not None]
+        same = (self.slots[0].player_id is not None and self.slots[1].player_id is not None
+                and all(s.season.value() == active[0].season.value() for s in active))
         if not same:
             self.race.cancel()
             if self.tabs.currentIndex() == 1: self.tabs.setCurrentIndex(0)
         self.tabs.setTabEnabled(1, same)
-        self.race_notice.setText('' if same else tr('Season Race requires the same season for Player A and Player B.'))
-        self.race.set_players(selected if same and len(selected)==2 and all(selected) else [], self.slots[0].season.value())
+        self.race_notice.setText('' if same else tr('Season Race requires the same season for selected players A, B and C.'))
+        self.race.set_players(selected if same and all(selected) else [], self.slots[0].season.value())
 
     def _season_changed(self, index:int)->None:
         slot=self.slots[index]
@@ -172,7 +257,8 @@ class AdvancedCompareWindow(QMainWindow):
             self._load_slot(index, slot.player_id)
         else:
             self._load_versions[index] += 1
-            self._sync_race()
+            if index < 3:
+                self._sync_race()
             self._render()
 
     def _reload_selected(self)->None:
@@ -190,6 +276,64 @@ class AdvancedCompareWindow(QMainWindow):
         path, _ = QFileDialog.getSaveFileName(self,tr("Save current still"),str(exports_dir() / "advanced-compare.png"),"PNG (*.png);;JPEG (*.jpg *.jpeg)")
         if path and not self.centralWidget().grab().save(path):
             QMessageBox.warning(self,tr("Save"),tr("Image save failed."))
+
+    def _update_csv_button(self) -> None:
+        comparison_tab = self.tabs.currentIndex() == 0
+        self.csv_button.setVisible(comparison_tab)
+        self.csv_button.setEnabled(comparison_tab and sum(slot.bundle is not None for slot in self.slots) >= 2)
+
+    def _export_csv(self) -> None:
+        if not self.csv_button.isEnabled():
+            return
+
+        contents = self._comparison_csv_contents()
+        default_path = 'advanced-compare.csv'
+        try:
+            default_path = str(exports_dir() / default_path)
+        except OSError:
+            pass  # Let the user choose a writable location.
+        dialog = QFileDialog(self, tr('Save comparison CSV'), default_path, 'CSV (*.csv)')
+        dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
+        dialog.setDefaultSuffix('csv')
+        if dialog.exec():
+            path = Path(dialog.selectedFiles()[0])
+            self._run(lambda: self._write_csv(path, contents), lambda _result: None, self._csv_save_failed)
+
+    def _comparison_csv_contents(self) -> bytes:
+        players = []
+        for slot in self.slots:
+            if slot.bundle is None:
+                continue
+            profile = slot.bundle.profile
+            name = localized_player_name(profile.id, profile.full_name)
+            if name.lstrip().startswith(('=', '+', '-', '@')) or name.startswith(('\t', '\r', '\n')):
+                name = "'" + name  # Keep spreadsheet software from interpreting a name as a formula.
+            players.append((name, profile.id, slot.season.value()))
+
+        with StringIO(newline='') as buffer:
+            writer = csv.writer(buffer)
+            writer.writerow(('player', 'mlbam_id', 'season', 'section', 'metric', 'value'))
+            for section, table in (('basic', self.core_table), ('statcast_percentile', self.stat_table)):
+                for row in range(table.rowCount()):
+                    metric = table.item(row, 0).text()
+                    for column, player in enumerate(players, 1):
+                        cell = table.item(row, column)
+                        if section == 'statcast_percentile':
+                            percentile = cell.data(VALUE_ROLE)
+                            value = '' if percentile is None else round(percentile)
+                        else:
+                            value = '' if cell.text() == '—' else cell.text()
+                        writer.writerow((*player, section, metric, value))
+            return buffer.getvalue().encode('utf-8-sig')
+
+    @staticmethod
+    def _write_csv(path: Path, contents: bytes) -> None:
+        file = QSaveFile(str(path))
+        if not file.open(QIODevice.OpenModeFlag.WriteOnly) or file.write(contents) != len(contents) or not file.commit():
+            raise OSError(file.errorString())
+
+    def _csv_save_failed(self, _message: str) -> None:
+        QMessageBox.warning(self, tr('Save comparison CSV'), tr('Could not save the comparison CSV.'))
 
     def closeEvent(self,event):
         self.race.cancel()
@@ -211,11 +355,27 @@ class AdvancedCompareWindow(QMainWindow):
         h=table.horizontalHeader(); h.setSectionResizeMode(0,QHeaderView.ResizeMode.ResizeToContents)
         for c in range(1,table.columnCount()):h.setSectionResizeMode(c,QHeaderView.ResizeMode.Stretch)
         table.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        table.verticalHeader().setDefaultSectionSize(max(40, table.fontMetrics().height() + 18))
+        table.setMinimumHeight(205)
+
+    @staticmethod
+    def _decorate_bars(table, maps, metrics, *, percentile=False):
+        for row, metric in enumerate(metrics):
+            values = [finite_number(mapping.get(metric)) for mapping in maps]
+            valid = [value for value in values if value is not None]
+            bounds = (0., 100.) if percentile else (min([0., *valid]), max([0., *valid]))
+            for column, value in enumerate(values, 1):
+                item = table.item(row, column)
+                item.setData(VALUE_ROLE, value)
+                item.setData(RANGE_ROLE, bounds)
+                item.setData(COLOR_ROLE, column - 1)
 
     def _render(self)->None:
         players=[s.bundle for s in self.slots if s.bundle is not None]
+        self._update_csv_button()
         if len(players)<2:
-            self.core_group.setVisible(False); self.stat_group.setVisible(False); self.footer_group.setVisible(True)
+            self.core_group.setVisible(False); self.stat_group.setVisible(False); self.radar_group.hide(); self.footer_group.setVisible(True)
+            self.radar.set_data([], [])
             self.footer.setText(tr("Select 2 players to generate the report.")); return
         self.core_group.setVisible(True)
         metrics=[]
@@ -227,6 +387,7 @@ class AdvancedCompareWindow(QMainWindow):
         for r,metric in enumerate(metrics):
             self.core_table.setItem(r,0,QTableWidgetItem(metric))
             for c,mapping in enumerate(metric_maps,1):self.core_table.setItem(r,c,QTableWidgetItem(self._format(mapping.get(metric))))
+        self._decorate_bars(self.core_table, metric_maps, metrics)
 
         percentiles=[self.service.statcast_percentiles(s.bundle,s.season.value()) for s in self.slots if s.bundle is not None]
         pmetrics=[]
@@ -234,13 +395,19 @@ class AdvancedCompareWindow(QMainWindow):
             for key in mapping:
                 if key not in pmetrics:pmetrics.append(key)
         self.stat_group.setVisible(bool(pmetrics))
+        self._setup_table(self.stat_table,players,tr("Savant Percentile"))
+        self.stat_table.setRowCount(len(pmetrics))
         if pmetrics:
-            self._setup_table(self.stat_table,players,tr("Savant Percentile")); self.stat_table.setRowCount(len(pmetrics))
             for r,metric in enumerate(pmetrics):
                 self.stat_table.setItem(r,0,QTableWidgetItem(metric))
                 for c,mapping in enumerate(percentiles,1):
-                    value=mapping.get(metric); text="—" if value is None else f"{round(value):.0f}th"
+                    value=finite_number(mapping.get(metric)); text="—" if value is None else f"{round(value):.0f}th"
                     self.stat_table.setItem(r,c,QTableWidgetItem(text))
+            self._decorate_bars(self.stat_table, percentiles, pmetrics, percentile=True)
+        labels = [f'{localized_player_name(s.bundle.profile.id,s.bundle.profile.full_name)} ({s.season.value()})'
+                  for s in self.slots if s.bundle is not None]
+        self.radar.set_data(labels, percentiles)
+        self.radar_group.show()
 
         sources=[]
         for p in players:sources.extend(self.service.sources(p))
@@ -253,14 +420,19 @@ class AdvancedCompareWindow(QMainWindow):
         )
 
     def retranslate(self)->None:
+        self.bar_notice.setText(tr('Bars compare values within each metric, not overall ability.'))
+        self.percentile_notice.setText(tr('Percentiles use each player’s selected season.'))
+        self.radar_group.setTitle(tr('Season-specific percentile radar'))
         self.tabs.setTabText(0,tr("Advanced Compare")); self.tabs.setTabText(1,tr("Season Race"))
         self.export_button.setText(tr("Save current still")); self.race.retranslate()
+        self.csv_button.setText(tr('Save comparison CSV'))
         self.setWindowTitle(tr("Advanced Compare")); self.title.setText(tr("Advanced Compare"))
         self.subtitle.setText(tr("Compare 2–4 players in a separate window. The existing Compare tab and main window remain unchanged."))
         self.add_button.setText(tr("+ Add Player"))
         self.core_group.setTitle(tr("A. Basic Comparison")); self.stat_group.setTitle(tr("B. Statcast Percentile Comparison"))
         self.footer_group.setTitle(tr("Data Range / Sources / Status"))
         for i,slot in enumerate(self.slots):
+            slot.clear_button.setText(tr('Clear player'))
             slot.box.setTitle(tr(f"Player {chr(65+i)}")); slot.edit.setPlaceholderText(tr("Search player (e.g. Judge)"))
             slot.season.setAccessibleName(tr('Season'))
             if slot.bundle is None:slot.status.setText(tr("No player selected"))

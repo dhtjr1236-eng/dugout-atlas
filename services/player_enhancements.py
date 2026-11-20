@@ -530,20 +530,21 @@ def install_player_enhancements() -> None:
     def init_player_with_season_and_platoon(self: PlayerView) -> None:
         original_player_init(self)
 
-        name_index = self.layout.indexOf(self.name_label)
-        self.layout.removeWidget(self.name_label)
+        identity_layout = getattr(self, 'identity_layout', self.layout)
+        name_index = identity_layout.indexOf(self.name_label)
+        identity_layout.removeWidget(self.name_label)
         self.player_name_row = QWidget(self.content)
+        self.player_name_row.setObjectName('hudContent')
         name_layout = QHBoxLayout(self.player_name_row)
         name_layout.setContentsMargins(0, 0, 0, 0)
-        name_layout.addWidget(self.name_label)
-        name_layout.addStretch()
+        name_layout.addWidget(self.name_label, 1)
         name_layout.addWidget(QLabel(tr("시즌")))
         self.player_season_combo = QComboBox()
         self.player_season_combo.setMinimumWidth(92)
         self.player_season_combo.setEnabled(False)
         self.player_season_combo.setToolTip(tr("선택한 시즌 기준으로 선수 페이지 전체 데이터를 다시 불러옵니다."))
         name_layout.addWidget(self.player_season_combo)
-        self.layout.insertWidget(max(name_index, 0), self.player_name_row)
+        identity_layout.insertWidget(max(name_index, 0), self.player_name_row)
         self._season_change_callback = None
         self.player_season_combo.currentIndexChanged.connect(self._handle_player_season_change)
 
@@ -591,7 +592,7 @@ def install_player_enhancements() -> None:
             year = int(season)
         except (TypeError, ValueError):
             return
-        if self.selected_player_season == year or self._player_busy:
+        if self.selected_player_season == year and not self._player_busy:
             return
         self.load_player(self.selected_player_id, year)
 
@@ -599,20 +600,24 @@ def install_player_enhancements() -> None:
         self: AppController, player_id: int, season: int | None = None
     ) -> None:
         same_player = self.selected_player_id == player_id
-        if self._player_busy and same_player:
+        requested_season = int(season) if season is not None else (self.selected_player_season if same_player else None)
+        request_key = (player_id, requested_season)
+        if self._player_busy and getattr(self, '_player_request_key', None) == request_key:
             return
+        self._player_request_key = request_key
+        self._player_generation = getattr(self, '_player_generation', 0) + 1
+        generation = self._player_generation
         if not same_player:
             self.selected_player_season = None
         self.selected_player_id = player_id
         self._player_busy = True
         self.window.show_player_loading(player_id)
-        requested_season = int(season) if season is not None else self.selected_player_season
 
         async def task() -> tuple[Any, list[int], int]:
             seasons = self._player_seasons.get(player_id)
             if not seasons:
                 seasons = await _available_player_seasons(player_id)
-            if requested_season is not None and requested_season in seasons:
+            if requested_season is not None:
                 target = requested_season
             else:
                 target = _choose_default_season(seasons)
@@ -620,16 +625,21 @@ def install_player_enhancements() -> None:
             return bundle, seasons, target
 
         def success(payload: tuple[Any, list[int], int]) -> None:
+            if generation != self._player_generation:
+                return
             self._player_busy = False
             bundle, seasons, target = payload
             if self.selected_player_id != player_id:
                 return
             self._player_seasons[player_id] = seasons
             self.selected_player_season = target
+            self.season = target
             self.window.player_view.set_available_seasons(seasons, target)
             self.window.show_player(bundle)
+            self.load_player_portrait(player_id)
             self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name} · {target}"))
             if bundle.profile.is_pitcher:
+                self.window.player_view.pitch_analysis.change.reset(target)
                 period = self.window.player_view.current_pitcher_statcast_period
                 if period != "yearly":
                     self.load_pitcher_statcast_period(period)
@@ -639,6 +649,8 @@ def install_player_enhancements() -> None:
                     self.load_player_trend(period)
 
         def failure(message: str) -> None:
+            if generation != self._player_generation:
+                return
             self._player_busy = False
             self._default_error(message)
 
@@ -684,7 +696,3 @@ def install_player_enhancements() -> None:
     AppController.load_pitcher_statcast_period = load_pitcher_period_for_selected_season  # type: ignore[method-assign]
 
     PlayerService._player_enhancements_installed = True  # type: ignore[attr-defined]
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

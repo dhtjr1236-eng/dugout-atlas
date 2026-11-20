@@ -3,7 +3,7 @@ from __future__ import annotations
 from config.i18n import tr
 from config.paths import resource_path
 
-from PyQt6.QtCore import QDate, QUrl, QStringListModel, QTimer, Qt, pyqtSignal
+from PyQt6.QtCore import QDate, QUrl, QStringListModel, QTimer, Qt, pyqtSignal, QVariantAnimation, QEasingCurve
 from PyQt6.QtGui import QDesktopServices, QPixmap
 from PyQt6.QtWidgets import (
     QCompleter,
@@ -109,12 +109,18 @@ class MainWindow(QMainWindow):
         actions.addWidget(self.bref_download_button)
         actions.addWidget(self.bref_import_button)
         actions.addWidget(self.refresh_button)
+        self.games_sidebar_button = QPushButton(tr('Hide games sidebar'))
+        self.games_sidebar_button.setCheckable(True)
+        self.games_sidebar_button.setAccessibleDescription(tr('Show or hide the dates and games sidebar.'))
+        actions.addWidget(self.games_sidebar_button)
         root.addLayout(actions)
 
         splitter = QSplitter()
+        self.games_splitter = splitter
         root.addWidget(splitter, 1)
 
         left = QWidget()
+        self.games_sidebar = left
         left_layout = QVBoxLayout(left)
         date_row = QHBoxLayout()
         self.date_edit = QDateEdit(QDate.currentDate())
@@ -144,6 +150,7 @@ class MainWindow(QMainWindow):
         self.tabs.setCurrentWidget(self.home_view)
         splitter.addWidget(self.tabs)
         splitter.setSizes([330, 1110])
+        self.games_sidebar_button.toggled.connect(self._toggle_games_sidebar)
 
         self.setStatusBar(QStatusBar())
         self.statusBar().showMessage(tr("Ready"))
@@ -172,7 +179,49 @@ class MainWindow(QMainWindow):
         from ui.window_sizing import compact_main_window
         compact_main_window(self, 1440, 900)
 
+    def _toggle_games_sidebar(self, hidden: bool) -> None:
+        self.games_sidebar_button.setText(tr('Show games sidebar' if hidden else 'Hide games sidebar'))
+        from config.preferences import read_preferences
+        from PyQt6.QtWidgets import QApplication
+        old = getattr(self, '_sidebar_animation', None)
+        running = old is not None and old.state() == old.State.Running
+        sizes = self.games_splitter.sizes()
+        current = sizes[0] if sizes and not self.games_sidebar.isHidden() else 0
+        if hidden and current > 0 and not running:
+            self._games_sidebar_width = current
+        if old is not None:
+            old.stop()
+            old.deleteLater()
+        self._sidebar_animation = None
+        if not hidden and self.games_sidebar.isHidden():
+            self.games_sidebar.show()
+            self.games_splitter.setSizes([0, max(1, self.games_splitter.width())])
+        target = 0 if hidden else getattr(self, '_games_sidebar_width', 330)
+        motion = getattr(QApplication.instance(), 'motion_manager', None)
+        reduced = motion.reduced_motion() if motion is not None else read_preferences().get('reduce_motion', False)
+        if reduced or not self.isVisible():
+            self.games_splitter.setSizes([target, max(1, self.games_splitter.width() - target)])
+            self.games_sidebar.setVisible(not hidden)
+            return
+        animation = QVariantAnimation(self)
+        self._sidebar_animation = animation
+        animation.setDuration(220)
+        animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+        animation.setStartValue(current)
+        animation.setEndValue(target)
+        def resize(value):
+            width = round(value)
+            self.games_splitter.setSizes([width, max(1, self.games_splitter.width() - width)])
+        def finish():
+            if self._sidebar_animation is animation and self.games_sidebar_button.isChecked():
+                self.games_sidebar.hide()
+        animation.valueChanged.connect(resize)
+        animation.finished.connect(finish)
+        animation.start()
+
     def retranslate(self) -> None:
+        self.games_sidebar_button.setText(tr('Show games sidebar' if self.games_sidebar_button.isChecked() else 'Hide games sidebar'))
+        self.games_sidebar_button.setAccessibleDescription(tr('Show or hide the dates and games sidebar.'))
         self.home_view.retranslate()
 
     def _navigate_home(self, destination: str, season: int) -> None:

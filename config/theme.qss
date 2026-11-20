@@ -29,11 +29,11 @@ QPushButton {
     padding: 7px 10px;
 }
 QPushButton:hover {
-    background-color: {{--color-surface-selected}};
-    border-color: {{--color-primary}};
+    background-color: {{--color-surface-muted}};
+    border-color: {{--color-border-strong}};
 }
 QPushButton:pressed {
-    background-color: {{--color-primary-soft}};
+    background-color: {{--color-surface-muted}};
 }
 QPushButton:focus {
     border: 2px solid {{--color-primary}};
@@ -110,7 +110,7 @@ QTabBar::tab:hover {
 QTabBar::tab:selected {
     color: {{--color-text}};
     background: {{--color-surface-selected}};
-    border-bottom: 2px solid {{--color-primary}};
+    border-bottom: 2px solid {{--color-border-strong}};
 }
 QScrollBar:vertical {
     background: {{--color-surface-muted}};
@@ -141,16 +141,34 @@ QLabel#title {
 QLabel#subtitle {
     color: {{--color-text-subtle}};
 }
+QLabel#hudEyebrow {
+    color: {{--color-primary}};
+    font-size: 10pt;
+    font-weight: 700;
+    background: transparent;
+}
+QWidget#hudContent {
+    background: transparent;
+}
 QLabel#metricValue {
     color: {{--color-text}};
     font-size: 14pt;
     font-weight: 700;
 }
 QFrame#StatCard {
-    background-color: {{--color-surface}};
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {{--color-panel-top}}, stop:1 {{--color-surface}});
     color: {{--color-text}};
     border: 1px solid {{--color-border}};
-    border-radius: 12px;
+    border-radius: {{--panel-radius}};
+}
+QFrame[hudPanel="true"] {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 {{--color-panel-top}}, stop:1 {{--color-surface}});
+    border: 1px solid {{--color-border}};
+    border-radius: {{--panel-radius}};
+}
+QFrame[hudPanel="true"] QLabel {
+    background: transparent;
+    border: none;
 }
 QFrame#StatCard QLabel {
     background: transparent;
@@ -161,8 +179,8 @@ QLabel#statCardTitle {
     font-weight: 500;
 }
 QLabel#statCardValue {
-    color: {{--color-text}};
-    font-size: 20pt;
+    color: {{--color-kpi}};
+    font-size: {{--kpi-font-size}};
     font-weight: 800;
 }
 QLabel#statCardUnit {

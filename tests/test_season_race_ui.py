@@ -125,6 +125,20 @@ def test_advanced_window_keeps_report_and_adds_tab(app):
     w.close()
 
 
+def test_three_player_war_chart_and_snapshot(view):
+    view._demo = False
+    third = RacePlayer(30, 'Player C', 'bat')
+    view.players.append(third)
+    view.points.append(dict(view.points[0]))
+    view.slider.setValue(view.slider.maximum())
+    view._draw()
+    lines = [line for line in view.figure.axes[0].lines
+             if line.get_label() in ('Player A', 'Player B', 'Player C')]
+    assert len(lines) == 3
+    assert 'C:' in view.values.text()
+    assert len(view.animation_snapshot().values) == 3
+
+
 def test_demo_opens_separate_window_without_touching_live_points(view,monkeypatch,app):
     from services.season_race import RaceService
     monkeypatch.setattr(RaceService,'schedule',lambda *a:real_axis())
@@ -153,7 +167,3 @@ def test_cancel_discards_queued_worker_result(view,monkeypatch,app):
     view.cancel();release.set()
     loop=QEventLoop();QTimer.singleShot(150,loop.quit);loop.exec()
     assert not accepted and not view._workers
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -11,4 +11,3 @@ pybaseball==2.2.7
 beautifulsoup4>=4.12,<5
 lxml>=5.3,<7
 pytest>=8.3,<10
-

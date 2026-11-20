@@ -53,7 +53,3 @@ def configure_logging() -> None:
     file_handler.setFormatter(formatter)
 
     root.addHandler(file_handler)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

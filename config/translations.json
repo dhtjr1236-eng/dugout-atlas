@@ -415,9 +415,29 @@
     "ja": "年別・直近6シーズン"
   },
   {
-    "en": "Monthly · current season",
-    "ko": "월별 · 현재 시즌",
-    "ja": "月別・今シーズン"
+    "en": "Monthly · selected season",
+    "ko": "월별 · 선택 시즌",
+    "ja": "月別・選択シーズン"
+  },
+  {
+    "en": "Select season for monthly WAR / wRC+ trend",
+    "ko": "월별 WAR / wRC+ 추이의 시즌 선택",
+    "ja": "月別WAR / wRC+推移のシーズンを選択"
+  },
+  {
+    "en": "No monthly data for selected season",
+    "ko": "선택한 시즌의 월별 데이터가 없습니다",
+    "ja": "選択したシーズンの月別データはありません"
+  },
+  {
+    "en": "Season:",
+    "ko": "시즌:",
+    "ja": "シーズン："
+  },
+  {
+    "en": "Select season for WAR / wRC+ trend",
+    "ko": "WAR / wRC+ 추이의 시즌 선택",
+    "ja": "WAR / wRC+推移のシーズンを選択"
   },
   {
     "en": "Daily · recent 14 games",
@@ -1370,6 +1390,16 @@
     "ja": "現在の静止画を保存"
   },
   {
+    "en": "Save comparison CSV",
+    "ko": "비교표 CSV 저장",
+    "ja": "比較表をCSVで保存"
+  },
+  {
+    "en": "Could not save the comparison CSV.",
+    "ko": "비교표 CSV를 저장하지 못했습니다.",
+    "ja": "比較表のCSVを保存できませんでした。"
+  },
+  {
     "en": "Play",
     "ko": "재생",
     "ja": "再生"
@@ -1708,6 +1738,16 @@
     "en": "No favorites to display. Search for a player to get started.",
     "ko": "표시할 즐겨찾기가 없습니다. 선수 검색부터 시작해 보세요.",
     "ja": "お気に入りはありません。選手の検索から始めましょう。"
+  },
+  {
+    "en": "Filter favorites by player name or team",
+    "ko": "선수 이름 또는 팀으로 즐겨찾기 검색",
+    "ja": "選手名またはチームでお気に入りを絞り込む"
+  },
+  {
+    "en": "No favorites match this search.",
+    "ko": "검색과 일치하는 즐겨찾기가 없습니다.",
+    "ja": "検索条件に一致するお気に入りはありません。"
   },
   {
     "en": "Race metric",
@@ -2373,5 +2413,59 @@
     "en": "Season Race requires the same season for Player A and Player B.",
     "ko": "시즌 레이스는 선수 A와 선수 B의 시즌이 같아야 합니다.",
     "ja": "シーズンレースには選手Aと選手Bのシーズンが一致している必要があります。"
-  }
+  },
+  {
+    "en": "Neon HUD",
+    "ko": "네온 HUD",
+    "ja": "ネオンHUD"
+  },
+  {
+    "en": "01 / PLAYER PROFILE",
+    "ko": "01 / 선수 프로필",
+    "ja": "01 / 選手プロフィール"
+  },
+  {
+    "en": "02 / PLAYER ANALYSIS",
+    "ko": "02 / 선수 분석",
+    "ja": "02 / 選手分析"
+  },
+  {
+    "en": "Player profile placeholder",
+    "ko": "선수 사진 대체 이미지",
+    "ja": "選手写真の代替画像"
+  },
+  {
+    "en": "Bars compare values within each metric, not overall ability.",
+    "ko": "막대는 지표별 수치 크기를 비교하며 종합 능력이나 우열을 뜻하지 않습니다.",
+    "ja": "棒は指標ごとの数値を比較し、総合能力や優劣を示すものではありません。"
+  },
+  {
+    "en": "Percentiles use each player’s selected season.",
+    "ko": "백분위는 각 선수의 선택 시즌을 기준으로 합니다.",
+    "ja": "パーセンタイルは各選手の選択シーズンを基準とします。"
+  },
+  {
+    "en": "Season-specific percentile radar",
+    "ko": "선택 시즌별 백분위 레이더",
+    "ja": "選択シーズン別パーセンタイルレーダー"
+  },
+  {
+    "en": "Radar requires at least three shared percentiles. Missing values are not estimated.",
+    "ko": "공통 백분위가 3개 이상일 때 레이더를 표시합니다. 결측값은 추정하지 않습니다.",
+    "ja": "共通のパーセンタイルが3つ以上ある場合に表示します。欠損値は推定しません。"
+  },
+  {
+    "en": "Reduce interface motion",
+    "ko": "화면 효과 줄이기",
+    "ja": "画面の動きを減らす"
+  },
+  {"en": "MLB player portrait", "ko": "MLB 선수 사진", "ja": "MLB選手写真"},
+  {"en": "MLB official portrait · current image, not season-specific", "ko": "MLB 공식 사진 · 현재 이미지이며 선택 시즌의 사진은 아닙니다", "ja": "MLB公式写真 · 現在の画像であり、選択シーズンの写真ではありません"},
+  {"en": "Hide games sidebar", "ko": "경기 목록 숨기기", "ja": "試合一覧を隠す"},
+  {"en": "Show games sidebar", "ko": "경기 목록 보이기", "ja": "試合一覧を表示"},
+  {"en": "Show or hide the dates and games sidebar.", "ko": "날짜와 경기 목록이 있는 사이드바를 표시하거나 숨깁니다.", "ja": "日付と試合一覧のサイドバーを表示または非表示にします。"},
+  {"en": "Season Race requires the same season for selected players A, B and C.", "ko": "시즌 레이스는 선택한 선수 A·B·C의 시즌이 모두 같아야 합니다.", "ja": "シーズンレースには選択した選手A・B・Cのシーズン一致が必要です。"},
+  {"en": "Select two or three players; the race uses slots A, B and optionally C.", "ko": "선수 A·B를 선택하세요. C를 추가하면 세 선수가 함께 레이스를 진행합니다.", "ja": "選手A・Bを選択してください。Cを追加すると3選手でレースを行います。"},
+  {"en": "OPS requires batting roles for every player.", "ko": "OPS는 모든 선수의 타격 역할을 선택해야 합니다.", "ja": "OPSは全選手の打撃を選択してください。"},
+  {"en": "Clear player", "ko": "선수 선택 해제", "ja": "選手の選択を解除"}
 ]

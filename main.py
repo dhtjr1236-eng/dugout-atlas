@@ -5,6 +5,10 @@ from PyQt6.QtWidgets import QApplication
 
 
 def main() -> int:
+    smoke = None
+    if '--self-test' in sys.argv:
+        from services.packaging_smoke import PackagingSmoke
+        smoke = PackagingSmoke(sys.argv)
     from config.logging_config import configure_logging
     from config.settings import SETTINGS, THEME_QSS_PATH, ensure_runtime_dirs
     from controllers.app_controller import AppController
@@ -32,6 +36,8 @@ def main() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName(SETTINGS.app_name)
     app.setApplicationVersion(SETTINGS.app_version)
+    from ui.motion import MotionManager
+    app.motion_manager = MotionManager(app)
     theme_template = THEME_QSS_PATH.read_text(encoding="utf-8") if THEME_QSS_PATH.exists() else ""
     theme_manager = ThemeManager(app, theme_template)
     db = SQLiteManager()
@@ -47,8 +53,20 @@ def main() -> int:
     controller = AppController(window, db)
     window.controller = controller
     window.show()
-    controller.start()
-    return app.exec()
+    if smoke is not None:
+        from PyQt6.QtCore import QTimer
+        QTimer.singleShot(0, lambda: smoke.check(app, window, controller, db))
+    else:
+        controller.start()
+    exit_code = app.exec()
+    # Keep QApplication alive while SIP releases widgets. A global event filter
+    # must not inspect partly destroyed Qt wrappers during interpreter shutdown.
+    app.removeEventFilter(app.motion_manager)
+    from PyQt6.QtCore import QCoreApplication, QEvent
+    for widget in app.topLevelWidgets():
+        widget.deleteLater()
+    QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+    return exit_code
 
 if __name__ == "__main__":
     from multiprocessing import freeze_support
@@ -63,7 +81,3 @@ if __name__ == "__main__":
         error_app = QApplication.instance() or QApplication(sys.argv)
         QMessageBox.critical(None, "Dugout Atlas", "사용자 데이터에 접근할 수 없습니다. 폴더 권한과 디스크 공간을 확인해 주세요.")
         raise SystemExit(1)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

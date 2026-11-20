@@ -34,6 +34,8 @@ class SettingsDialog(QDialog):
         self.player_refresh = self._spin(self.values['player_refresh_seconds'], 60, 3600)
         self.notifications = QCheckBox(tr('Game notifications'))
         self.notifications.setChecked(self.values['notifications'])
+        self.reduce_motion = QCheckBox(tr('Reduce interface motion'))
+        self.reduce_motion.setChecked(self.values['reduce_motion'])
         self.theme = QComboBox()
         for key in ('light', 'dark'):
             self.theme.addItem(tr(key.title()), key)
@@ -45,6 +47,7 @@ class SettingsDialog(QDialog):
             ("purple", tr("Obsidian Purple")),
             ("magenta", tr("Magenta White")),
             ("emerald", tr("Emerald")),
+            ("neon", tr("Neon HUD")),
         ):
             self.accent.addItem(label, key)
         self.accent.setCurrentIndex(self.accent.findData(window.theme_manager.current_accent))
@@ -65,6 +68,7 @@ class SettingsDialog(QDialog):
         form.addRow(tr('Font size (%)'), self.font)
         form.addRow(tr('App language'), self.language)
         form.addRow(self.notifications)
+        form.addRow(self.reduce_motion)
         note = QLabel(tr('Interface labels and built-in explanations switch immediately. Player names, metric abbreviations and provider text are preserved.'))
         note.setWordWrap(True)
         form.addRow(note)
@@ -197,6 +201,7 @@ class SettingsDialog(QDialog):
         if self.controller._threads:
             return
         values = {
+            'reduce_motion': self.reduce_motion.isChecked(),
             'refresh_seconds': self.refresh.value(),
             'player_refresh_seconds': self.player_refresh.value(),
             'font_scale': self.font.value(), 'notifications': self.notifications.isChecked(),
@@ -223,6 +228,9 @@ class SettingsDialog(QDialog):
         set_language(values['language'])
         manager.apply(theme, animate=False)
         from PyQt6.QtWidgets import QApplication
+        motion = getattr(QApplication.instance(), 'motion_manager', None)
+        if motion is not None:
+            motion.refresh_preferences()
         for top_level in QApplication.topLevelWidgets():
             translate_widgets(top_level)
             retranslate = getattr(top_level, "retranslate", None)
@@ -245,7 +253,3 @@ def open_settings(window, controller):
         if dialog.needs_refresh:
             controller._refresh_requested()
         dialog.deleteLater()
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

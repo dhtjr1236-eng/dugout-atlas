@@ -13,6 +13,17 @@ def snapshot():
         ((.8,1.1,1.3),(None,.9,.95)),('Player A','Player B'),'OPS',2025,(.7,1.2))
 
 
+def test_three_player_animation_frame(tmp_path):
+    from dataclasses import replace
+    from services.race_animation import render_frame
+    original = snapshot()
+    third = replace(original, names=('Player A', 'Player B', 'Player C'),
+                    values=(*original.values, (.7, .8, 1.0)))
+    assert render_frame(third, 2, 640).size == (640, 360)
+    assert export_animation(third, AnimationOptions(seconds=6, fps=5, width=640),
+                            tmp_path/'three.gif', threading.Event())
+
+
 @pytest.mark.parametrize('kind',['GIF','WEBP'])
 def test_animation_decodes(tmp_path,kind):
     if kind=='WEBP' and not features.check('webp'):pytest.skip('WebP unavailable')
@@ -67,7 +78,3 @@ def test_ui_worker_keeps_events_responsive(view,tmp_path):
     assert output.exists()
     assert len(ticks)>3
     assert not w._workers
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -18,7 +18,8 @@ from matplotlib.offsetbox import AnnotationBbox
 
 from config.i18n import tr
 from services.player_name_localization import localized_player_name
-from config.theme_tokens import chart_colors, active_theme
+from config.theme_tokens import chart_colors, active_theme, active_accent, race_palette, glow_enabled
+from ui.components import HudPanel
 from services.season_race import (
     RacePlan, RacePlayer, RaceService, demo_points, drawdown, peak,
 )
@@ -79,7 +80,7 @@ class SeasonRaceView(QWidget):
         roles.addWidget(self.metric)
         self.role_boxes = []
         self.role_labels = []
-        for i in range(2):
+        for i in range(3):
             label = QLabel(chr(65+i)); roles.addWidget(label); self.role_labels.append(label)
             combo = QComboBox(); combo.addItem(tr('Batting'), 'bat'); combo.addItem(tr('Pitching'), 'pit')
             combo.currentIndexChanged.connect(self._role_changed)
@@ -161,7 +162,12 @@ class SeasonRaceView(QWidget):
         root.addLayout(export_row)
         self.export_progress.hide()
         self.figure = Figure(figsize=(10, 4.5), layout='constrained')
-        self.canvas = FigureCanvasQTAgg(self.figure); root.addWidget(self.canvas, 1)
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        self.chart_panel = HudPanel()
+        chart_layout = QVBoxLayout(self.chart_panel)
+        chart_layout.setContentsMargins(18, 18, 18, 18)
+        chart_layout.addWidget(self.canvas)
+        root.addWidget(self.chart_panel, 1)
         self._motion_cid = self.canvas.mpl_connect('motion_notify_event', self._hover)
         self._hover_targets = []
         self.values = QLabel(); self.values.setWordWrap(True); self.values.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -198,15 +204,17 @@ class SeasonRaceView(QWidget):
         self.cancel()
         self._ops_result = None
         self.players = [RacePlayer(p.profile.id, p.profile.full_name,
-                                  'pit' if p.profile.is_pitcher else 'bat') for p in bundles[:2]]
+                                  'pit' if p.profile.is_pitcher else 'bat') for p in bundles[:3]]
         self.season = season
         for edit in (self.range_start, self.range_end):
             old = edit.date()
             edit.setDateRange(QDate(season, 1, 1), QDate(season, 12, 31))
             edit.setDate(QDate(season, old.month(), min(old.day(), QDate(season, old.month(), 1).daysInMonth())))
-        self.axis = None; self.points = [{}, {}]; self.resolved = []; self._demo = False
+        self.axis = None; self.points = [{} for _ in self.players]; self.resolved = []; self._demo = False
         self._seen.clear(); self._sparkles.clear(); self._last_error = ''; self._progress_text = ''; self._counts = None
         for i, box in enumerate(self.role_boxes):
+            self.role_labels[i].setVisible(i < len(self.players))
+            box.setVisible(i < len(self.players))
             box.blockSignals(True)
             box.setCurrentIndex(1 if i < len(self.players) and self.players[i].role == 'pit' else 0)
             box.blockSignals(False)
@@ -214,14 +222,14 @@ class SeasonRaceView(QWidget):
 
     def _role_changed(self):
         self._ops_result = None
-        self.axis = None; self.points = [{}, {}]; self.resolved = []
+        self.axis = None; self.points = [{} for _ in self.players]; self.resolved = []
         self.cancel()
         self._demo = False; self._seen.clear(); self._sparkles.clear(); self._progress_text = ''; self._counts = None
         self.mode = 'Ready'; self._buttons(); self.retranslate()
 
     def _buttons(self):
         busy = bool(self._workers or self._confirmation)
-        enabled = len(self.players) == 2 and not busy
+        enabled = len(self.players) in (2, 3) and not busy
         self.preview.setEnabled(enabled); self.full.setEnabled(enabled)
         self.demo_button.setEnabled(not busy); self.cancel_button.setEnabled(busy)
         self.play.setEnabled(bool(self.axis and self.axis.dates) and not busy)
@@ -253,20 +261,21 @@ class SeasonRaceView(QWidget):
         thread.start(); self._buttons()
 
     def start(self, preview: bool | str = True) -> None:
-        if len(self.players) != 2 or self._workers or self._confirmation:
+        if len(self.players) not in (2, 3) or self._workers or self._confirmation:
             return
         mode = ('weekly' if preview else 'full') if isinstance(preview, bool) else preview
         start = self.range_start.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else None
         end = self.range_end.date().toString('yyyy-MM-dd') if self.range_enabled.isChecked() else None
         if start and end and start > end:
             self._last_error = 'Start date must precede end date.'; self._draw(); return
-        self._demo = False; self.axis = None; self.points = [{}, {}]; self.resolved = []
+        self._demo = False; self.axis = None; self.points = [{} for _ in self.players]; self.resolved = []
         self._seen.clear(); self._sparkles.clear(); self._last_error = ''; self._progress_text = ''; self._counts = None
         players = [RacePlayer(p.mlbam_id, p.name, b.currentData()) for p, b in zip(self.players, self.role_boxes)]
         season = self.season
         if self.metric.currentData() == 'ops':
             if any(p.role != 'bat' for p in players):
-                self._last_error = 'OPS requires two batting roles.'
+                self._last_error = ('OPS requires two batting roles.' if len(players) == 2
+                                    else 'OPS requires batting roles for every player.')
                 self.mode = 'Ready'; self._draw(); return
             self._ops_result = None
             self._launch(lambda cancel, emit: self.ops_service.load(players, season, cancel, emit),
@@ -490,7 +499,7 @@ class SeasonRaceView(QWidget):
         for box in (self.axis_min, self.axis_max):
             box.setEnabled(is_ops and self.manual_axis.isChecked())
         limits = validate_limits(self.axis_min.value(), self.axis_max.value()) if is_ops and self.manual_axis.isChecked() else None
-        self._period_peaks = self._period_extrema() if is_ops else [None, None]
+        self._period_peaks = self._period_extrema() if is_ops else [None] * len(self.points)
         self.extrema_label.setText('\n'.join(
             f'{chr(65+i)} · ' + tr('Period high / low (all daily records)') +
             (f': {pair[0].value:.3f} ({pair[0].day}) / {pair[1].value:.3f} ({pair[1].day})' if pair else ': —')
@@ -500,7 +509,7 @@ class SeasonRaceView(QWidget):
         self.figure.set_facecolor(colors['figure']); ax.set_facecolor(colors['axes'])
         ax.tick_params(colors=colors['text']); ax.yaxis.label.set_color(colors['text'])
         for spine in ax.spines.values(): spine.set_color(colors['border'])
-        ax.grid(alpha=.18, color=colors['muted']); ax.set_ylabel(metric)
+        ax.grid(alpha=.45, color=colors['border']); ax.set_ylabel(metric)
         self._hover_targets = []
         names = [localized_player_name(p.mlbam_id, p.name) for p in self.players] if not self._demo else ['Demo A', 'Demo B']
         self.heading.setText(f"{tr('Season Race')} · {self.season} · " + ' / '.join(names))
@@ -512,25 +521,29 @@ class SeasonRaceView(QWidget):
             self.status.setText(self.status.text() + '\n' + tr('Network requests') +
                                 f': {self._ops_result.requests} · ' + tr('Cached player logs') +
                                 f': {self._ops_result.cache_hits} · ' + tr('Sampling changes use local data.'))
-        self.values.setText(tr('Select two players; the race uses slots A and B.'))
+        self.values.setText(tr('Select two or three players; the race uses slots A, B and optionally C.'))
         if self.axis and self.axis.dates:
             index = min(self.slider.value(), len(self.axis.dates)-1)
             day = self.axis.dates[index]; date_index = {d:i for i,d in enumerate(self.axis.dates)}
             values = [day]; stamps = []
-            palette = [colors['primary'], ('#F59E0B' if active_theme() == 'dark' else '#B45309') if colors['primary'] not in ('#D6B36A','#A97516') else ('#9B7CF6' if active_theme() == 'dark' else '#6D4DD6')]
+            palette = race_palette(active_theme(), active_accent())
             for i, points in enumerate(self.points):
                 name = names[i] if i < len(names) else chr(65+i)
                 valid = sorted((p for p in points.values() if p.day in date_index), key=lambda p:p.day)
-                xs = [date_index[p.day] for p in valid]; ys = [p.value for p in valid]
+                xs = list(range(len(self.axis.dates)))
+                ys = [points[d].value if d in points else float('nan') for d in self.axis.dates]
                 ax.plot(xs, ys, linestyle='--', color=palette[i], alpha=.35, linewidth=1)
                 previous = [p for p in valid if p.day <= day]
                 if previous:
-                    ax.plot([date_index[p.day] for p in previous], [p.value for p in previous],
-                            color=palette[i], marker='o' if i == 0 else 's', markersize=3, label=name)
+                    stop = date_index[previous[-1].day] + 1
+                    if glow_enabled():
+                        ax.plot(xs[:stop], ys[:stop], color=palette[i], linewidth=7, alpha=.18,
+                                solid_capstyle='round', label='_race_glow')
+                    ax.plot(xs[:stop], ys[:stop],
+                            color=palette[i], marker=('o', 's', '^')[i], markersize=3, label=name)
                     # Holding the last real marker is a visual connection only.
                     last = previous[-1]; x = date_index[last.day]
-                    other = self.points[1-i].get(day)
-                    marker_offset = (32 if other is None or last.value >= other.value else -32) if is_ops else 0
+                    marker_offset = (32 - 32*i) if is_ops else 0
                     clipped = limits is not None and not limits[0] <= last.value <= limits[1]
                     if clipped:
                         edge = min(limits[1], max(limits[0], last.value))
@@ -558,8 +571,7 @@ class SeasonRaceView(QWidget):
                         (f' · {current.pa} PA<br/>OBP {current.obp:.3f} + SLG {current.slg:.3f}<br/>' +
                          escape(tr('Last game')) + f': {current.last_game}' if current else ''))
                     if current and (limits is None or limits[0] <= current.value <= limits[1]):
-                        other = self.points[1-i].get(day)
-                        offset = 32 if other is None or current.value >= other.value else -32
+                        offset = 32 - 32*i
                         ax.annotate(f'{chr(65+i)}  {current.value:.3f}', (index, current.value),
                                     xytext=(-24, offset), ha='right', va='center', textcoords='offset points',
                                     color=palette[i], fontsize=10, fontweight='bold')
@@ -586,23 +598,24 @@ class SeasonRaceView(QWidget):
                     ax.set_ylim(max(0, lo-pad), hi+pad)
                 if limits is not None:
                     ax.set_ylim(*limits)
-                current = [points.get(day) for points in self.points]
-                if all(current):
-                    a, b = current
-                    leader = names[0] if a.value > b.value else names[1]
-                    lead_text = tr('Equal OPS') if abs(a.value-b.value) < 1e-12 else tr('Higher OPS: {name}').format(name=leader)
-                    self.summary_cards[2].setText(escape(tr('OPS difference (A − B)')) +
-                        f'<br/><span style="font-size:22pt;font-weight:700">{a.value-b.value:+.3f}</span>' +
-                        f'<br/>{escape(lead_text)} · {day}' +
-                        ('<br/>' + escape(tr('Small sample: fewer than 50 PA.')) if min(a.pa, b.pa) < 50 else ''))
-                else:
-                    self.summary_cards[2].setText(tr('Comparison unavailable') + f'\n{day}')
+                if len(self.points) == 2:
+                    current = [points.get(day) for points in self.points]
+                    if all(current):
+                        a, b = current
+                        leader = names[0] if a.value > b.value else names[1]
+                        lead_text = tr('Equal OPS') if abs(a.value-b.value) < 1e-12 else tr('Higher OPS: {name}').format(name=leader)
+                        self.summary_cards[2].setText(escape(tr('OPS difference (A − B)')) +
+                            f'<br/><span style="font-size:22pt;font-weight:700">{a.value-b.value:+.3f}</span>' +
+                            f'<br/>{escape(lead_text)} · {day}' +
+                            ('<br/>' + escape(tr('Small sample: fewer than 50 PA.')) if min(a.pa, b.pa) < 50 else ''))
+                    else:
+                        self.summary_cards[2].setText(tr('Comparison unavailable') + f'\n{day}')
             handles, labels = ax.get_legend_handles_labels()
             if handles:
                 legend = ax.legend(facecolor=colors['axes'], edgecolor=colors['border'])
                 for text in legend.get_texts(): text.set_color(colors['text'])
             self.values.setText('   |   '.join(values))
-            self.status.setText(self.status.text()+f"\n{tr('Cache updated')}: {max(stamps) if stamps else '—'} · {tr('Calculated dates') if is_ops else tr('Samples')}: {len(self.points[0])} / {len(self.points[1])}")
+            self.status.setText(self.status.text()+f"\n{tr('Cache updated')}: {max(stamps) if stamps else '—'} · {tr('Calculated dates') if is_ops else tr('Samples')}: " + ' / '.join(str(len(points)) for points in self.points))
         self.canvas.draw_idle()
 
     def _hover(self, event):
@@ -654,7 +667,7 @@ class SeasonRaceView(QWidget):
         return RaceSnapshot(dates, values, names, 'OPS' if is_ops else 'fWAR', self.season,
             tuple(self.figure.axes[0].get_ylim()), active_theme() == 'dark',
             str(findfont(FontProperties(family=rcParams["font.family"]))),
-            tr('Fictional demo') if self._demo else ('MLB Stats API' if is_ops else 'FanGraphs'), tuple(extremes))
+            tr('Fictional demo') if self._demo else ('MLB Stats API' if is_ops else 'FanGraphs'), tuple(extremes), active_accent())
 
     def start_animation_export(self, path, options, start=0, end=None):
         if self._workers or not self.axis or not self.axis.dates:
@@ -740,8 +753,3 @@ class SeasonRaceView(QWidget):
         if self._motion_cid is not None:
             self.canvas.mpl_disconnect(self._motion_cid); self._motion_cid = None
         super().closeEvent(event)
-
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

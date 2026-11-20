@@ -20,6 +20,7 @@ def read_preferences() -> dict:
         'player_refresh_seconds': number('player_refresh_seconds', 300, 60, 3600),
         'font_scale': number('font_scale', 100, 80, 160),
         'notifications': str(settings.value('preferences/notifications', True)).lower() in {'true', '1'},
+        'reduce_motion': str(settings.value('preferences/reduce_motion', False)).lower() in {'true', '1'},
         'language': language if language in {'en', 'ko', 'ja'} else 'ko',
         'data_root': str(settings.value('preferences/data_root', '') or ''),
     }
@@ -34,7 +35,3 @@ def save_preferences(values: dict) -> None:
         import logging
         logging.getLogger(__name__).error('Cannot save application preferences')
         raise OSError('Could not save settings')
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

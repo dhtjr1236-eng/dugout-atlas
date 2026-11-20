@@ -1,6 +1,7 @@
-# OPS 시즌 레이스·애니메이션 사용 가이드
+# OPS 시즌 레이스 로컬 적용·사용 가이드
 
-대상: Dugout Atlas v1.81 / Windows 11 / Python 3.12 이상.
+기준: Dugout Atlas v1.7, 커밋 `c833aaa70d1fed32a6908ec5675c7cc1bc166677`.
+이 파일 묶음은 검토용 기능 추가본입니다. 앱 버전은 1.7로 유지하며 GitHub main에 반영하지 않았습니다.
 
 ## 추가된 기능
 
@@ -12,11 +13,27 @@
 - 간격과 표시 기간 변경은 이미 확보한 기록에서 처리합니다. 다시 네트워크를 요청하지 않습니다.
 - fWAR의 조회 방식·요청 간격·쿨다운·캐시 키는 유지합니다.
 
-## 설치와 업데이트
+## 적용 방법
 
-[사용자 가이드](USER_GUIDE.md)와 README의 소스 설치 순서를 따릅니다. 기존 앱과 별도로 선택한 데이터 폴더를 먼저 백업하세요. 기존 v1.7 검토용 payload를 v1.8 위에 다시 덮어쓰지 마세요. 새 소스의 관련 파일을 함께 사용해야 하며 `ui/season_race_view.py`만 교체해서는 안 됩니다.
+### 기존 v1.7에 덮어쓰기
 
-기존 DB·캐시·QSettings 및 데이터 폴더 선택을 유지합니다. 새 폴더에서 실행하면 기본 데이터 위치가 달라질 수 있으므로 설정에서 기존 위치를 확인하세요. 소스 복구는 백업한 소스 파일을 복원하며 사용자 DB를 삭제하지 않습니다.
+1. 앱을 완전히 종료합니다.
+2. 기존 프로젝트 폴더와 별도로 지정한 데이터 폴더를 백업합니다.
+3. 배포 ZIP을 임시 폴더에 풉니다.
+4. `patch/payload/` **안의 내용**을 `main.py`가 있는 기존 프로젝트 폴더에 복사합니다. 같은 이름의 파일만 교체하고 폴더는 합칩니다.
+5. `verify.bat`으로 검증하고 `run.bat`으로 실행합니다. 기존 가상환경이 없다면 `install.bat`부터 실행합니다.
+
+`ui/season_race_view.py`만 복사하면 새 서비스가 없어 실행되지 않을 수 있습니다. payload 전체를 함께 적용하세요. 새 의존성은 없습니다. 기존 버전이 다르거나 같은 파일을 직접 수정했다면 동봉 diff와 먼저 비교하세요.
+
+### 전체 소스 사용
+
+`full_source/dugout-atlas/`에 실행 가능한 전체 소스를 함께 제공합니다. 이 폴더에서 `install.bat`, `run.bat` 순으로 실행합니다. 사용자 DB·다운로드 캐시·개인 설정·가상환경은 포함하지 않았습니다.
+
+새 폴더에서 실행하면 기존 기본 데이터 경로와 달라질 수 있습니다. 기존 사용자는 먼저 덮어쓰기 방식을 고려하고, 데이터가 보이지 않으면 설정된 위치를 확인하세요. 기존 DB를 삭제하거나 초기화하지 마세요.
+
+### 복구
+
+앱 종료 후 백업의 동일 파일들을 복원합니다. 이번에 추가된 `services/ops_race.py`, `tests/test_ops_race.py`, `tests/test_ops_race_ui.py`, 이 가이드는 이전 파일이 없다면 제거해도 됩니다. 소스 복구를 위해 DB를 되돌릴 필요는 없습니다. OPS 캐시 행은 남아도 기존 fWAR 조회를 바꾸지 않습니다. 사용자 자료를 담은 폴더 전체를 지우지 마세요.
 
 ## 사용 순서
 
@@ -62,11 +79,17 @@ BB에는 고의사구가 포함되므로 IBB를 다시 더하지 않습니다. �
 - 첫 타석 부근의 OPS는 크게 튈 수 있어 전체 기간 축이 넓어질 수 있습니다. 후반기 기간을 지정하면 읽기 쉬워집니다.
 - Windows 11 실환경 검증은 아직 필요합니다. Linux Qt offscreen 검증은 Windows 설치 검증과 다릅니다.
 
-## 구현과 검증
+## 파일과 검증
 
-OPS 계산은 `services/ops_race.py`, 축과 기간 최고·최저는 `services/race_presentation.py`, 애니메이션은 `services/race_animation.py`, 저장 옵션은 `ui/race_export_dialog.py`에 분리되어 있습니다. `ui/season_race_view.py`가 화면을 연결합니다.
+수정: `services/season_race.py`(공통 표시용 value), `services/settings_service.py`(MLB 캐시 정리에 OPS 포함), `ui/season_race_view.py`, `config/translations.json`.
 
-회귀 검증은 `python -m compileall -q .`, `python -m pytest -q`로 수행합니다. 결과와 남은 제한은 [v1.8 패치노트](PATCH_v1.8.md)를 확인하세요. 새 테스트는 실제 네트워크를 호출하지 않습니다.
+추가: `services/ops_race.py`, `tests/test_ops_race.py`, `tests/test_ops_race_ui.py`, `docs/OPS_RACE_GUIDE_KO.md`.
+
+`python -m compileall -q .`, `python -m pytest -q`를 실행합니다. 동봉 `VERIFICATION_KO.txt`에 최종 결과가 있습니다. 새 테스트는 실제 네트워크를 호출하지 않습니다.
+
+별도 수동 점검으로 MLB API의 2025년 오타니·저지 경기 기록을 받아 합산했습니다. 제공 화면은 이 자료를 실제 PyQt 화면에 렌더링한 개발 미리보기이며 생성형 이미지가 아닙니다. 화면 촬영은 별도 임시 설정으로 수행했고 사용자 실제 DB에는 쓰지 않았습니다.
+
+원본 조회 경로: `https://statsapi.mlb.com/api/v1/people/{mlbam_id}/stats` (`stats=gameLog`, `group=hitting`, `season=2025`, `gameType=R`, `limit=1000`) 및 `/api/v1/schedule`. 이미지의 조회일은 2026-10-10이며, 실시간 2026년 경기 상황을 뜻하지 않습니다.
 
 ## OPS 축 범위와 기간 최고·최저
 
@@ -91,6 +114,6 @@ OPS 계산은 `services/ops_race.py`, 축과 기간 최고·최저는 `services/
 
 렌더링과 압축은 Qt GUI와 분리한 프로세스에서 수행합니다. 최대 120프레임으로 제한했지만 고해상도 저장에는 일시적으로 수백 MB 메모리가 필요할 수 있습니다. 느린 PC에서는 640×360 / 5 fps를 선택하세요. Windows 11의 실제 파일 선택창·취소·종료 및 배포 EXE 환경은 별도 확인이 필요합니다.
 
-README의 [OPS_example.gif](images/OPS_example.gif)는 **예시 선수 A/B의 가상 데이터**를 실제 구현으로 저장한 기존 원본입니다. 실제 선수 성적이 아니며 사용자 DB에 예시 자료를 쓰지 않았습니다.
+이번 묶음의 OPS_light.png / OPS_dark.png 및 OPS_example.gif / webp는 **예시 선수 A/B의 가상 데이터**를 실제 구현에 넣어 촬영·저장했습니다. 앞서 제공한 실제 오타니/저지 조회 화면과 다른 자료입니다. 사용자 DB에는 예시 자료를 쓰지 않았습니다.
 
-`main.py`에는 Windows 자식 프로세스 시작을 위한 `freeze_support()`가 포함됩니다. Windows 11 실환경 검증과 EXE 배포 검증은 별도로 필요합니다.
+추가 구현 파일: `services/race_presentation.py`, `services/race_animation.py`, `ui/race_export_dialog.py`, `tests/test_ops_axis.py`, `tests/test_race_animation.py`. `main.py`에는 Windows 자식 프로세스 시작을 위한 freeze_support를 추가했습니다. 기존 버전은 1.7로 유지합니다.
