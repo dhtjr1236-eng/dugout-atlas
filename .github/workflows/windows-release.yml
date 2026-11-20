@@ -9,7 +9,7 @@ permissions:
 
 concurrency:
   group: windows-release-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -34,7 +34,12 @@ jobs:
       - name: Verify the source
         env:
           QT_QPA_PLATFORM: offscreen
-        run: python -m pytest -q
+        run: |
+          python -m pytest -q
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m pip install pip-audit
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m pip_audit --local
       - name: Build and verify the Windows package
         shell: pwsh
         env:

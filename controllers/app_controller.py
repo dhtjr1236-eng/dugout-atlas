@@ -238,8 +238,7 @@ class AppController(QObject):
             return
         self._compare_request_ids[slot] += 1
         request_id = self._compare_request_ids[slot]
-        season = self.window.player_view.current_trend_season if period == "monthly" else self.season
-        season = season or self.season
+        season = self.season
         self.window.compare_view.set_loading(slot, player_id)
         self.window.set_busy(tr(f"Loading comparison player {player_id}…"))
 
