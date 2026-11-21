@@ -84,6 +84,50 @@ def test_player_ui_keeps_arsenal_and_hides_analysis_for_hitter():
     view.close();app.processEvents()
 
 
+def test_player_summary_cards_bind_bundle_and_trend_uses_spline_chart():
+    from PyQt6.QtWidgets import QApplication
+    from charts import ModernSplineChart
+    from models.player import PlayerProfile, PlayerBundle
+    from ui.player_view import PlayerView
+
+    app = QApplication.instance() or QApplication([])
+    view = PlayerView()
+    bundle = PlayerBundle(
+        PlayerProfile(1, 'Hitter', position='CF'),
+        basic={'ops': None},
+        fangraphs={'OPS': 0.875, 'wOBA': 0.381, 'fWAR': 4.2},
+        statcast={'Average Exit Velocity': 93.4, 'Hard Hit %': 47.2},
+        history=[
+            {'Season': year, 'WAR': war, 'wRC+': wrc}
+            for year, war, wrc in ((2022, 2.1, 118), (2023, 3.0, 125),
+                                   (2024, 3.7, 132), (2025, 4.2, 141))
+        ],
+    )
+
+    view.set_bundle(bundle)
+
+    assert len(view.summary_cards) == 4
+    assert [card.value_label.text() for card in view.summary_cards] == [
+        '0.875', '0.381', '93.4', '47.2%'
+    ]
+    war_chart = view.chart_tabs.widget(3).findChild(ModernSplineChart)
+    assert war_chart is not None
+    assert len(war_chart.ax.lines[0].get_xdata()) > 4
+
+    emitted = []
+    view.trend_period_changed.connect(emitted.append)
+    view.trend_period.setCurrentIndex(view.trend_period.findData('monthly'))
+    assert emitted == ['monthly']
+    view.set_trend('monthly', [
+        {'Period': '2025-03', 'WAR': 0.4, 'wRC+': 120},
+        {'Period': '2025-04', 'WAR': 0.8, 'wRC+': 130},
+    ])
+    assert view.current_trend_period == 'monthly'
+    assert view.chart_tabs.widget(3).findChild(ModernSplineChart) is not None
+    view.close()
+    app.processEvents()
+
+
 @pytest.mark.parametrize('change',['season','player'])
 def test_controller_drops_late_analysis(change):
     from PyQt6.QtCore import QObject

@@ -17,7 +17,3 @@ def test_team_localization() -> None:
     apply_team_ref(team,"ja")
     assert team.name == "サンフランシスコ・ジャイアンツ"
     assert team.abbreviation == "ジャイアンツ"
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

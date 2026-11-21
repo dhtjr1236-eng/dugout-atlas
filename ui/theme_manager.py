@@ -16,6 +16,7 @@ from config.theme_tokens import (
     set_active_theme,
     set_active_accent,
     tokens_for,
+    ACCENT_OVERRIDES,
 )
 
 THEME_STORAGE_KEY = "dugout-atlas-theme"
@@ -52,7 +53,7 @@ class ThemeManager:
 
     def _stored_accent(self) -> str:
         raw = str(self.settings.value(ACCENT_STORAGE_KEY, "blue") or "blue").lower()
-        return raw if raw in {"blue","gold","purple","magenta","emerald"} else "blue"
+        return raw if raw in ACCENT_OVERRIDES else "blue"
 
     def _system_theme(self) -> ThemeName:
         try:
@@ -84,6 +85,11 @@ class ThemeManager:
                 callback()
             except Exception:
                 continue
+        # Refresh live custom-painted widgets without retaining closed windows.
+        for widget in self.app.allWidgets():
+            refresh = getattr(widget, "refresh_theme_style", None)
+            if callable(refresh):
+                refresh()
 
     def toggle(self) -> None:
         target: ThemeName = "light" if self.current_theme == "dark" else "dark"
@@ -92,6 +98,10 @@ class ThemeManager:
         self.apply(target, animate=True)
 
     def apply(self, theme: ThemeName, *, animate: bool = True) -> None:
+        if self._animation is not None:
+            self._animation.stop()
+            self._animation.deleteLater()
+            self._animation = None
         from matplotlib import font_manager, rcParams
         available = {font.name for font in font_manager.fontManager.ttflist}
         candidates = ("Malgun Gothic", "Yu Gothic", "Meiryo", "Noto Sans CJK KR", "Noto Sans CJK JP", "DejaVu Sans")
@@ -129,7 +139,7 @@ class ThemeManager:
         self._button.setAccessibleDescription(tr("Dugout Atlas 화면 테마 전환 버튼"))
 
     def set_accent(self, accent: str, *, animate: bool = False) -> None:
-        self.current_accent = accent if accent in {"blue","gold","purple","magenta","emerald"} else "blue"
+        self.current_accent = accent if accent in ACCENT_OVERRIDES else "blue"
         self.settings.setValue(ACCENT_STORAGE_KEY, self.current_accent)
         self.settings.sync()
         set_active_accent(self.current_accent)
@@ -147,6 +157,8 @@ class ThemeManager:
         return rendered
 
     def _reduced_motion(self) -> bool:
+        if read_preferences().get('reduce_motion', False):
+            return True
         hints = self.app.styleHints()
         for name in ("reduceMotion", "reducedMotion"):
             getter = getattr(hints, name, None)
@@ -162,10 +174,10 @@ class ThemeManager:
         end = self._tokens(target)
 
         animation = QVariantAnimation(self.app)
-        animation.setDuration(180)
+        animation.setDuration(220)
         animation.setStartValue(0.0)
         animation.setEndValue(1.0)
-        animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
+        animation.setEasingCurve(QEasingCurve.Type.OutCubic)
 
         def update(value: object) -> None:
             try:
@@ -210,7 +222,3 @@ class ThemeManager:
             channel(a.blue(), b.blue()),
         )
         return color.name().upper()
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

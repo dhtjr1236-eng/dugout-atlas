@@ -39,7 +39,7 @@ class AppController(QObject):
         self._game_busy = False
         self._player_busy = False
         self._trend_busy = False
-        self._pending_trend_period: str | None = None
+        self._pending_trend_period: tuple[str, int | None] | None = None
         self._pitcher_statcast_busy = False
         self._pending_pitcher_statcast_period: str | None = None
         self._compare_request_ids: dict[int, int] = {0: 0, 1: 0}
@@ -69,6 +69,7 @@ class AppController(QObject):
         self.window.player_view.pitch_analysis_requested.connect(self.load_pitch_analysis)
         self.window.player_view.pitch_analysis.change.requested.connect(self.load_pitch_change)
         self.window.player_view.trend_period_changed.connect(self.load_player_trend)
+        self.window.player_view.trend_season_changed.connect(lambda _season: self.load_player_trend(self.window.player_view.current_trend_period))
         self.window.player_view.pitcher_statcast_period_changed.connect(
             self.load_pitcher_statcast_period
         )
@@ -274,6 +275,7 @@ class AppController(QObject):
                 return
             self._player_busy = False
             self.window.show_player(bundle)
+            self.load_player_portrait(player_id)
             self.window.set_busy(tr(f"Player data loaded: {bundle.profile.full_name}"))
             if bundle.profile.is_pitcher:
                 self.window.player_view.pitch_analysis.change.reset(season)
@@ -298,6 +300,14 @@ class AppController(QObject):
         if self.selected_player_id is not None and not self._player_busy:
             self.load_player(self.selected_player_id)
 
+    def load_player_portrait(self, player_id: int) -> None:
+        """Shared by the base loader and the installed season-selection loader."""
+        from services.headshots import load_profile_portrait
+        self._run(lambda: load_profile_portrait(player_id),
+                  lambda data: self.window.player_view.portrait.set_photo(player_id, data)
+                  if self.selected_player_id == player_id else None,
+                  on_error=lambda _message: None)
+
     def load_player_trend(self, period: str) -> None:
         bundle = self.window.player_view.current_bundle
         if (
@@ -307,13 +317,15 @@ class AppController(QObject):
         ):
             return
         if self._trend_busy:
-            self._pending_trend_period = period
+            selected_season = getattr(self.window.player_view, "current_trend_season", None)
+            self._pending_trend_period = (period, selected_season)
             self.window.player_view.set_trend_loading(period)
             return
 
         player_id = bundle.profile.id
         full_name = bundle.profile.full_name
-        season = self.season
+        season = getattr(self.window.player_view, "current_trend_season", None) or self.season
+        generation = getattr(self, '_player_generation', 0)
         self._trend_busy = True
         self._pending_trend_period = None
         self.window.player_view.set_trend_loading(period)
@@ -321,8 +333,27 @@ class AppController(QObject):
         def run_pending() -> None:
             pending = self._pending_trend_period
             self._pending_trend_period = None
-            if pending and pending != period:
-                self.load_player_trend(pending)
+            if pending and (pending[0] != period or pending[1] != season or generation != getattr(self, '_player_generation', 0)):
+                self.load_player_trend(pending[0])
+
+        if period == "yearly":
+            def success(rows: list[dict[str, Any]]) -> None:
+                self._trend_busy = False
+                if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
+                    self.window.player_view.set_trend(period, rows)
+                run_pending()
+
+            def failure(message: str) -> None:
+                self._trend_busy = False
+                if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
+                    self.window.player_view.set_trend(period, [])
+                    self._default_error(message)
+                run_pending()
+
+            self._run(lambda: self.players.get_fangraphs_trend(player_id, full_name, season, False, period), success, on_error=failure)
+            return
+
+        self._pending_trend_period = None
 
         def task() -> list[dict[str, Any]]:
             return self.players.get_fangraphs_trend(
@@ -331,7 +362,7 @@ class AppController(QObject):
 
         def success(rows: list[dict[str, Any]]) -> None:
             self._trend_busy = False
-            if self.selected_player_id == player_id:
+            if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
                 self.window.player_view.set_trend(period, rows)
                 self.window.set_busy(
                     tr(f"FanGraphs {period} trend loaded · {len(rows)} periods")
@@ -340,12 +371,15 @@ class AppController(QObject):
 
         def failure(message: str) -> None:
             self._trend_busy = False
-            if self.selected_player_id == player_id:
+            if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
                 self.window.player_view.set_trend(period, [])
                 self._default_error(message)
             run_pending()
 
         self._run(task, success, on_error=failure)
+
+    def _load_selected_monthly_trend(self, season: int) -> None:
+        self.load_player_trend("monthly")
 
     def load_pitch_change(self) -> None:
         """Run bounded raw-data reuse and aggregation off the GUI thread."""
@@ -425,13 +459,14 @@ class AppController(QObject):
         player_id = bundle.profile.id
         season = self.season
         self._pitcher_statcast_busy = True
+        generation = getattr(self, '_player_generation', 0)
         self._pending_pitcher_statcast_period = None
         self.window.player_view.set_pitcher_statcast_loading(period)
 
         def run_pending() -> None:
             pending = self._pending_pitcher_statcast_period
             self._pending_pitcher_statcast_period = None
-            if pending and pending != period:
+            if pending and (pending != period or generation != getattr(self, '_player_generation', 0)):
                 self.load_pitcher_statcast_period(pending)
 
         def task() -> dict[str, Any]:
@@ -439,7 +474,7 @@ class AppController(QObject):
 
         def success(payload: dict[str, Any]) -> None:
             self._pitcher_statcast_busy = False
-            if self.selected_player_id == player_id:
+            if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
                 self.window.player_view.set_pitcher_statcast_period(period, payload)
                 self.window.set_busy(
                     tr(f"Pitcher Statcast {period} loaded · {payload.get('label', '')}")
@@ -448,7 +483,7 @@ class AppController(QObject):
 
         def failure(message: str) -> None:
             self._pitcher_statcast_busy = False
-            if self.selected_player_id == player_id:
+            if self.selected_player_id == player_id and generation == getattr(self, '_player_generation', 0):
                 self._default_error(message)
             run_pending()
 
@@ -506,4 +541,3 @@ class AppController(QObject):
 # Dugout Atlas
 # Copyright (c) 2026 dhtjr1236-eng
 # Unauthorized redistribution or rebranding is prohibited.
-

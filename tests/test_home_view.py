@@ -21,6 +21,48 @@ def test_empty_local_library_does_not_create_favorites(tmp_path):
     assert not target.parent.exists()
 
 
+def test_games_sidebar_animates_and_restores_without_resetting_date(app):
+    from PyQt6.QtCore import QDate
+    from ui.main_window import MainWindow
+    window = MainWindow()
+    window.show()
+    app.processEvents()
+    try:
+        window.date_edit.setDate(QDate(2025, 7, 1))
+        window.games_sidebar_button.click()
+        window._sidebar_animation.setCurrentTime(110)
+        assert not window.games_sidebar.isHidden()
+        window._sidebar_animation.setCurrentTime(220)
+        assert window.games_sidebar.isHidden()
+        window.games_sidebar_button.click()
+        window._sidebar_animation.setCurrentTime(220)
+        assert not window.games_sidebar.isHidden()
+        assert window.date_edit.date() == QDate(2025, 7, 1)
+    finally:
+        window.close()
+
+
+def test_sidebar_survives_switching_to_reduced_motion_mid_animation(app, monkeypatch):
+    from types import SimpleNamespace
+    from PyQt6.QtCore import QCoreApplication, QEvent
+    from ui.main_window import MainWindow
+    reduced = [False]
+    monkeypatch.setattr(app, 'motion_manager', SimpleNamespace(reduced_motion=lambda: reduced[0]), raising=False)
+    window = MainWindow()
+    window.show()
+    app.processEvents()
+    try:
+        window._toggle_games_sidebar(True)
+        window._sidebar_animation.setCurrentTime(80)
+        reduced[0] = True
+        window._toggle_games_sidebar(False)
+        QCoreApplication.sendPostedEvents(None, QEvent.Type.DeferredDelete)
+        window._toggle_games_sidebar(True)
+        assert window.games_sidebar.isHidden()
+    finally:
+        window.close()
+
+
 def test_inventory_is_season_scoped_and_keeps_strict_ids(tmp_path):
     db = SQLiteManager(tmp_path / 'db.sqlite3')
     db.set_player_stats(1, 'test_source', 2025, 'bat', {'WAR': None})
@@ -63,6 +105,71 @@ def test_home_loading_and_empty_are_distinct(app):
     view.set_schedule_state('empty','2025-12-01')
     assert view._schedule_state=='empty'
     view.set_schedule_state('error');assert view._schedule_state=='error'
+    view.close()
+
+
+def test_favorite_search_filters_by_display_name_original_name_and_team(app, monkeypatch):
+    from config.i18n import tr
+    from ui import home_view
+
+    monkeypatch.setattr(home_view, 'localized_player_name',
+                        lambda player_id, name, _language: '오타니 쇼헤이' if player_id == 660271 else name)
+    view = HomeView()
+    view.season.setValue(2025)
+    favorites = (
+        {'id': 660271, 'name': 'Shohei Ohtani', 'team': 'LAD'},
+        {'id': 592450, 'name': 'Aaron Judge', 'team': 'NYY'},
+    )
+    view.set_snapshot(HomeSnapshot(2025, favorites, 0, 0, 0, ''))
+    selected = []
+    view.player_selected.connect(lambda player_id, season: selected.append((player_id, season)))
+    try:
+        for query in ('오타니', 'OHTANI', '  ｌａｄ  '):
+            view.favorite_search.setText(query)
+            assert view.favorites.count() == 1
+            assert view.favorites.item(0).data(Qt.ItemDataRole.UserRole) == 660271
+        view.favorites.itemClicked.emit(view.favorites.item(0))
+        assert selected == [(660271, 2025)]
+
+        view.favorite_search.setText('no match')
+        assert view.favorites.item(0).text() == tr('No favorites match this search.')
+        assert not view.favorites.item(0).flags() & Qt.ItemFlag.ItemIsEnabled
+        view.favorite_search.clear()
+        assert view.favorites.count() == 2
+    finally:
+        view.close()
+
+
+def test_home_scoreboard_updates_the_baseball_diamond(app):
+    from models.game import GameDetail, TeamRef
+
+    view = HomeView()
+    detail = GameDetail(
+        game_pk=1,
+        away=TeamRef(1, 'Away', 'AWY', score=2),
+        home=TeamRef(2, 'Home', 'HME', score=3),
+        status='In Progress',
+        inning=7,
+        inning_state='Top',
+        on_first=True,
+        on_second=False,
+        on_third=True,
+    )
+
+    view.set_game_detail(detail)
+
+    assert not view.scoreboard.isHidden()
+    assert view.scoreboard_matchup.text() == 'AWY  vs  HME'
+    assert view.scoreboard_score.text() == '2  –  3'
+    assert (view.baseball_diamond.runner_1b,
+            view.baseball_diamond.runner_2b,
+            view.baseball_diamond.runner_3b) == (True, False, True)
+
+    view.set_game_detail(None)
+    assert view.scoreboard.isHidden()
+    assert (view.baseball_diamond.runner_1b,
+            view.baseball_diamond.runner_2b,
+            view.baseball_diamond.runner_3b) == (False, False, False)
     view.close()
 
 
@@ -148,7 +255,3 @@ def test_large_font_narrow_home_scrolls_vertically(app, language, font_size, sty
             view.close()
         set_language(previous_language)
         app.setStyle(previous_style)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -122,7 +122,3 @@ class LeagueView(QWidget):
             return int(value)
         except (TypeError, ValueError):
             return 999
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -9,3 +9,14 @@ cache/files/**/*
 logs/*.log
 .DS_Store
 data/favorites.json
+
+# Local build tools, payloads and release binaries are published as Release assets.
+.build-tools/
+build/
+dist/
+release/
+output/installer-validation/
+tools/vendor/
+tools/installer/assets/*.bmp
+tools/installer/assets/*.ico
+tools/installer/installer/product.inc

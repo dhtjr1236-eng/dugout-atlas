@@ -180,7 +180,3 @@ class CompareView(QWidget):
                 for rank,i in enumerate(order,1): lay.addWidget(QLabel(tr(f"{actual[i].profile.full_name}   #{rank} · {valid[i]:.1f} points")))
             self.insights.addWidget(card)
         self.insights.addStretch()
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

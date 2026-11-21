@@ -133,7 +133,3 @@ def test_fangraphs_daily_trend_is_bounded_to_recent_14_games(
     assert len(rows) == 14
     assert rows[0]["Period"] == "2026-04-07"
     assert rows[-1]["Period"] == "2026-04-20"
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -66,8 +66,9 @@ def test_scoring_runner_cells_keep_separate_ids(app):
 
 def test_controller_discards_same_player_stale_season(app):
     from controllers.app_controller import AppController
-    callbacks=[];shown=[]
+    callbacks=[];shown=[];portraits=[]
     controller=SimpleNamespace(season=2025,_player_busy=False,selected_player_id=None,
+        load_player_portrait=lambda player:portraits.append(player),
         window=SimpleNamespace(show_player_loading=lambda pid:None,
             show_player=lambda bundle:shown.append(bundle),set_busy=lambda text:None,
             player_view=SimpleNamespace(current_trend_period='yearly')),
@@ -77,10 +78,8 @@ def test_controller_discards_same_player_stale_season(app):
     old=SimpleNamespace(profile=SimpleNamespace(full_name='Old',is_pitcher=False))
     new=SimpleNamespace(profile=SimpleNamespace(full_name='New',is_pitcher=False))
     callbacks[0][0](old)
+    assert not portraits
     assert not shown and controller._player_busy
     callbacks[1][0](new)
+    assert portraits == [1]
     assert shown==[new] and not controller._player_busy
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

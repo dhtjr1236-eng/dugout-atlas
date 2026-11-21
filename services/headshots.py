@@ -49,6 +49,35 @@ async def load_headshot(mlbam_id: int, cache: HeadshotCache | None = None) -> np
         logging.getLogger(__name__).warning("Headshot unavailable; using vector marker")
         return None
 
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
+
+async def load_profile_portrait(mlbam_id: int) -> bytes | None:
+    """Official MLB ID portrait, separate from the tiny race-marker cache."""
+    from config.settings import CACHE_DIR
+    from cache.file_cache import FileCache
+    try:
+        cache = HeadshotCache(CACHE_DIR / 'portraits')
+        path = cache.path_for(mlbam_id)
+        def normalize(data):
+            with Image.open(BytesIO(data)) as image:
+                if image.width * image.height > 4_000_000:
+                    raise ValueError('Portrait dimensions too large')
+                image = image.convert('RGBA')
+                image.thumbnail((320, 400), Image.Resampling.LANCZOS)
+                output = BytesIO()
+                image.save(output, format='PNG')
+                return output.getvalue()
+        if FileCache.is_fresh(path, 30):
+            try:
+                return normalize(path.read_bytes())
+            except (OSError, ValueError):
+                pass
+        url = HEADSHOT_URL.replace('w_60,', 'w_320,').format(mlbam_id=mlbam_id)
+        data = normalize(await async_get_bytes(url, timeout=10, retries=1))
+        try:
+            cache.write(mlbam_id, data)
+        except OSError:
+            pass
+        return data
+    except Exception:
+        logging.getLogger(__name__).warning('Official player portrait unavailable; using placeholder')
+        return None

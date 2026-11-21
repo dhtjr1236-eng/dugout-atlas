@@ -90,6 +90,18 @@ def test_new_selection_clears_local_ops_result(view):
     w.set_players([PlayerBundle(PlayerProfile(99, 'New')), PlayerBundle(PlayerProfile(100, 'Other'))], 2024)
     assert w._ops_result is None and w.points == [{}, {}]
 
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.
+
+def test_three_player_ops_chart_and_cards(view):
+    from models.player import PlayerBundle, PlayerProfile
+    w, _ = view
+    w.set_players([PlayerBundle(PlayerProfile(pid, name)) for pid, name in
+                   ((10, 'Player A'), (20, 'Player B'), (30, 'Player C'))], 2025)
+    axis, games = axis_games()
+    c = cumulative_ops([fixture_row(player=30)], axis, games, '2025-10-01')
+    baseline = result()
+    w._ops_loaded(OpsResult(axis, (*baseline.players, RacePlayer(30, 'Player C', 'bat')),
+                            (*baseline.points, c), 4, 0))
+    assert len(w.points) == 3
+    assert 'Player C' in w.summary_cards[2].text()
+    assert 'OPS difference' not in w.summary_cards[2].text()
+    assert len(w.animation_snapshot().values) == 3

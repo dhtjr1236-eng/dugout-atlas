@@ -169,9 +169,10 @@ class OpsRaceService:
 
     def load(self, players: list[RacePlayer], season: int, cancel: threading.Event,
              emit: Callable[[dict], None]) -> OpsResult:
-        if len(players) != 2 or any(p.role != 'bat' or type(p.mlbam_id) is not int
+        if len(players) not in (2, 3) or any(p.role != 'bat' or type(p.mlbam_id) is not int
                                      or p.mlbam_id <= 0 for p in players):
-            raise RaceError('OPS requires two batting roles.')
+            raise RaceError('OPS requires two batting roles.' if len(players) == 2
+                            else 'OPS requires batting roles for every player.')
         today = datetime.now(UTC).date()
         ttl = source_ttl_days(season)
         requests = hits = 0
@@ -225,7 +226,3 @@ class OpsRaceService:
         RaceService.check(cancel)
         emit({'kind': 'ops_status', 'text': 'Calculating cumulative OPS…'})
         return OpsResult(axis, tuple(players), tuple(series), requests, hits)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

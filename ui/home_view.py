@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from datetime import date
+from unicodedata import normalize
 from PyQt6.QtCore import Qt, QSize, pyqtSignal
 from PyQt6.QtWidgets import (QWidget, QScrollArea, QVBoxLayout, QHBoxLayout,
-    QGridLayout, QLabel, QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem, QSizePolicy)
+    QGridLayout, QLabel, QLineEdit, QPushButton, QSpinBox, QFrame, QListWidget, QListWidgetItem, QSizePolicy)
 from config.i18n import tr
+from config.preferences import read_preferences
 from models.game import GameDetail
 from services.home_service import HomeSnapshot
+from services.player_name_localization import localized_player_name
 from ui.components import BaseballDiamondWidget
 from ui.season_recap import SeasonRecapCard, format_saved_time
 
@@ -172,6 +175,11 @@ class HomeView(QScrollArea):
         root.addWidget(self.favorite_heading)
         self.favorite_hint = QLabel(); self.favorite_hint.setWordWrap(True)
         root.addWidget(self.favorite_hint)
+        self.favorite_search = QLineEdit()
+        self.favorite_search.setClearButtonEnabled(True)
+        self.favorite_search.setSizePolicy(QSizePolicy.Policy.Ignored, QSizePolicy.Policy.Fixed)
+        self.favorite_search.textChanged.connect(self._render_favorites)
+        root.addWidget(self.favorite_search)
         self.favorites = QListWidget()
         self.favorites.setMinimumHeight(140)
         self.favorites.setMaximumHeight(210)
@@ -259,6 +267,9 @@ class HomeView(QScrollArea):
         self.favorite_heading.setText(tr('Your favorite players'))
         self.scoreboard_heading.setText(tr('Live Scoreboard'))
         self.favorite_hint.setText(tr('Click a player to open this season. Add favorites from a player profile.'))
+        search_label = tr('Filter favorites by player name or team')
+        self.favorite_search.setPlaceholderText(search_label)
+        self.favorite_search.setAccessibleName(search_label)
         self.footer.setText(tr('Overview uses local records only. Opening an analysis may request fresh data. Missing statistics remain missing.'))
         for card in self.cards:
             for button in card.findChildren(QPushButton):
@@ -287,13 +298,25 @@ class HomeView(QScrollArea):
         elif self._state == 'empty': message = tr('No cached statistics for this season yet. Open a player or standings to begin.')
         else: message = tr('Last cache write (UTC)') + ': ' + format_saved_time(snapshot.updated_at if snapshot else '')
         self.state.setText(message)
+        self._render_favorites()
+
+    def _render_favorites(self) -> None:
+        query = normalize('NFKC', self.favorite_search.text()).strip().casefold()
+        rows = self._snapshot.favorites if self._snapshot else ()
+        language = read_preferences()['language']
         self.favorites.clear()
-        for row in snapshot.favorites if snapshot else ():
-            item = QListWidgetItem(f"★  {row['name']}" + (f"   ·   {row['team']}" if row['team'] else ''))
+        for row in rows:
+            name = localized_player_name(row['id'], row['name'], language)
+            team = row['team']
+            if query and not any(query in normalize('NFKC', text).casefold() for text in (name, row['name'], team)):
+                continue
+            item = QListWidgetItem(f'★  {name}' + (f'   ·   {team}' if team else ''))
             item.setData(Qt.ItemDataRole.UserRole, row['id'])
             self.favorites.addItem(item)
         if not self.favorites.count():
-            item = QListWidgetItem(tr('No favorites to display. Search for a player to get started.'))
+            message = ('No favorites match this search.' if rows else
+                       'No favorites to display. Search for a player to get started.')
+            item = QListWidgetItem(tr(message))
             item.setFlags(Qt.ItemFlag.NoItemFlags)
             self.favorites.addItem(item)
 

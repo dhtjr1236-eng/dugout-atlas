@@ -654,18 +654,9 @@ class FanGraphsService:
         """
         normalized = period.strip().lower()
         if normalized == "yearly":
-            rows = self.get_history(
-                player_id,
-                full_name,
-                max(2002, int(season) - 5),
-                int(season),
-                pitcher,
-            )
-            return [
-                {"Period": str(row.get("Season")), **row}
-                for row in rows
-                if row.get("Season") is not None
-            ]
+            history = self.get_history(player_id, full_name, max(2002, int(season) - 5), int(season), pitcher)
+            return [{"Period": str(row.get("Season")), **row} for row in history
+                    if row.get("Season") is not None and int(row.get("Season")) == int(season)]
         if normalized not in {"monthly", "daily"}:
             raise ValueError(f"Unsupported FanGraphs trend period: {period}")
 
@@ -694,7 +685,3 @@ class FanGraphsService:
                 {"rows": rows},
             )
         return rows
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

@@ -122,4 +122,3 @@ Pitch-level `delta_run_exp` represents run-expectancy movement from the batting 
 선택된 `GameDetail`은 `MainWindow`가 Gameday·라인업과 홈 스코어보드에 함께 전달합니다. 홈의 주자 다이아몬드는 해당 상세의 1·2·3루 상태를 표시합니다. 선수 요약 카드는 `PlayerBundle`을 렌더링하고, WAR·wRC+ 추이는 기존 controller의 비동기 기간 Signal을 통해 받은 데이터를 차트로 표시합니다.
 
 소스 실행의 데이터 위치와 QSettings는 기존 정책을 유지합니다. 패키지 리소스 경로 도우미와 frozen 준비 코드는 있으나 설치형 배포는 검증 전입니다.
-

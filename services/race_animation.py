@@ -10,6 +10,7 @@ import threading
 from collections.abc import Callable
 
 from PIL import Image, ImageDraw, ImageFont, features
+from config.theme_tokens import tokens_for, race_palette
 
 
 @dataclass(frozen=True)
@@ -39,13 +40,16 @@ class RaceSnapshot:
     font: str = ''
     footer: str = ''
     extrema: tuple[str, ...] = ()
+    accent: str = 'blue'
 
 
 def render_frame(snapshot: RaceSnapshot, index: int, width: int) -> Image.Image:
     """Render only acquired samples; gaps are not filled with invented values."""
     height = width * 9 // 16
     scale = width / 960
-    bg, fg, grid = ('#0B1220', '#E5E7EB', '#334155') if snapshot.dark else ('#F5F7FB', '#172033', '#D9E1EC')
+    theme = 'dark' if snapshot.dark else 'light'
+    tokens = tokens_for(theme, snapshot.accent)
+    bg, fg, grid = tokens['--color-surface'], tokens['--color-text'], tokens['--color-border-strong']
     im = Image.new('RGB', (width, height), bg)
     draw = ImageDraw.Draw(im)
     def font(size):
@@ -61,13 +65,19 @@ def render_frame(snapshot: RaceSnapshot, index: int, width: int) -> Image.Image:
         draw.text((int(x * scale), int(y * scale)), value, font=face, fill=color)
     text(24, 12, f'Dugout Atlas  ·  {snapshot.season}  ·  {snapshot.metric}', 24)
     text(24, 47, snapshot.dates[index], 20)
-    colors = ('#3B82F6', '#E87935')
+    colors = race_palette(theme, snapshot.accent)
+    if snapshot.accent == 'neon':
+        inset, length = 8 * scale, 20 * scale
+        for x, y, dx, dy in ((inset,inset,1,1),(width-inset,inset,-1,1),
+                              (inset,height-inset,1,-1),(width-inset,height-inset,-1,-1)):
+            draw.line((x,y+dy*length,x,y,x+dx*length,y), fill=colors[0], width=max(1,int(2*scale)))
     for i, (name, values) in enumerate(zip(snapshot.names, snapshot.values)):
         value = values[index]
         label = '—' if value is None else f'{value:.3f}'
-        text(24 + i * 455, 80, f'{name[:24]}   {label}', 22, colors[i])
+        text(24 + i * (455 if len(snapshot.names) == 2 else 305), 80,
+             f'{name[:24] if len(snapshot.names) == 2 else name[:16]}   {label}', 22, colors[i])
         if i < len(snapshot.extrema):
-            text(24 + i * 455, 112, snapshot.extrema[i], 14, colors[i])
+            text(24 + i * (455 if len(snapshot.names) == 2 else 305), 112, snapshot.extrema[i], 14, colors[i])
     left, top, right, bottom = (int(v * scale) for v in (76, 156, 922, 439))
     low, high = snapshot.limits
     def xy(j, value):
@@ -91,6 +101,11 @@ def render_frame(snapshot: RaceSnapshot, index: int, width: int) -> Image.Image:
                 continue
             x,y = xy(j,value); point=(x-left,y-top)
             if previous is not None:
+                if snapshot.accent == 'neon' and snapshot.dark:
+                    rgb = tuple(int(colors[i][k:k+2], 16) for k in (1,3,5))
+                    background = tuple(int(bg[k:k+2],16) for k in (1,3,5))
+                    halo = tuple(round(a*.18+b*.82) for a,b in zip(rgb,background))
+                    painter.line((*previous,*point), fill=halo, width=max(4,int(9*scale)))
                 painter.line((*previous,*point), fill=colors[i], width=max(2,int(3*scale)))
             previous=point
         value=values[index]
@@ -138,8 +153,8 @@ def export_animation(snapshot: RaceSnapshot, options: AnimationOptions, destinat
                      cancel: threading.Event, progress: Callable = lambda value: None) -> bool:
     """Publish atomically on success; preserve existing files on cancel/failure."""
     options.validate()
-    if not snapshot.dates or len(snapshot.names)!=2 or len(snapshot.values)!=2:
-        raise ValueError('Two loaded players and dates are required')
+    if not snapshot.dates or len(snapshot.names) not in (2, 3) or len(snapshot.values) != len(snapshot.names):
+        raise ValueError('Two or three loaded players and dates are required')
     if any(len(values)!=len(snapshot.dates) for values in snapshot.values) or not snapshot.limits[0]<snapshot.limits[1]:
         raise ValueError('Invalid race snapshot')
     if cancel.is_set():
@@ -184,7 +199,3 @@ def export_animation(snapshot: RaceSnapshot, options: AnimationOptions, destinat
             process.join()
         receiver.close(); sender.close()
         Path(temporary).unlink(missing_ok=True)
-
-# Dugout Atlas
-# Copyright (c) 2026 dhtjr1236-eng
-# Unauthorized redistribution or rebranding is prohibited.

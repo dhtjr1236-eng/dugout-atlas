@@ -3,10 +3,10 @@
 **MLB 선수의 기록을 살펴보고 시즌의 흐름을 비교하세요.**  
 Explore player statistics and compare seasons in one desktop app.
 
-<a href="https://github.com/dhtjr1236-eng/dugout-atlas/releases/download/v1.9/DugoutAtlas-v1.9-Setup.exe"><img src="docs/images/download-windows.svg" width="320" alt="Download Dugout Atlas for Windows"></a> <a href="docs/MACOS_STATUS.md"><img src="docs/images/download-macos.svg" width="320" alt="macOS coming soon"></a>
+<a href="https://github.com/dhtjr1236-eng/dugout-atlas/releases/download/v1.92/DugoutAtlas-v1.92-Setup.exe"><img src="docs/images/download-windows.svg" width="320" alt="Download Dugout Atlas v1.92 Setup for Windows"></a> <a href="docs/MACOS_STATUS.md"><img src="docs/images/download-macos.svg" width="320" alt="macOS coming soon"></a>
 
-[릴리스 및 변경 내역 / Release notes](https://github.com/dhtjr1236-eng/dugout-atlas/releases/tag/v1.9)  
-Windows x64 · Python 설치 불필요 / No Python installation required
+[v1.92 릴리스 및 배포 파일 / Release notes and assets](https://github.com/dhtjr1236-eng/dugout-atlas/releases/tag/v1.92)  
+Windows 10/11 x64 · Python 설치 불필요 / No Python installation required
 
 [한국어](#한국어) · [English](#english) · [이전 버전 / Previous releases](https://github.com/dhtjr1236-eng/dugout-atlas/releases)
 
@@ -18,20 +18,22 @@ Dugout Atlas는 MLB 경기와 선수 데이터를 한 화면에서 탐색하는 
 ### 주요 기능
 
 - **선수 프로필:** MLB 선수 사진, 요약 카드, 타격·투구 지표와 시즌별 추이.
-- **Advanced Compare:** 선수마다 시즌을 선택해 기록과 백분위를 비교합니다.
-- **Season Race:** 같은 시즌의 선수 2~3명을 fWAR 또는 OPS 추이로 비교하고 애니메이션을 저장합니다.
+- **Advanced Compare:** 선수 2~4명의 시즌을 각각 선택하고 지표와 백분위를 비교합니다. 비교표를 CSV로 저장할 수 있습니다.
+- **Season Race:** 같은 시즌의 선수 A·B와 선택한 C까지 fWAR 또는 OPS 추이로 비교하고 애니메이션을 저장합니다.
 - **경기와 라인업:** 경기 일정·점수·주자 상황과 선수별 기록을 확인합니다.
-- **오프시즌 홈:** 즐겨찾기 선수와 저장된 시즌 기록을 둘러봅니다. 경기 목록은 접을 수 있습니다.
+- **오프시즌 홈:** 즐겨찾기 선수를 이름이나 팀으로 검색하고 저장된 시즌 기록을 둘러봅니다. 경기 목록은 접을 수 있습니다.
 - **테마와 언어:** 라이트·다크 테마와 Neon 액센트, 한국어·영어·일본어를 지원합니다.
 
 ### 설치와 실행
 
 1. 위의 **Windows 다운로드**에서 설치 파일을 내려받습니다.
-2. `DugoutAtlas-v1.9-Setup.exe`를 실행하고 설치 마법사의 안내를 따릅니다.
+2. `DugoutAtlas-v1.92-Setup.exe`를 실행하고 설치 마법사의 안내를 따릅니다.
 3. 설치를 마친 뒤 Dugout Atlas를 실행합니다.
 
 통계와 경기 정보를 조회하려면 인터넷 연결이 필요합니다. 데이터 제공처의 응답에 따라 일부 기록이나 사진이 표시되지 않을 수 있습니다.
 업데이트하기 전에는 앱을 종료해 주세요. 설치형 앱의 사용자 데이터는 사용자 폴더에 보관됩니다.
+
+소스로 실행하려면 릴리스의 `DugoutAtlas-v1.92-source.zip`을 압축 해제한 뒤, Python 3.12 이상이 설치된 Windows에서 `install.bat`, `run.bat` 순서로 실행하세요. 배포 파일은 같은 릴리스의 `DugoutAtlas-v1.92-SHA256SUMS.txt`에서 확인할 수 있습니다.
 
 ## English
 
@@ -40,22 +42,23 @@ Dugout Atlas is a desktop app for exploring MLB games and player data. Follow ga
 ### Features
 
 - **Player profiles:** MLB portraits, summary cards, batting and pitching metrics, and season trends.
-- **Advanced Compare:** Choose a season for each player and compare statistics and percentiles.
-- **Season Race:** Compare fWAR or OPS trends for two or three players from the same season, and save an animation.
+- **Advanced Compare:** Choose a season for each of two to four players, compare metrics and percentiles, and export the tables to CSV.
+- **Season Race:** Compare same-season fWAR or OPS trends for players A and B, optionally including player C, and save an animation.
 - **Games and lineups:** Explore schedules, scores, base runners, and player records.
-- **Offseason home:** Browse favorites and saved season records. Collapse the games sidebar when it is not needed.
+- **Offseason home:** Filter favorites by player name or team and browse saved season records. Collapse the games sidebar when it is not needed.
 - **Themes and languages:** Light and dark themes, a Neon accent, and Korean, English, and Japanese interfaces.
 
 ### Install and launch
 
 1. Download the installer using **Windows download** above.
-2. Run `DugoutAtlas-v1.9-Setup.exe` and follow the installation wizard.
+2. Run `DugoutAtlas-v1.92-Setup.exe` and follow the installation wizard.
 3. Launch Dugout Atlas when installation is complete.
 
 An internet connection is required to retrieve statistics and game information. Some records or photos may be unavailable depending on data providers. Close the app before updating; the installed app keeps user data in the user folder.
+
+To run from source, extract `DugoutAtlas-v1.92-source.zip` and run `install.bat`, then `run.bat` on Windows with Python 3.12 or newer. The release also includes `DugoutAtlas-v1.92-SHA256SUMS.txt` for verifying the downloads.
 
 ---
 
 MLB, FanGraphs, Baseball-Reference, Baseball Savant의 공식 클라이언트가 아닙니다.  
 Not an official client of MLB, FanGraphs, Baseball-Reference, or Baseball Savant.
-

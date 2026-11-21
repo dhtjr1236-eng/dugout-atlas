@@ -7,9 +7,11 @@ if not exist .venv\Scripts\python.exe (
     exit /b 1
 )
 call .venv\Scripts\activate.bat
-python main.py
-if errorlevel 1 (
+python main.py %*
+set "dugout_exit_code=%errorlevel%"
+if not "%dugout_exit_code%"=="0" (
     echo.
     echo The application exited with an error. Check logs\dugout_atlas.log under your configured data folder.
     pause
 )
+exit /b %dugout_exit_code%
