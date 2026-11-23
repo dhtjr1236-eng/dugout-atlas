@@ -10,7 +10,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 ROOT = Path(__file__).resolve().parents[2]
 CODE_DIRS = ('cache', 'charts', 'config', 'controllers', 'database', 'models', 'services', 'ui', 'workers', 'tests')
 ROOT_FILES = ('main.py', 'requirements.txt', 'requirements-build.txt', 'constraints-release.txt',
-              'pyproject.toml', '.gitignore', 'README.md', 'ARCHITECTURE.md', 'CHANGELOG.md',
+              'pyproject.toml', '.gitignore', 'README.md', 'README.ko.md', 'ARCHITECTURE.md', 'CHANGELOG.md',
               'install.bat', 'run.bat', 'run_debug.bat', 'verify.bat', 'diagnose_sources.py', 'diagnose_sources.bat',
               'clear_cache.bat', 'open_bref_data.bat')
 RESOURCES = ('config/translations.json', 'config/player_names_seed.json', 'config/brand_logo.png',

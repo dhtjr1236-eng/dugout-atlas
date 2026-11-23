@@ -15,6 +15,8 @@ def test_current_release_version_is_consistent():
     assert f'Dugout-Atlas/{version}' in SETTINGS.user_agent
     readme = (root / 'README.md').read_text(encoding='utf-8')
     assert '# ⚾ Dugout Atlas' in readme
+    assert '[한국어](README.ko.md)' in readme
+    assert (root / 'README.ko.md').is_file()
     assert f'/releases/download/v{version}/DugoutAtlas-v{version}-Setup.exe' in readme
     assert f'/releases/tag/v{version}' in readme
     assert (root / f'docs/PATCH_v{version}.md').is_file()

@@ -1,45 +1,14 @@
 # ⚾ Dugout Atlas
 
-**MLB 선수의 기록을 살펴보고 시즌의 흐름을 비교하세요.**  
-Explore player statistics and compare seasons in one desktop app.
+A Windows desktop app for exploring MLB games and player data. Follow games and lineups during the season, or compare favorite players and past seasons during the offseason.
 
-<a href="https://github.com/dhtjr1236-eng/dugout-atlas/releases/download/v1.92/DugoutAtlas-v1.92-Setup.exe"><img src="docs/images/download-windows.svg" width="320" alt="Download Dugout Atlas v1.92 Setup for Windows"></a> <a href="docs/MACOS_STATUS.md"><img src="docs/images/download-macos.svg" width="320" alt="macOS coming soon"></a>
+**[Download for Windows](https://github.com/dhtjr1236-eng/dugout-atlas/releases/download/v1.92/DugoutAtlas-v1.92-Setup.exe)** · [한국어](README.ko.md) · [User guide](docs/USER_GUIDE.md) · [Changelog](CHANGELOG.md) · [All releases](https://github.com/dhtjr1236-eng/dugout-atlas/releases)
 
-[v1.92 릴리스 및 배포 파일 / Release notes and assets](https://github.com/dhtjr1236-eng/dugout-atlas/releases/tag/v1.92)  
-Windows 10/11 x64 · Python 설치 불필요 / No Python installation required
+[v1.92 release and assets](https://github.com/dhtjr1236-eng/dugout-atlas/releases/tag/v1.92)
 
-[한국어](#한국어) · [English](#english) · [이전 버전 / Previous releases](https://github.com/dhtjr1236-eng/dugout-atlas/releases)
+Windows 10/11 x64 · No Python installation required
 
-## 한국어
-
-Dugout Atlas는 MLB 경기와 선수 데이터를 한 화면에서 탐색하는 데스크톱 앱입니다.
-시즌 중에는 경기와 라인업을 살펴보고, 오프시즌에는 관심 선수와 지난 시즌 기록을 비교할 수 있습니다.
-
-### 주요 기능
-
-- **선수 프로필:** MLB 선수 사진, 요약 카드, 타격·투구 지표와 시즌별 추이.
-- **Advanced Compare:** 선수 2~4명의 시즌을 각각 선택하고 지표와 백분위를 비교합니다. 비교표를 CSV로 저장할 수 있습니다.
-- **Season Race:** 같은 시즌의 선수 A·B와 선택한 C까지 fWAR 또는 OPS 추이로 비교하고 애니메이션을 저장합니다.
-- **경기와 라인업:** 경기 일정·점수·주자 상황과 선수별 기록을 확인합니다.
-- **오프시즌 홈:** 즐겨찾기 선수를 이름이나 팀으로 검색하고 저장된 시즌 기록을 둘러봅니다. 경기 목록은 접을 수 있습니다.
-- **테마와 언어:** 라이트·다크 테마와 Neon 액센트, 한국어·영어·일본어를 지원합니다.
-
-### 설치와 실행
-
-1. 위의 **Windows 다운로드**에서 설치 파일을 내려받습니다.
-2. `DugoutAtlas-v1.92-Setup.exe`를 실행하고 설치 마법사의 안내를 따릅니다.
-3. 설치를 마친 뒤 Dugout Atlas를 실행합니다.
-
-통계와 경기 정보를 조회하려면 인터넷 연결이 필요합니다. 데이터 제공처의 응답에 따라 일부 기록이나 사진이 표시되지 않을 수 있습니다.
-업데이트하기 전에는 앱을 종료해 주세요. 설치형 앱의 사용자 데이터는 사용자 폴더에 보관됩니다.
-
-소스로 실행하려면 릴리스의 `DugoutAtlas-v1.92-source.zip`을 압축 해제한 뒤, Python 3.12 이상이 설치된 Windows에서 `install.bat`, `run.bat` 순서로 실행하세요. 배포 파일은 같은 릴리스의 `DugoutAtlas-v1.92-SHA256SUMS.txt`에서 확인할 수 있습니다.
-
-## English
-
-Dugout Atlas is a desktop app for exploring MLB games and player data. Follow games and lineups during the season, or compare favorite players and past seasons during the offseason.
-
-### Features
+## Features
 
 - **Player profiles:** MLB portraits, summary cards, batting and pitching metrics, and season trends.
 - **Advanced Compare:** Choose a season for each of two to four players, compare metrics and percentiles, and export the tables to CSV.
@@ -48,7 +17,7 @@ Dugout Atlas is a desktop app for exploring MLB games and player data. Follow ga
 - **Offseason home:** Filter favorites by player name or team and browse saved season records. Collapse the games sidebar when it is not needed.
 - **Themes and languages:** Light and dark themes, a Neon accent, and Korean, English, and Japanese interfaces.
 
-### Install and launch
+## Install and launch
 
 1. Download the installer using **Windows download** above.
 2. Run `DugoutAtlas-v1.92-Setup.exe` and follow the installation wizard.
@@ -58,7 +27,12 @@ An internet connection is required to retrieve statistics and game information. 
 
 To run from source, extract `DugoutAtlas-v1.92-source.zip` and run `install.bat`, then `run.bat` on Windows with Python 3.12 or newer. The release also includes `DugoutAtlas-v1.92-SHA256SUMS.txt` for verifying the downloads.
 
+## Data and sources
+
+Dugout Atlas uses MLB Stats API, FanGraphs, Baseball-Reference, and Baseball Savant / Statcast. Partial source failures do not hide successful data from other sources.
+
+For storage locations and source behavior, see [USER_GUIDE.md](docs/USER_GUIDE.md) and [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ---
 
-MLB, FanGraphs, Baseball-Reference, Baseball Savant의 공식 클라이언트가 아닙니다.  
 Not an official client of MLB, FanGraphs, Baseball-Reference, or Baseball Savant.
